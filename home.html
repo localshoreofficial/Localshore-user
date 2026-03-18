@@ -47,6 +47,166 @@ nav{position:sticky;top:0;z-index:200}
 .nav-badge.show{display:flex}
 .nav-divider{width:1px;height:22px;background:var(--border);margin:0 4px}
 
+/* ═══ NOTIFICATION BELL ═══ */
+.notif-wrap{position:relative;display:flex;align-items:center}
+.notif-btn{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;transition:all .2s;position:relative;color:var(--mid)}
+.notif-btn:hover{background:var(--orange-pale);color:var(--orange-dark)}
+.notif-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .18s}
+.notif-btn:hover svg{stroke:var(--orange-dark)}
+/* Bell shake animation on new notification */
+@keyframes bellShake{
+  0%,100%{transform:rotate(0)}
+  10%,30%,50%{transform:rotate(-12deg)}
+  20%,40%{transform:rotate(12deg)}
+  60%{transform:rotate(8deg)}
+  80%{transform:rotate(-4deg)}
+}
+.notif-btn.ringing svg{animation:bellShake .7s ease}
+/* Unread badge on bell */
+.notif-bell-badge{
+  position:absolute;top:2px;right:2px;
+  background:var(--error);color:#fff;
+  font-size:.52rem;font-weight:900;
+  min-width:17px;height:17px;
+  border-radius:30px;padding:0 4px;
+  border:2px solid #fff;
+  display:none;align-items:center;justify-content:center;
+  line-height:1;
+  box-shadow:0 1px 6px rgba(229,62,62,.55);
+  transition:all .25s cubic-bezier(.34,1.5,.64,1)
+}
+.notif-bell-badge.show{display:flex;animation:badgePop .3s cubic-bezier(.34,1.5,.64,1)}
+@keyframes badgePop{from{transform:scale(0)}to{transform:scale(1)}}
+
+/* ═══ NOTIFICATION DROPDOWN ═══ */
+.notif-dropdown{
+  position:absolute;top:calc(100% + 12px);right:0;
+  width:360px;
+  background:var(--white);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-xl);
+  z-index:500;
+  overflow:hidden;
+  display:none;
+  animation:notifDropIn .22s cubic-bezier(.34,1.2,.64,1)
+}
+.notif-dropdown.open{display:block}
+@keyframes notifDropIn{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+/* Header */
+.nd-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 10px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,var(--navy) 0%,#1a4fa0 100%)
+}
+.nd-title{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--ff);font-size:.88rem;font-weight:700;color:#fff
+}
+.nd-title-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:livePulse2 1.4s ease-in-out infinite}
+@keyframes livePulse2{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.nd-unread-pill{
+  font-size:.62rem;font-weight:800;
+  padding:2px 9px;border-radius:100px;
+  background:rgba(255,255,255,.18);color:rgba(255,255,255,.9)
+}
+.nd-mark-all{
+  font-size:.7rem;font-weight:600;color:rgba(255,255,255,.7);
+  background:none;border:none;cursor:pointer;
+  padding:4px 8px;border-radius:7px;
+  transition:all .18s;font-family:var(--fb)
+}
+.nd-mark-all:hover{background:rgba(255,255,255,.15);color:#fff}
+/* Filter tabs */
+.nd-tabs{display:flex;gap:0;padding:8px 10px 0;border-bottom:1px solid var(--border);background:var(--light)}
+.nd-tab{
+  flex:1;padding:7px 8px;border:none;background:none;
+  font-family:var(--fb);font-size:.73rem;font-weight:600;color:var(--mid);
+  cursor:pointer;border-bottom:2px solid transparent;transition:all .18s;
+  border-radius:8px 8px 0 0;
+}
+.nd-tab.active{color:var(--orange);border-bottom-color:var(--orange);background:var(--white)}
+.nd-tab:hover:not(.active){color:var(--black);background:rgba(255,255,255,.7)}
+/* Notification list */
+.nd-list{max-height:320px;overflow-y:auto;padding:6px 0}
+.nd-list::-webkit-scrollbar{width:4px}
+.nd-list::-webkit-scrollbar-thumb{background:#e0dbd5;border-radius:10px}
+/* Individual notification item */
+.nd-item{
+  display:flex;gap:11px;align-items:flex-start;
+  padding:11px 14px;
+  cursor:pointer;transition:background .15s;
+  border-bottom:1px solid #F8F5F2;
+  position:relative;
+}
+.nd-item:last-child{border-bottom:none}
+.nd-item:hover{background:var(--orange-pale)}
+.nd-item.unread{background:#FFFBF7}
+.nd-item.unread::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--orange);border-radius:0 3px 3px 0
+}
+/* Notification icon bubble */
+.nd-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.05rem;flex-shrink:0;
+}
+.nd-icon-promo{background:#FFF3EC}
+.nd-icon-order{background:#EFF6FF}
+.nd-icon-alert{background:#FEF2F2}
+.nd-icon-info{background:#EDFBF3}
+.nd-icon-offer{background:#FFF8E7}
+.nd-icon-system{background:#F0F4FF}
+/* Content */
+.nd-content{flex:1;min-width:0}
+.nd-item-title{
+  font-size:.8rem;font-weight:700;color:var(--black);
+  line-height:1.3;margin-bottom:2px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.nd-item.unread .nd-item-title{color:var(--black)}
+.nd-item:not(.unread) .nd-item-title{color:var(--mid)}
+.nd-item-body{
+  font-size:.72rem;color:var(--mid);line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  margin-bottom:4px
+}
+.nd-item-time{font-size:.63rem;color:#C0B8B0}
+/* Unread dot */
+.nd-unread-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--orange);
+  flex-shrink:0;margin-top:5px;
+}
+/* Empty state */
+.nd-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:36px 20px;text-align:center;
+}
+.nd-empty-icon{font-size:2.4rem;margin-bottom:10px;opacity:.5}
+.nd-empty-txt{font-size:.82rem;font-weight:600;color:var(--mid)}
+.nd-empty-sub{font-size:.72rem;color:#C0B8B0;margin-top:4px}
+/* Footer */
+.nd-footer{
+  padding:10px 14px;border-top:1px solid var(--border);
+  background:var(--light);
+  display:flex;align-items:center;justify-content:center
+}
+.nd-footer-link{
+  font-size:.74rem;font-weight:600;color:var(--orange);
+  background:none;border:none;cursor:pointer;font-family:var(--fb);
+  display:flex;align-items:center;gap:4px
+}
+.nd-footer-link:hover{color:var(--orange-dark);text-decoration:underline}
+/* Loading skeleton */
+.nd-skeleton{padding:11px 14px;display:flex;gap:11px;align-items:flex-start;border-bottom:1px solid #F8F5F2}
+.nd-skel-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(90deg,#f0ebe4 25%,#e8e2db 50%,#f0ebe4 75%);background-size:200% 100%;animation:shimmer 1.2s infinite}
+.nd-skel-lines{flex:1;display:flex;flex-direction:column;gap:6px}
+.nd-skel-line{height:8px;border-radius:4px;background:linear-gradient(90deg,#f0ebe4 25%,#e8e2db 50%,#f0ebe4 75%);background-size:200% 100%;animation:shimmer 1.2s infinite}
+.nd-skel-line.w80{width:80%}.nd-skel-line.w60{width:60%}.nd-skel-line.w40{width:40%}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
 /* ═══ SEARCH BAR ═══ */
 .search-bar{display:flex;justify-content:center;padding:20px 20px;background:var(--white);border-bottom:1px solid var(--border);box-shadow:0 1px 0 rgba(0,0,0,.02)}
 .search-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:660px}
@@ -319,8 +479,6 @@ nav{position:sticky;top:0;z-index:200}
 .order-items-list{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px}
 .order-item-li{display:flex;align-items:center;justify-content:space-between;font-size:.74rem;color:var(--mid)}
 .order-item-li span{color:var(--black);font-weight:500}
-
-/* ── Delivery Confirmation Banner in Orders ── */
 .delivery-confirm-banner{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#EDFBF3,#D1FAE5);border:1.5px solid #6EE7B7;border-radius:var(--radius-md);padding:10px 13px;margin-top:9px;flex-wrap:wrap}
 .dcb-text{flex:1;min-width:0}
 .dcb-title{font-size:.78rem;font-weight:700;color:#065F46}
@@ -329,8 +487,6 @@ nav{position:sticky;top:0;z-index:200}
 .btn-confirm-received:hover{background:#0A8A59;transform:translateY(-1px)}
 .btn-not-received{padding:6px 13px;background:#FEF2F2;border:1px solid #FECACA;color:var(--error);border-radius:7px;font-size:.73rem;font-weight:700;cursor:pointer;font-family:var(--fb);white-space:nowrap}
 .btn-not-received:hover{background:var(--error);color:#fff}
-
-/* Customer confirmation status pills */
 .confirm-pill{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:100px;display:inline-flex;align-items:center;gap:3px}
 .cp-confirmed{background:#EDFBF3;color:#065F46}
 .cp-disputed{background:#FEF2F2;color:#991B1B}
@@ -432,23 +588,19 @@ nav{position:sticky;top:0;z-index:200}
 #del-confirm-modal{z-index:400}
 #del-confirm-modal .modal{max-width:440px}
 .dcm-body{padding:0 0 28px}
-/* Hero section */
 .dcm-hero{padding:32px 28px 24px;text-align:center;position:relative;overflow:hidden}
 .dcm-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,#EDFBF3 0%,#F0FDF4 100%)}
 .dcm-hero-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#0EA66B,#34D399);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 14px;position:relative;z-index:1;box-shadow:0 8px 24px rgba(14,166,107,.3);animation:bounceIn .5s cubic-bezier(.34,1.5,.64,1)}
 @keyframes bounceIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
 .dcm-hero h2{font-family:var(--ff);font-size:1.25rem;font-weight:800;color:#065F46;margin-bottom:6px;position:relative;z-index:1}
 .dcm-hero p{font-size:.83rem;color:#047857;line-height:1.55;position:relative;z-index:1}
-/* Order summary strip */
 .dcm-order-strip{margin:0 24px 20px;background:var(--light);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 14px;display:flex;align-items:center;gap:11px}
 .dcm-order-icon{width:42px;height:42px;border-radius:var(--radius-sm);background:var(--orange-pale);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
 .dcm-order-name{font-size:.83rem;font-weight:700;color:var(--black)}
 .dcm-order-shop{font-size:.71rem;color:var(--mid);margin-top:2px}
 .dcm-order-total{font-size:.88rem;font-weight:800;color:var(--orange);flex-shrink:0}
-/* Question */
 .dcm-question{padding:0 24px;margin-bottom:18px}
 .dcm-q-label{font-size:.7rem;font-weight:700;color:var(--mid);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;text-align:center}
-/* Action buttons */
 .dcm-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 24px}
 .btn-dcm-yes{display:flex;flex-direction:column;align-items:center;gap:5px;padding:16px 12px;background:linear-gradient(135deg,var(--success),#34D399);color:#fff;border:none;border-radius:var(--radius-lg);font-family:var(--fb);cursor:pointer;transition:all .22s;box-shadow:0 4px 16px rgba(14,166,107,.3)}
 .btn-dcm-yes:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,166,107,.45)}
@@ -460,7 +612,6 @@ nav{position:sticky;top:0;z-index:200}
 .btn-dcm-no .dcm-btn-icon{font-size:1.8rem;line-height:1}
 .btn-dcm-no .dcm-btn-label{font-size:.82rem;font-weight:700}
 .btn-dcm-no .dcm-btn-sub{font-size:.66rem;opacity:.75}
-/* Result states */
 .dcm-result{display:none;padding:0 24px 4px;text-align:center}
 .dcm-result.show{display:block;animation:fadeIn .35s ease}
 .dcm-result-icon{font-size:3rem;margin-bottom:10px}
@@ -499,7 +650,7 @@ footer{background:var(--black);margin-top:60px}
 
 @media(max-width:1100px){.cats{grid-template-columns:repeat(7,1fr)}.stores-grid{grid-template-columns:repeat(3,1fr)}.footer-top{grid-template-columns:1fr 1fr}}
 @media(max-width:900px){.cats{grid-template-columns:repeat(4,1fr)}.panels-grid{grid-template-columns:1fr}.stores-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.nav-c{padding:0 18px}.nav-links li:nth-child(-n+2){display:none}.cats{grid-template-columns:repeat(3,1fr)}.page{padding:18px 14px}.stores-grid{grid-template-columns:repeat(2,1fr)}.footer-top{grid-template-columns:1fr}.footer-btm-inner{flex-direction:column;gap:10px}.pay-methods{grid-template-columns:1fr}.dcm-actions{grid-template-columns:1fr}}
+@media(max-width:768px){.nav-c{padding:0 18px}.nav-links li:nth-child(-n+2){display:none}.cats{grid-template-columns:repeat(3,1fr)}.page{padding:18px 14px}.stores-grid{grid-template-columns:repeat(2,1fr)}.footer-top{grid-template-columns:1fr}.footer-btm-inner{flex-direction:column;gap:10px}.pay-methods{grid-template-columns:1fr}.dcm-actions{grid-template-columns:1fr}.notif-dropdown{width:310px;right:-60px}}
 </style>
 </head>
 <body>
@@ -512,6 +663,58 @@ footer{background:var(--black);margin-top:60px}
     <ul class="nav-links">
       <li><a href="#" onclick="openWishModal();return false">🤍 Wishlist<span class="nav-badge" id="wish-count-badge"></span></a></li>
       <li><a href="#" onclick="openOrdersModal();return false">📦 My Orders<span class="nav-badge" id="orders-count-badge"></span></a></li>
+      <li><div class="nav-divider"></div></li>
+
+      <!-- ═══ NOTIFICATION BELL ═══ -->
+      <li style="position:relative">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notif-bell-btn" onclick="toggleNotifDropdown()" title="Notifications" aria-label="Notifications">
+            <!-- Bell SVG -->
+            <svg viewBox="0 0 24 24" id="notif-bell-svg">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </button>
+          <span class="notif-bell-badge" id="notif-bell-badge"></span>
+
+          <!-- Notification Dropdown -->
+          <div class="notif-dropdown" id="notif-dropdown">
+            <!-- Header -->
+            <div class="nd-header">
+              <div class="nd-title">
+                <span class="nd-title-dot"></span>
+                Notifications
+                <span class="nd-unread-pill" id="nd-unread-count">0 new</span>
+              </div>
+              <button class="nd-mark-all" onclick="markAllNotifRead()" title="Mark all as read">✓ Mark all read</button>
+            </div>
+            <!-- Filter tabs -->
+            <div class="nd-tabs">
+              <button class="nd-tab active" onclick="filterNotifs('all',this)">All</button>
+              <button class="nd-tab" onclick="filterNotifs('promo',this)">Offers</button>
+              <button class="nd-tab" onclick="filterNotifs('order',this)">Orders</button>
+              <button class="nd-tab" onclick="filterNotifs('alert',this)">Alerts</button>
+            </div>
+            <!-- Notification list -->
+            <div class="nd-list" id="nd-list">
+              <!-- Skeleton loading state -->
+              <div class="nd-skeleton" id="nd-skeleton">
+                <div class="nd-skel-icon"></div>
+                <div class="nd-skel-lines">
+                  <div class="nd-skel-line w80"></div>
+                  <div class="nd-skel-line w60"></div>
+                  <div class="nd-skel-line w40"></div>
+                </div>
+              </div>
+            </div>
+            <!-- Footer -->
+            <div class="nd-footer">
+              <button class="nd-footer-link" onclick="openAllNotifications()">View all notifications →</button>
+            </div>
+          </div>
+        </div>
+      </li>
+
       <li><div class="nav-divider"></div></li>
       <li><a href="#" onclick="openProfileModal();return false">👤 My Profile</a></li>
     </ul>
@@ -608,7 +811,7 @@ footer{background:var(--black);margin-top:60px}
   <div class="footer-btm"><div class="footer-btm-inner"><div class="footer-copy">© 2025 LocalShore. All rights reserved.</div><div class="socials"><a class="soc-pill" href="#">Twitter</a><a class="soc-pill" href="#">Instagram</a><a class="soc-pill" href="#">LinkedIn</a></div></div></div>
 </footer>
 
-<!-- ═══════ SHOP PRODUCTS MODAL ═══════ -->
+<!-- SHOP PRODUCTS MODAL -->
 <div class="overlay" id="shop-modal" onclick="if(event.target===this)closeShopModal()">
   <div class="modal">
     <div class="shop-modal-hdr">
@@ -827,22 +1030,19 @@ footer{background:var(--black);margin-top:60px}
   </div>
 </div>
 
-<!-- ═══════ DELIVERY CONFIRMATION MODAL ═══════ -->
+<!-- DELIVERY CONFIRMATION MODAL -->
 <div class="overlay" id="del-confirm-modal">
   <div class="modal">
-    <!-- Header -->
     <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px 16px;border-bottom:1px solid var(--border)">
       <div style="font-family:var(--ff);font-size:1rem;font-weight:800;color:var(--black)">Order Delivered 🎉</div>
       <button class="modal-close" onclick="closeDelConfirmModal()">✕</button>
     </div>
     <div class="dcm-body">
-      <!-- Hero -->
       <div class="dcm-hero">
         <div class="dcm-hero-icon">📦</div>
         <h2>Your order has arrived!</h2>
         <p>Our delivery partner marked this order as delivered.<br>Please confirm if you received your order.</p>
       </div>
-      <!-- Order strip -->
       <div class="dcm-order-strip" id="dcm-order-strip">
         <div class="dcm-order-icon">📦</div>
         <div style="flex:1;min-width:0">
@@ -851,7 +1051,6 @@ footer{background:var(--black);margin-top:60px}
         </div>
         <div class="dcm-order-total" id="dcm-order-total">—</div>
       </div>
-      <!-- Question + buttons (initial state) -->
       <div id="dcm-question-area">
         <div class="dcm-question">
           <div class="dcm-q-label">Did you receive your order?</div>
@@ -869,14 +1068,12 @@ footer{background:var(--black);margin-top:60px}
           </button>
         </div>
       </div>
-      <!-- Success result -->
       <div class="dcm-result dcm-result-ok" id="dcm-result-ok">
         <div class="dcm-result-icon">🎊</div>
         <div class="dcm-result-title">Thank you for confirming!</div>
         <div class="dcm-result-sub">We're glad your order reached you safely.<br>Enjoy your purchase! Rate your experience in My Orders.</div>
         <button class="dcm-result-btn" onclick="closeDelConfirmModal()">Close</button>
       </div>
-      <!-- Dispute result -->
       <div class="dcm-result dcm-result-err" id="dcm-result-err">
         <div class="dcm-result-icon">🚨</div>
         <div class="dcm-result-title">Issue reported!</div>
@@ -891,7 +1088,7 @@ footer{background:var(--black);margin-top:60px}
 
 <script>
 // ════════════════════════════════════════════════════
-//  LocalShore — Firebase + Cart + Orders + Tracking
+//  LocalShore — Firebase + Cart + Orders + Notifications
 // ════════════════════════════════════════════════════
 
 firebase.initializeApp({
@@ -907,39 +1104,224 @@ const db = firebase.firestore();
 function getDeviceId(){let id=localStorage.getItem('ls_device_id');if(!id){id='dev_'+Math.random().toString(36).slice(2)+Date.now();localStorage.setItem('ls_device_id',id);}return id;}
 const DEVICE_ID = getDeviceId();
 
-const save = (k,v)=>{try{localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}};
-const load = (k,def='')=>{try{const v=localStorage.getItem(k);return v!==null?v:def;}catch(e){return def;}};
-const loadJ = (k,def=[])=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}};
+const save=(k,v)=>{try{localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}};
+const load=(k,def='')=>{try{const v=localStorage.getItem(k);return v!==null?v:def;}catch(e){return def;}};
+const loadJ=(k,def=[])=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}};
 
 // ── State ──────────────────────────────────────────
-let _shops=[], _products=[];
-let _userLat=parseFloat(load('ls_lat'))||null, _userLng=parseFloat(load('ls_lng'))||null;
+let _shops=[],_products=[];
+let _userLat=parseFloat(load('ls_lat'))||null,_userLng=parseFloat(load('ls_lng'))||null;
 let _pendingOrder=null;
 let mainMap=null,mainMarker=null,mainCircle=null,mainMapInit=false;
 let delMap=null,delMarker=null,delLat=null,delLng=null,delMapInit=false;
 let trackMap=null,trackMapInit=false,trackDeliveryMarker=null,trackUserMarker=null,trackPolyline=null;
 let _trackInterval=null,_trackOrder=null;
-let _confirmOrderId=null; // Track which order is being confirmed
+let _confirmOrderId=null;
 
 // ── Cart State ─────────────────────────────────────
-let _cart = { shopId: null, shopName: '', items: [] };
-let _cartDrawerOpen = false;
+let _cart={shopId:null,shopName:'',items:[]};
+let _cartDrawerOpen=false;
 
-// ── Payment method toggle ──────────────────────────
-window.onPayMethodChange = () => {
-  const method = document.querySelector('input[name="pay-method"]:checked')?.value || 'cod';
-  document.getElementById('pay-cod-note').classList.toggle('show', method === 'cod');
-  document.getElementById('pay-online-note').classList.toggle('show', method === 'online');
-  const btn = document.getElementById('btn-confirm-order');
-  if(btn) btn.textContent = method === 'cod' ? '✅ Confirm & Place Order (COD)' : '✅ Confirm & Pay Online';
+// ════════════════════════════════════════════════════
+//  NOTIFICATION SYSTEM
+// ════════════════════════════════════════════════════
+
+let _allNotifications=[];     // all fetched from Firestore
+let _notifFilter='all';        // current tab filter
+let _notifDropOpen=false;
+let _notifUnsubscribe=null;    // real-time listener cleanup
+
+// LocalStorage key for read notification IDs
+const NOTIF_READ_KEY='ls_notif_read';
+
+function getReadNotifIds(){return loadJ(NOTIF_READ_KEY,[]);}
+function markNotifAsRead(id){const r=getReadNotifIds();if(!r.includes(id)){r.push(id);save(NOTIF_READ_KEY,JSON.stringify(r));}}
+function isNotifRead(id){return getReadNotifIds().includes(id);}
+
+// Type → icon + CSS class mapping
+const NOTIF_TYPE_MAP={
+  promo:  {icon:'🎁', cls:'nd-icon-promo', label:'Offer'},
+  offer:  {icon:'🏷️', cls:'nd-icon-offer', label:'Deal'},
+  order:  {icon:'📦', cls:'nd-icon-order', label:'Order'},
+  alert:  {icon:'⚠️', cls:'nd-icon-alert', label:'Alert'},
+  info:   {icon:'ℹ️', cls:'nd-icon-info',  label:'Info'},
+  system: {icon:'🔧', cls:'nd-icon-system', label:'System'},
+};
+function getNotifTypeMeta(type){return NOTIF_TYPE_MAP[type]||NOTIF_TYPE_MAP['info'];}
+
+// Relative time formatter
+function relTime(isoStr){
+  if(!isoStr)return'just now';
+  const diff=Date.now()-new Date(isoStr).getTime();
+  const m=Math.floor(diff/60000);
+  if(m<1)return'just now';
+  if(m<60)return m+'m ago';
+  const h=Math.floor(m/60);
+  if(h<24)return h+'h ago';
+  const d=Math.floor(h/24);
+  if(d===1)return'yesterday';
+  if(d<7)return d+'d ago';
+  return new Date(isoStr).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+}
+
+// Start real-time Firestore listener for notifications collection
+function startNotifListener(){
+  if(_notifUnsubscribe){_notifUnsubscribe();_notifUnsubscribe=null;}
+  // Listen to 'notifications' collection — admin adds docs here
+  // Documents can have: title, body, type, createdAt, targetAll (bool), targetDevices (array)
+  _notifUnsubscribe=db.collection('notifications')
+    .orderBy('createdAt','desc')
+    .limit(50)
+    .onSnapshot(snap=>{
+      const prev=_allNotifications.length;
+      _allNotifications=[];
+      snap.forEach(d=>{
+        const data={id:d.id,...d.data()};
+        // Show if targetAll OR if targetDevices includes this device OR no targeting set
+        const targeted=data.targetAll||!data.targetDevices||(data.targetDevices&&data.targetDevices.includes(DEVICE_ID));
+        if(targeted)_allNotifications.push(data);
+      });
+      // Animate bell if new notifications arrived while dropdown is closed
+      if(prev>0&&_allNotifications.length>prev&&!_notifDropOpen){
+        const bell=document.getElementById('notif-bell-btn');
+        bell.classList.remove('ringing');
+        void bell.offsetWidth; // reflow
+        bell.classList.add('ringing');
+        setTimeout(()=>bell.classList.remove('ringing'),800);
+        toast('🔔 New notification from LocalShore');
+      }
+      updateNotifBadge();
+      if(_notifDropOpen)renderNotifList();
+    },()=>{
+      // Firestore rules might block — show no badge, silently fail
+    });
+}
+
+function getUnreadCount(){
+  return _allNotifications.filter(n=>!isNotifRead(n.id)).length;
+}
+
+function updateNotifBadge(){
+  const count=getUnreadCount();
+  const badge=document.getElementById('notif-bell-badge');
+  if(count>0){
+    badge.textContent=count>9?'9+':count;
+    badge.classList.add('show');
+  }else{
+    badge.classList.remove('show');
+  }
+  // Update the "X new" pill inside dropdown if open
+  const pill=document.getElementById('nd-unread-count');
+  if(pill)pill.textContent=count>0?count+' new':'All read';
+}
+
+function toggleNotifDropdown(){
+  _notifDropOpen=!_notifDropOpen;
+  const dd=document.getElementById('notif-dropdown');
+  dd.classList.toggle('open',_notifDropOpen);
+  if(_notifDropOpen){
+    renderNotifList();
+    // Remove skeleton after first render
+    const skel=document.getElementById('nd-skeleton');
+    if(skel)skel.style.display='none';
+  }
+}
+
+function closeNotifDropdown(){
+  _notifDropOpen=false;
+  document.getElementById('notif-dropdown').classList.remove('open');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.notif-wrap')&&_notifDropOpen)closeNotifDropdown();
+});
+
+function filterNotifs(type,btn){
+  _notifFilter=type;
+  document.querySelectorAll('.nd-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderNotifList();
+}
+
+function renderNotifList(){
+  const list=document.getElementById('nd-list');
+  if(!list)return;
+  // Remove skeleton
+  const skel=document.getElementById('nd-skeleton');
+  if(skel)skel.remove();
+
+  let items=_allNotifications;
+  if(_notifFilter!=='all'){
+    if(_notifFilter==='promo')items=items.filter(n=>n.type==='promo'||n.type==='offer');
+    else items=items.filter(n=>n.type===_notifFilter);
+  }
+
+  if(!items.length){
+    list.innerHTML=
+      '<div class="nd-empty">'+
+        '<div class="nd-empty-icon">🔔</div>'+
+        '<div class="nd-empty-txt">'+(_notifFilter==='all'?'No notifications yet':'No '+_notifFilter+' notifications')+'</div>'+
+        '<div class="nd-empty-sub">'+(_notifFilter==='all'?'Admin updates will appear here':'Try another category')+'</div>'+
+      '</div>';
+    return;
+  }
+
+  list.innerHTML=items.map(n=>{
+    const read=isNotifRead(n.id);
+    const meta=getNotifTypeMeta(n.type);
+    return '<div class="nd-item'+(read?'':' unread')+'" onclick="onNotifClick(\''+n.id+'\',this)" data-id="'+n.id+'">'+
+      '<div class="nd-icon '+meta.cls+'">'+meta.icon+'</div>'+
+      '<div class="nd-content">'+
+        '<div class="nd-item-title">'+escHtml(n.title||'New Update')+'</div>'+
+        '<div class="nd-item-body">'+escHtml(n.body||'')+'</div>'+
+        '<div class="nd-item-time">'+relTime(n.createdAt)+(n.type?'&ensp;·&ensp;<span style="color:var(--orange);font-weight:600;font-size:.6rem">'+meta.label+'</span>':'')+'</div>'+
+      '</div>'+
+      (!read?'<div class="nd-unread-dot"></div>':'')+
+    '</div>';
+  }).join('');
+
+  updateNotifBadge();
+}
+
+function onNotifClick(id,el){
+  if(!isNotifRead(id)){
+    markNotifAsRead(id);
+    el.classList.remove('unread');
+    el.querySelector('.nd-unread-dot')?.remove();
+    updateNotifBadge();
+  }
+  // Find notification and check for a link/action
+  const n=_allNotifications.find(x=>x.id===id);
+  if(n&&n.link){window.open(n.link,'_blank');}
+  if(n&&n.shopId){closeNotifDropdown();openShopModal(n.shopId);}
+}
+
+window.markAllNotifRead=()=>{
+  _allNotifications.forEach(n=>markNotifAsRead(n.id));
+  updateNotifBadge();
+  renderNotifList();
+  toast('All notifications marked as read ✓');
 };
 
-// ── Status banner ──────────────────────────────────
-function showShopsStatus(msg,bg,color){
-  const el=document.getElementById('shops-status');if(!el)return;
-  el.innerHTML=msg;
-  el.style.cssText='display:block;padding:14px 18px;border-radius:12px;font-size:.84rem;font-weight:600;margin-bottom:14px;background:'+bg+';color:'+color+';border:1.5px solid '+color+'22;line-height:1.6';
-}
+window.openAllNotifications=()=>{
+  closeNotifDropdown();
+  // Mark all as read when viewing all
+  markAllNotifRead();
+};
+
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── Payment method toggle ──────────────────────────
+window.onPayMethodChange=()=>{
+  const method=document.querySelector('input[name="pay-method"]:checked')?.value||'cod';
+  document.getElementById('pay-cod-note').classList.toggle('show',method==='cod');
+  document.getElementById('pay-online-note').classList.toggle('show',method==='online');
+  const btn=document.getElementById('btn-confirm-order');
+  if(btn)btn.textContent=method==='cod'?'✅ Confirm & Place Order (COD)':'✅ Confirm & Pay Online';
+};
+
+function showShopsStatus(msg,bg,color){const el=document.getElementById('shops-status');if(!el)return;el.innerHTML=msg;el.style.cssText='display:block;padding:14px 18px;border-radius:12px;font-size:.84rem;font-weight:600;margin-bottom:14px;background:'+bg+';color:'+color+';border:1.5px solid '+color+'22;line-height:1.6';}
 function hideShopsStatus(){const el=document.getElementById('shops-status');if(el)el.style.display='none';}
 const toast=(m,t='')=>{const e=document.getElementById('toast');e.textContent=m;e.className='toast-pop show'+(t?' '+t:'');setTimeout(()=>e.className='toast-pop',3200);};
 function haversine(la1,ln1,la2,ln2){const R=6371,dLat=(la2-la1)*Math.PI/180,dLng=(ln2-ln1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLng/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
@@ -947,170 +1329,70 @@ const catIco=c=>({'General Store':'🏪','Electronics':'📱','Fruits & Vegetabl
 const prodIco=c=>({'Groceries':'🛒','Fruits & Vegetables':'🍎','Dairy & Eggs':'🥛','Snacks & Beverages':'🍿','Electronics':'📱','Fashion & Clothing':'👗','Home & Kitchen':'🍳','Medical & Health':'💊','Sports & Fitness':'⚽','Kids & Toys':'🧸','Books & Stationery':'📚','Meat & Seafood':'🥩','Bakery & Sweets':'🍮','Food & Sweets':'🍮','Medical / Pharmacy':'💊','Kitchen & Home':'🍳'}[c]||'📦');
 const distBadge=km=>{const cls=km<5?'near':km<10?'med':'far';const lbl=km<1?(km*1000).toFixed(0)+' m':km.toFixed(1)+' km';return '<span class="dist-badge '+cls+'">📍 '+lbl+'</span>';};
 
-// ════════════════════════════════════════════════════
-//  CART LOGIC
-// ════════════════════════════════════════════════════
-
+// ── Cart Logic ─────────────────────────────────────
 function getCartTotal(){return _cart.items.reduce((s,i)=>s+i.price*i.qty,0);}
 function getCartItemCount(){return _cart.items.reduce((s,i)=>s+i.qty,0);}
 function isInCart(productId){return _cart.items.some(i=>i.productId===productId);}
 
 window.addToCart=(productId,shopId)=>{
-  const p=_products.find(x=>x.id===productId);
-  const s=_shops.find(x=>x.id===shopId);
+  const p=_products.find(x=>x.id===productId);const s=_shops.find(x=>x.id===shopId);
   if(!p||!s)return;
   const qty=parseInt(document.getElementById('qty-'+productId)?.value)||1;
   if(parseInt(p.stock)<1){toast('Out of stock','err');return;}
-  if(_cart.shopId&&_cart.shopId!==shopId){
-    if(!confirm('Your cart has items from "'+_cart.shopName+'". Clear it and start fresh from "'+s.name+'"?'))return;
-    _cart={shopId:null,shopName:'',items:[]};
-  }
+  if(_cart.shopId&&_cart.shopId!==shopId){if(!confirm('Your cart has items from "'+_cart.shopName+'". Clear it and start fresh from "'+s.name+'"?'))return;_cart={shopId:null,shopName:'',items:[]};}
   _cart.shopId=shopId;_cart.shopName=s.name;
   const existing=_cart.items.find(i=>i.productId===productId);
-  if(existing){
-    const newQty=existing.qty+qty;
-    if(newQty>parseInt(p.stock)){toast('Only '+p.stock+' in stock','err');return;}
-    existing.qty=newQty;toast('Updated quantity in cart 🛒');
-  }else{
-    if(qty>parseInt(p.stock)){toast('Only '+p.stock+' in stock','err');return;}
-    _cart.items.push({productId,name:p.name,price:p.price,qty,image:p.image||'',category:p.category,stock:parseInt(p.stock)});
-    toast('Added to cart 🛒');
-  }
+  if(existing){const newQty=existing.qty+qty;if(newQty>parseInt(p.stock)){toast('Only '+p.stock+' in stock','err');return;}existing.qty=newQty;toast('Updated quantity in cart 🛒');}
+  else{if(qty>parseInt(p.stock)){toast('Only '+p.stock+' in stock','err');return;}_cart.items.push({productId,name:p.name,price:p.price,qty,image:p.image||'',category:p.category,stock:parseInt(p.stock)});toast('Added to cart 🛒');}
   updateCartUI();refreshProductCard(productId);
 };
-
-window.removeFromCart=(productId)=>{
-  _cart.items=_cart.items.filter(i=>i.productId!==productId);
-  if(!_cart.items.length){_cart.shopId=null;_cart.shopName='';}
-  updateCartUI();refreshProductCard(productId);
-};
-
-window.updateCartItemQty=(productId,delta)=>{
-  const item=_cart.items.find(i=>i.productId===productId);
-  if(!item)return;
-  const newQty=item.qty+delta;
-  if(newQty<1){removeFromCart(productId);return;}
-  if(newQty>item.stock){toast('Max stock: '+item.stock,'err');return;}
-  item.qty=newQty;updateCartUI();refreshProductCard(productId);
-};
-
-window.clearCart=()=>{
-  if(!_cart.items.length)return;
-  if(!confirm('Clear all items from cart?'))return;
-  const oldShop=_cart.shopId;
-  _cart={shopId:null,shopName:'',items:[]};
-  updateCartUI();if(oldShop)reRenderProductCards(oldShop);
-};
-
-function reRenderProductCards(shopId){
-  const products=_products.filter(p=>p.shopId===shopId);
-  products.forEach(p=>refreshProductCard(p.id));
-}
-
-function refreshProductCard(productId){
-  const card=document.getElementById('pcard-'+productId);if(!card)return;
-  const inC=isInCart(productId);
-  card.classList.toggle('in-cart',inC);
-  const badge=card.querySelector('.prod-in-cart-badge');
-  if(badge){const item=_cart.items.find(i=>i.productId===productId);badge.style.display=inC?'block':'none';if(item)badge.textContent='In cart ×'+item.qty;}
-  const btn=card.querySelector('.btn-add-cart');
-  if(btn){const item=_cart.items.find(i=>i.productId===productId);btn.textContent=inC?'✓ In Cart ('+item.qty+')':'+ Add to Cart';btn.classList.toggle('added',inC);}
-}
-
+window.removeFromCart=productId=>{_cart.items=_cart.items.filter(i=>i.productId!==productId);if(!_cart.items.length){_cart.shopId=null;_cart.shopName='';}updateCartUI();refreshProductCard(productId);};
+window.updateCartItemQty=(productId,delta)=>{const item=_cart.items.find(i=>i.productId===productId);if(!item)return;const newQty=item.qty+delta;if(newQty<1){removeFromCart(productId);return;}if(newQty>item.stock){toast('Max stock: '+item.stock,'err');return;}item.qty=newQty;updateCartUI();refreshProductCard(productId);};
+window.clearCart=()=>{if(!_cart.items.length)return;if(!confirm('Clear all items from cart?'))return;const oldShop=_cart.shopId;_cart={shopId:null,shopName:'',items:[]};updateCartUI();if(oldShop)reRenderProductCards(oldShop);};
+function reRenderProductCards(shopId){_products.filter(p=>p.shopId===shopId).forEach(p=>refreshProductCard(p.id));}
+function refreshProductCard(productId){const card=document.getElementById('pcard-'+productId);if(!card)return;const inC=isInCart(productId);card.classList.toggle('in-cart',inC);const badge=card.querySelector('.prod-in-cart-badge');if(badge){const item=_cart.items.find(i=>i.productId===productId);badge.style.display=inC?'block':'none';if(item)badge.textContent='In cart ×'+item.qty;}const btn=card.querySelector('.btn-add-cart');if(btn){const item=_cart.items.find(i=>i.productId===productId);btn.textContent=inC?'✓ In Cart ('+item.qty+')':'+ Add to Cart';btn.classList.toggle('added',inC);}}
 function updateCartUI(){
   const total=getCartTotal();const count=_cart.items.length;const itemCount=getCartItemCount();
-  const toggleBar=document.getElementById('cart-toggle-bar');
-  const drawer=document.getElementById('cart-drawer');
+  const toggleBar=document.getElementById('cart-toggle-bar');const drawer=document.getElementById('cart-drawer');
   if(!count){toggleBar.classList.add('hidden');drawer.classList.remove('open');_cartDrawerOpen=false;return;}
   toggleBar.classList.remove('hidden');
   document.getElementById('ctb-badge').textContent=itemCount+(itemCount===1?' item':' items');
   document.getElementById('ctb-total').textContent='₹'+total;
   document.getElementById('cart-count-pill').textContent=count+(count===1?' item':' items');
   document.getElementById('cart-total-val').innerHTML='₹'+total+' <span>· '+itemCount+' item'+(itemCount>1?'s':'')+'</span>';
-  document.getElementById('cart-items-list').innerHTML=_cart.items.map(item=>{
-    return '<div class="cart-item-row">'+
-      '<div class="cart-item-thumb">'+(item.image?'<img src="'+item.image+'" onerror="this.style.display=\'none\'">':prodIco(item.category))+'</div>'+
-      '<div class="cart-item-info">'+
-        '<div class="cart-item-name">'+item.name+'</div>'+
-        '<div class="cart-item-price">₹'+item.price+' each</div>'+
-      '</div>'+
-      '<div class="cart-item-qty-ctrl">'+
-        '<button class="qty-btn" onclick="updateCartItemQty(\''+item.productId+'\',-1)">−</button>'+
-        '<span class="cart-item-qty-val">'+item.qty+'</span>'+
-        '<button class="qty-btn" onclick="updateCartItemQty(\''+item.productId+'\',1)">+</button>'+
-      '</div>'+
-      '<div class="cart-item-subtotal">₹'+(item.price*item.qty)+'</div>'+
-      '<button class="cart-item-rm" onclick="removeFromCart(\''+item.productId+'\')" title="Remove">✕</button>'+
-    '</div>';
-  }).join('');
+  document.getElementById('cart-items-list').innerHTML=_cart.items.map(item=>'<div class="cart-item-row"><div class="cart-item-thumb">'+(item.image?'<img src="'+item.image+'" onerror="this.style.display=\'none\'">':prodIco(item.category))+'</div><div class="cart-item-info"><div class="cart-item-name">'+item.name+'</div><div class="cart-item-price">₹'+item.price+' each</div></div><div class="cart-item-qty-ctrl"><button class="qty-btn" onclick="updateCartItemQty(\''+item.productId+'\',-1)">−</button><span class="cart-item-qty-val">'+item.qty+'</span><button class="qty-btn" onclick="updateCartItemQty(\''+item.productId+'\',1)">+</button></div><div class="cart-item-subtotal">₹'+(item.price*item.qty)+'</div><button class="cart-item-rm" onclick="removeFromCart(\''+item.productId+'\')" title="Remove">✕</button></div>').join('');
   if(count===1&&!_cartDrawerOpen)openCartDrawer();
 }
-
 function toggleCartDrawer(){if(_cartDrawerOpen)closeCartDrawer();else openCartDrawer();}
 function openCartDrawer(){_cartDrawerOpen=true;document.getElementById('cart-drawer').classList.add('open');document.getElementById('cart-toggle-bar').classList.add('cart-open');}
 function closeCartDrawer(){_cartDrawerOpen=false;document.getElementById('cart-drawer').classList.remove('open');document.getElementById('cart-toggle-bar').classList.remove('cart-open');}
 
 window.checkoutCart=()=>{
   if(!_cart.items.length){toast('Cart is empty','err');return;}
-  const shop=_shops.find(s=>s.id===_cart.shopId);
-  if(!shop){toast('Shop not found','err');return;}
+  const shop=_shops.find(s=>s.id===_cart.shopId);if(!shop){toast('Shop not found','err');return;}
   const total=getCartTotal();const itemCount=getCartItemCount();
-  let summaryHTML=
-    '<div class="os-shop-row">🏪 <strong>'+shop.name+'</strong> &nbsp;·&nbsp; '+_cart.items.length+' product'+(_cart.items.length>1?'s':'')+'</div>'+
-    '<div class="os-divider"></div>'+
-    '<div class="os-items-list">'+
-      _cart.items.map(item=>
-        '<div class="os-item-row">'+
-          '<span class="os-item-name">'+item.name+'</span>'+
-          '<span class="os-item-qty">×'+item.qty+'</span>'+
-          '<span class="os-item-sub">₹'+(item.price*item.qty)+'</span>'+
-        '</div>'
-      ).join('')+
-    '</div>'+
-    '<div class="os-divider"></div>'+
-    '<div class="os-row">'+
-      '<div class="os-lbl">'+itemCount+' item'+(itemCount>1?'s':'')+' total</div>'+
-      '<div class="os-total">₹'+total+'</div>'+
-    '</div>';
+  let summaryHTML='<div class="os-shop-row">🏪 <strong>'+shop.name+'</strong> &nbsp;·&nbsp; '+_cart.items.length+' product'+(_cart.items.length>1?'s':'')+'</div><div class="os-divider"></div><div class="os-items-list">'+_cart.items.map(item=>'<div class="os-item-row"><span class="os-item-name">'+item.name+'</span><span class="os-item-qty">×'+item.qty+'</span><span class="os-item-sub">₹'+(item.price*item.qty)+'</span></div>').join('')+'</div><div class="os-divider"></div><div class="os-row"><div class="os-lbl">'+itemCount+' item'+(itemCount>1?'s':'')+' total</div><div class="os-total">₹'+total+'</div></div>';
   document.getElementById('del-summary').innerHTML=summaryHTML;
   document.getElementById('del-addr1').value=load('ls_del_addr1');
   document.getElementById('del-city').value=load('ls_del_city')||load('ls_det_city');
   document.getElementById('del-pin').value=load('ls_del_pin')||load('ls_det_pin');
   document.getElementById('del-landmark').value=load('ls_del_land');
   document.getElementById('del-phone').value=load('ls_del_phone');
-  document.getElementById('pay-cod').checked=true;
-  onPayMethodChange();
+  document.getElementById('pay-cod').checked=true;onPayMethodChange();
   _pendingOrder={type:'cart',cart:JSON.parse(JSON.stringify(_cart)),shop};
-  document.getElementById('delivery-modal').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.getElementById('delivery-modal').classList.add('open');document.body.style.overflow='hidden';
   setTimeout(initDelMap,100);
 };
 
-// ── Firebase ──────────────────────────────────────
+// ── Firebase Listeners ────────────────────────────
 showShopsStatus('⏳ Loading shops…','#EEF3FF','#1446A0');
-db.collection('shops').onSnapshot(snap=>{
-  _shops=[];snap.forEach(d=>_shops.push({id:d.id,...d.data()}));
-  _shops.forEach(s=>{s.productCount=_products.filter(p=>p.shopId===s.id).length;});
-  hideShopsStatus();renderShops();
-},e=>{
-  showShopsStatus('🔒 Could not load shops — Firestore rules are blocking reads.<br><span style="font-weight:400;font-size:.78rem">Fix: Firebase Console → Firestore → Rules → publish <code style="background:rgba(0,0,0,.07);padding:1px 5px;border-radius:4px">allow read, write: if true</code></span>','#FEF2F2','#E53E3E');
-});
-db.collection('products').onSnapshot(snap=>{
-  _products=[];snap.forEach(d=>_products.push({id:d.id,...d.data()}));
-  _shops.forEach(s=>{s.productCount=_products.filter(p=>p.shopId===s.id).length;});
-  renderShops();
-},e=>console.error('Products error:',e));
+db.collection('shops').onSnapshot(snap=>{_shops=[];snap.forEach(d=>_shops.push({id:d.id,...d.data()}));_shops.forEach(s=>{s.productCount=_products.filter(p=>p.shopId===s.id).length;});hideShopsStatus();renderShops();},e=>{showShopsStatus('🔒 Could not load shops — Firestore rules are blocking reads.<br><span style="font-weight:400;font-size:.78rem">Fix: Firebase Console → Firestore → Rules → publish <code style="background:rgba(0,0,0,.07);padding:1px 5px;border-radius:4px">allow read, write: if true</code></span>','#FEF2F2','#E53E3E');});
+db.collection('products').onSnapshot(snap=>{_products=[];snap.forEach(d=>_products.push({id:d.id,...d.data()}));_shops.forEach(s=>{s.productCount=_products.filter(p=>p.shopId===s.id).length;});renderShops();},e=>console.error('Products error:',e));
 
 // ── Render shops ──────────────────────────────────
 let _searchTerm='',_activeCategory='';
 function filterShops(){_searchTerm=document.getElementById('search-inp').value.trim().toLowerCase();renderShops();}
-function onSearchInput(e){
-  _searchTerm=e.target.value.trim().toLowerCase();_activeCategory='';
-  document.querySelectorAll('.cat').forEach(el=>el.classList.remove('active-cat'));
-  renderDropdown(_searchTerm);
-  if(!_searchTerm){closeDropdown();renderShops();return;}
-  renderShops();
-}
+function onSearchInput(e){_searchTerm=e.target.value.trim().toLowerCase();_activeCategory='';document.querySelectorAll('.cat').forEach(el=>el.classList.remove('active-cat'));renderDropdown(_searchTerm);if(!_searchTerm){closeDropdown();renderShops();return;}renderShops();}
 function onSearchFocus(){const v=document.getElementById('search-inp').value.trim().toLowerCase();if(v)renderDropdown(v);}
 function closeDropdown(){const dd=document.getElementById('search-dropdown');if(dd)dd.classList.remove('show');}
 document.addEventListener('click',e=>{if(!e.target.closest('.search-box-wrap'))closeDropdown();});
@@ -1122,37 +1404,15 @@ function renderDropdown(term){
   const matchShops=_shops.filter(s=>s.name.toLowerCase().includes(term)||(s.category||'').toLowerCase().includes(term)).slice(0,4);
   if(!matchProds.length&&!matchShops.length){dd.innerHTML='<div class="sd-no-results">No results for "'+term+'"</div>';dd.classList.add('show');return;}
   let html='';
-  if(matchProds.length){
-    html+='<div class="sd-section-lbl">Products</div>';
-    html+=matchProds.map(p=>{
-      const shop=_shops.find(s=>s.id===p.shopId);
-      return '<div class="sd-item" onclick="openShopModal(\''+p.shopId+'\');closeDropdown()">'+
-        (p.image?'<img class="sd-item-img" src="'+p.image+'">':'<div class="sd-item-img">'+prodIco(p.category)+'</div>')+
-        '<div class="sd-item-info"><div class="sd-item-name">'+p.name+'</div><div class="sd-item-sub">'+(shop?'🏪 '+shop.name:p.category)+'</div></div>'+
-        '<div class="sd-item-price">₹'+p.price+'</div></div>';
-    }).join('');
-  }
-  if(matchShops.length){
-    html+='<div class="sd-section-lbl">Shops</div>';
-    html+=matchShops.map(s=>
-      '<div class="sd-item" onclick="openShopModal(\''+s.id+'\');closeDropdown()">'+
-        '<div class="sd-shop-icon">'+catIco(s.category)+'</div>'+
-        '<div class="sd-item-info"><div class="sd-item-name">'+s.name+'</div><div class="sd-item-sub">'+(s.category||'Shop')+' · '+(s.address||'').split(',').slice(-2).join(',').trim()+'</div></div>'+
-        '<span style="font-size:.72rem;font-weight:600;color:var(--orange);background:var(--orange-pale);padding:2px 8px;border-radius:100px;flex-shrink:0">'+(s.productCount||0)+' items</span></div>'
-    ).join('');
-  }
+  if(matchProds.length){html+='<div class="sd-section-lbl">Products</div>';html+=matchProds.map(p=>{const shop=_shops.find(s=>s.id===p.shopId);return '<div class="sd-item" onclick="openShopModal(\''+p.shopId+'\');closeDropdown()"><br>'+(p.image?'<img class="sd-item-img" src="'+p.image+'">':'<div class="sd-item-img">'+prodIco(p.category)+'</div>')+'<div class="sd-item-info"><div class="sd-item-name">'+p.name+'</div><div class="sd-item-sub">'+(shop?'🏪 '+shop.name:p.category)+'</div></div><div class="sd-item-price">₹'+p.price+'</div></div>';}).join('');}
+  if(matchShops.length){html+='<div class="sd-section-lbl">Shops</div>';html+=matchShops.map(s=>'<div class="sd-item" onclick="openShopModal(\''+s.id+'\');closeDropdown()"><div class="sd-shop-icon">'+catIco(s.category)+'</div><div class="sd-item-info"><div class="sd-item-name">'+s.name+'</div><div class="sd-item-sub">'+(s.category||'Shop')+' · '+(s.address||'').split(',').slice(-2).join(',').trim()+'</div></div><span style="font-size:.72rem;font-weight:600;color:var(--orange);background:var(--orange-pale);padding:2px 8px;border-radius:100px;flex-shrink:0">'+(s.productCount||0)+' items</span></div>').join('');}
   dd.innerHTML=html;dd.classList.add('show');
 }
 
 window.filterByShopCategory=cat=>{
   if(_activeCategory===cat){_activeCategory='';}else{_activeCategory=cat;_searchTerm='';document.getElementById('search-inp').value='';}
-  document.querySelectorAll('.cat').forEach(el=>{
-    const nm=el.querySelector('.cat-name')?.textContent;
-    const catMap={'Groceries':'Groceries','Vegetables':'Fruits & Vegetables','Medical':'Medical / Pharmacy','Stationery':'Books & Stationery','Fashion':'Fashion & Clothing','Dress':'Fashion & Clothing','Kids':'Kids & Toys','Kitchen':'Kitchen & Home','Appliances':'Electronics','Sports':'Sports & Fitness','Meat':'Meat & Seafood','Snacks':'Food & Sweets','Electronics':'Electronics'};
-    el.classList.toggle('active-cat',catMap[nm]===cat&&_activeCategory===cat);
-  });
-  document.getElementById('stores-section').scrollIntoView({behavior:'smooth',block:'start'});
-  renderShops();
+  document.querySelectorAll('.cat').forEach(el=>{const nm=el.querySelector('.cat-name')?.textContent;const catMap={'Groceries':'Groceries','Vegetables':'Fruits & Vegetables','Medical':'Medical / Pharmacy','Stationery':'Books & Stationery','Fashion':'Fashion & Clothing','Dress':'Fashion & Clothing','Kids':'Kids & Toys','Kitchen':'Kitchen & Home','Appliances':'Electronics','Sports':'Sports & Fitness','Meat':'Meat & Seafood','Snacks':'Food & Sweets','Electronics':'Electronics'};el.classList.toggle('active-cat',catMap[nm]===cat&&_activeCategory===cat);});
+  document.getElementById('stores-section').scrollIntoView({behavior:'smooth',block:'start'});renderShops();
 };
 
 function renderShops(){
@@ -1165,85 +1425,30 @@ function renderShops(){
   else{lbl.textContent=_activeCategory?_activeCategory+' Shops ('+list.length+')':_searchTerm?'Search Results ('+list.length+')':'Shops on LocalShore';note.style.display='none';resetB.style.display=_searchTerm?'inline-flex':'none';}
   if(!list.length){grid.innerHTML='';grid.style.display='none';empty.style.display='block';empty.querySelector('.se-t').textContent=_userLat?'No shops within 15 km':'No shops yet';empty.querySelector('.se-s').innerHTML=_userLat?'No shops found near you. <button onclick="resetFilter()" style="background:none;border:none;color:var(--orange);font-weight:600;cursor:pointer;font-family:inherit">Show all →</button>':'Vendors can join at <a href="localshore-vendor.html" style="color:var(--orange);font-weight:600">localshore-vendor.html</a>';return;}
   empty.style.display='none';grid.style.display='grid';
-  grid.innerHTML=list.map(s=>{
-    const badge=s.dist!==undefined?distBadge(s.dist):'';const pc=s.productCount||0;
-    return '<a class="store-card" href="#" onclick="openShopModal(\''+s.id+'\');return false">'+
-      '<div class="store-icon">'+catIco(s.category)+'</div>'+
-      '<div class="store-name">'+s.name+'</div>'+
-      (s.address?'<div class="store-meta">📍 '+s.address.split(',').slice(-2).join(',').trim()+'</div>':'')+
-      '<div class="store-rating"><span class="star">★</span> '+(s.rating||4.5)+' / 5'+(badge?' &ensp;'+badge:'')+(pc?' <span style="color:var(--orange);font-weight:600;font-size:.66rem">'+pc+' items</span>':'')+'</div>'+
-      '<div class="store-foot"><span class="store-tag">'+(s.category||'Shop')+'</span><div class="arr"><svg viewBox="0 0 14 14" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7h9M7.5 3l4 4-4 4"/></svg></div></div></a>';
-  }).join('');
+  grid.innerHTML=list.map(s=>{const badge=s.dist!==undefined?distBadge(s.dist):'';const pc=s.productCount||0;return '<a class="store-card" href="#" onclick="openShopModal(\''+s.id+'\');return false"><div class="store-icon">'+catIco(s.category)+'</div><div class="store-name">'+s.name+'</div>'+(s.address?'<div class="store-meta">📍 '+s.address.split(',').slice(-2).join(',').trim()+'</div>':'')+'<div class="store-rating"><span class="star">★</span> '+(s.rating||4.5)+' / 5'+(badge?' &ensp;'+badge:'')+(pc?' <span style="color:var(--orange);font-weight:600;font-size:.66rem">'+pc+' items</span>':'')+'</div><div class="store-foot"><span class="store-tag">'+(s.category||'Shop')+'</span><div class="arr"><svg viewBox="0 0 14 14" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7h9M7.5 3l4 4-4 4"/></svg></div></div></a>';}).join('');
 }
 window.resetFilter=()=>{_userLat=null;_userLng=null;_searchTerm='';document.getElementById('search-inp').value='';renderShops();};
 
-// ── Shop Products Modal ───────────────────────────
+// ── Shop Modal ─────────────────────────────────────
 let _currentShopId=null;
 window.openShopModal=shopId=>{
   _currentShopId=shopId;
-  const shop=_shops.find(s=>s.id===shopId);
-  const products=_products.filter(p=>p.shopId===shopId);
-  const wishlist=loadJ('ls_wishlist');
+  const shop=_shops.find(s=>s.id===shopId);const products=_products.filter(p=>p.shopId===shopId);const wishlist=loadJ('ls_wishlist');
   if(!shop)return;
   document.getElementById('sm-title').textContent=shop.name;
   document.getElementById('sm-sub').textContent='📍 '+(shop.address||'—')+(shop.hours?' · ⏰ '+shop.hours:'')+(shop.phone?' · 📞 '+shop.phone:'');
-  if(!products.length){
-    document.getElementById('sm-body').innerHTML='<div style="text-align:center;padding:44px"><div style="font-size:2.5rem;margin-bottom:10px">📦</div><div style="font-weight:700;color:var(--mid)">No products listed yet.</div></div>';
-  }else{
-    document.getElementById('sm-body').innerHTML='<div class="product-grid">'+products.map(p=>{
-      const inStock=parseInt(p.stock)>0;
-      const inWish=wishlist.some(w=>w.id===p.id);
-      const inC=isInCart(p.id)&&_cart.shopId===shopId;
-      const cartItem=_cart.items.find(i=>i.productId===p.id);
-      return '<div class="prod-card'+(inC?' in-cart':'')+'" id="pcard-'+p.id+'">'+
-        '<span class="prod-in-cart-badge" style="'+(inC?'':'display:none')+'">'+(inC?'In cart ×'+cartItem.qty:'In cart')+'</span>'+
-        (p.image?'<img class="prod-img" src="'+p.image+'" alt="'+p.name+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">':'')+
-        '<div class="prod-ph2" style="'+(p.image?'display:none':'')+'">'+prodIco(p.category)+'</div>'+
-        '<div class="prod-body">'+
-          '<div class="prod-name">'+p.name+'</div>'+
-          '<div class="prod-price">₹'+p.price+'</div>'+
-          '<div class="prod-cat">'+p.category+'</div>'+
-          '<div class="prod-stock '+(inStock?'in':'out')+'">'+(inStock?'✅ In Stock ('+p.stock+')':'❌ Out of Stock')+'</div>'+
-        '</div>'+
-        (inStock
-          ?'<div class="prod-foot">'+
-              '<input type="number" id="qty-'+p.id+'" value="1" min="1" max="'+p.stock+'" class="qty-inp">'+
-              '<button class="btn-add-cart'+(inC?' added':'')+'" onclick="addToCart(\''+p.id+'\',\''+shopId+'\')">'+(inC?'✓ In Cart ('+cartItem.qty+')':'+ Add to Cart')+'</button>'+
-              '<button class="btn-wish'+(inWish?' wished':'')+'" id="wish-'+p.id+'" onclick="toggleWish(\''+p.id+'\',\''+shopId+'\')" title="Wishlist">'+(inWish?'❤️':'🤍')+'</button>'+
-            '</div>'
-          :'<div class="prod-foot"><div class="out-label">Out of Stock</div><button class="btn-wish'+(inWish?' wished':'')+'" id="wish-'+p.id+'" onclick="toggleWish(\''+p.id+'\',\''+shopId+'\')" title="Wishlist">'+(inWish?'❤️':'🤍')+'</button></div>'
-        )+'</div>';
-    }).join('')+'</div>';
-  }
+  if(!products.length){document.getElementById('sm-body').innerHTML='<div style="text-align:center;padding:44px"><div style="font-size:2.5rem;margin-bottom:10px">📦</div><div style="font-weight:700;color:var(--mid)">No products listed yet.</div></div>';}
+  else{document.getElementById('sm-body').innerHTML='<div class="product-grid">'+products.map(p=>{const inStock=parseInt(p.stock)>0;const inWish=wishlist.some(w=>w.id===p.id);const inC=isInCart(p.id)&&_cart.shopId===shopId;const cartItem=_cart.items.find(i=>i.productId===p.id);return '<div class="prod-card'+(inC?' in-cart':'')+'" id="pcard-'+p.id+'"><span class="prod-in-cart-badge" style="'+(inC?'':'display:none')+'">'+(inC?'In cart ×'+cartItem.qty:'In cart')+'</span>'+(p.image?'<img class="prod-img" src="'+p.image+'" alt="'+p.name+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">':'')+'<div class="prod-ph2" style="'+(p.image?'display:none':'')+'">'+prodIco(p.category)+'</div><div class="prod-body"><div class="prod-name">'+p.name+'</div><div class="prod-price">₹'+p.price+'</div><div class="prod-cat">'+p.category+'</div><div class="prod-stock '+(inStock?'in':'out')+'">'+(inStock?'✅ In Stock ('+p.stock+')':'❌ Out of Stock')+'</div></div>'+(inStock?'<div class="prod-foot"><input type="number" id="qty-'+p.id+'" value="1" min="1" max="'+p.stock+'" class="qty-inp"><button class="btn-add-cart'+(inC?' added':'')+'" onclick="addToCart(\''+p.id+'\',\''+shopId+'\')">'+(inC?'✓ In Cart ('+cartItem.qty+')':'+ Add to Cart')+'</button><button class="btn-wish'+(inWish?' wished':'')+'" id="wish-'+p.id+'" onclick="toggleWish(\''+p.id+'\',\''+shopId+'\')" title="Wishlist">'+(inWish?'❤️':'🤍')+'</button></div>':'<div class="prod-foot"><div class="out-label">Out of Stock</div><button class="btn-wish'+(inWish?' wished':'')+'" id="wish-'+p.id+'" onclick="toggleWish(\''+p.id+'\',\''+shopId+'\')" title="Wishlist">'+(inWish?'❤️':'🤍')+'</button></div>')+'</div>';}).join('')+'</div>';}
   updateCartUI();
-  document.getElementById('shop-modal').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.getElementById('shop-modal').classList.add('open');document.body.style.overflow='hidden';
 };
-window.closeShopModal=()=>{
-  document.getElementById('shop-modal').classList.remove('open');
-  document.body.style.overflow='';
-  _cartDrawerOpen=false;
-  document.getElementById('cart-drawer').classList.remove('open');
-  document.getElementById('cart-toggle-bar').classList.remove('cart-open');
-};
+window.closeShopModal=()=>{document.getElementById('shop-modal').classList.remove('open');document.body.style.overflow='';_cartDrawerOpen=false;document.getElementById('cart-drawer').classList.remove('open');document.getElementById('cart-toggle-bar').classList.remove('cart-open');};
 
 // ── Wishlist ──────────────────────────────────────
 window.toggleWish=(productId,shopId)=>{
-  let wish=loadJ('ls_wishlist');
-  const idx=wish.findIndex(w=>w.id===productId);
-  const btn=document.getElementById('wish-'+productId);
-  if(idx>=0){
-    wish.splice(idx,1);
-    if(btn){btn.textContent='🤍';btn.classList.remove('wished');}
-    toast('Removed from wishlist');
-  }else{
-    const p=_products.find(x=>x.id===productId);
-    const s=_shops.find(x=>x.id===shopId);
-    if(!p||!s){toast('Could not add — shop data still loading','err');return;}
-    wish.push({id:productId,name:p.name,price:p.price,image:p.image||'',category:p.category,shopId,shopName:s.name,addedAt:new Date().toISOString()});
-    if(btn){btn.textContent='❤️';btn.classList.add('wished');}
-    toast('Added to wishlist ❤️');
-  }
+  let wish=loadJ('ls_wishlist');const idx=wish.findIndex(w=>w.id===productId);const btn=document.getElementById('wish-'+productId);
+  if(idx>=0){wish.splice(idx,1);if(btn){btn.textContent='🤍';btn.classList.remove('wished');}toast('Removed from wishlist');}
+  else{const p=_products.find(x=>x.id===productId);const s=_shops.find(x=>x.id===shopId);if(!p||!s){toast('Could not add — shop data still loading','err');return;}wish.push({id:productId,name:p.name,price:p.price,image:p.image||'',category:p.category,shopId,shopName:s.name,addedAt:new Date().toISOString()});if(btn){btn.textContent='❤️';btn.classList.add('wished');}toast('Added to wishlist ❤️');}
   save('ls_wishlist',JSON.stringify(wish));updateNavBadges();
 };
 window.openWishModal=()=>{
@@ -1255,141 +1460,53 @@ window.openWishModal=()=>{
 window.renderWishModal=()=>{openWishModal();};
 window.closeWishModal=()=>{document.getElementById('wish-modal').classList.remove('open');document.body.style.overflow='';};
 window.startOrderFromWish=(productId,shopId)=>{closeWishModal();openShopModal(shopId);};
-window.addToCartFromWish=(productId,shopId)=>{
-  closeWishModal();openShopModal(shopId);
-  setTimeout(()=>addToCart(productId,shopId),300);
-};
+window.addToCartFromWish=(productId,shopId)=>{closeWishModal();openShopModal(shopId);setTimeout(()=>addToCart(productId,shopId),300);};
 
 // ── Order flow ────────────────────────────────────
 window.startOrder=(productId,shopId,qty)=>{
   qty=qty||parseInt(document.getElementById('qty-'+productId)?.value)||1;
   const p=_products.find(x=>x.id===productId);const s=_shops.find(x=>x.id===shopId);
-  if(!p||!s)return;
-  if(parseInt(p.stock)<qty){toast('Only '+p.stock+' in stock!','err');return;}
+  if(!p||!s)return;if(parseInt(p.stock)<qty){toast('Only '+p.stock+' in stock!','err');return;}
   _pendingOrder={type:'single',productId,shopId,qty,product:p,shop:s};
-  document.getElementById('del-addr1').value=load('ls_del_addr1');
-  document.getElementById('del-city').value=load('ls_del_city')||load('ls_det_city');
-  document.getElementById('del-pin').value=load('ls_del_pin')||load('ls_det_pin');
-  document.getElementById('del-landmark').value=load('ls_del_land');
-  document.getElementById('del-phone').value=load('ls_del_phone');
-  document.getElementById('del-summary').innerHTML=
-    '<div class="os-row"><div class="os-lbl">Product</div><div class="os-val">'+p.name+'</div></div>'+
-    '<div class="os-row"><div class="os-lbl">Shop</div><div class="os-val">'+s.name+'</div></div>'+
-    '<div class="os-row"><div class="os-lbl">Quantity</div><div class="os-val">'+qty+'</div></div>'+
-    '<div class="os-row"><div class="os-lbl">Total</div><div class="os-total">₹'+(p.price*qty)+'</div></div>';
-  document.getElementById('pay-cod').checked=true;
-  onPayMethodChange();
-  document.getElementById('delivery-modal').classList.add('open');document.body.style.overflow='hidden';
-  setTimeout(initDelMap,100);
+  document.getElementById('del-addr1').value=load('ls_del_addr1');document.getElementById('del-city').value=load('ls_del_city')||load('ls_det_city');document.getElementById('del-pin').value=load('ls_del_pin')||load('ls_det_pin');document.getElementById('del-landmark').value=load('ls_del_land');document.getElementById('del-phone').value=load('ls_del_phone');
+  document.getElementById('del-summary').innerHTML='<div class="os-row"><div class="os-lbl">Product</div><div class="os-val">'+p.name+'</div></div><div class="os-row"><div class="os-lbl">Shop</div><div class="os-val">'+s.name+'</div></div><div class="os-row"><div class="os-lbl">Quantity</div><div class="os-val">'+qty+'</div></div><div class="os-row"><div class="os-lbl">Total</div><div class="os-total">₹'+(p.price*qty)+'</div></div>';
+  document.getElementById('pay-cod').checked=true;onPayMethodChange();
+  document.getElementById('delivery-modal').classList.add('open');document.body.style.overflow='hidden';setTimeout(initDelMap,100);
 };
 window.closeDeliveryModal=()=>{document.getElementById('delivery-modal').classList.remove('open');document.body.style.overflow='';};
 
 function initDelMap(){
-  if(delMapInit){if(delMap)delMap.invalidateSize();return;}
-  delMapInit=true;
+  if(delMapInit){if(delMap)delMap.invalidateSize();return;}delMapInit=true;
   const startLat=_userLat||11.0168,startLng=_userLng||76.9558;
   delMap=L.map('del-map').setView([startLat,startLng],14);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM',maxZoom:19}).addTo(delMap);
   const delIcon=L.divIcon({className:'',html:'<div style="width:14px;height:14px;background:#FF6B1A;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(255,107,26,.5)"></div>',iconSize:[14,14],iconAnchor:[7,7]});
-  delMap.on('click',e=>{
-    delLat=e.latlng.lat;delLng=e.latlng.lng;
-    if(delMarker)delMap.removeLayer(delMarker);
-    delMarker=L.marker([delLat,delLng],{icon:delIcon}).addTo(delMap).bindPopup('📍 Delivery here').openPopup();
-    document.getElementById('del-map-hint').textContent='📍 Pinned: '+delLat.toFixed(4)+', '+delLng.toFixed(4);
-    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+delLat+'&lon='+delLng)
-      .then(r=>r.json()).then(data=>{const a=data.address||{};if(!document.getElementById('del-city').value)document.getElementById('del-city').value=a.city||a.town||a.village||'';if(!document.getElementById('del-pin').value)document.getElementById('del-pin').value=a.postcode||'';if(!document.getElementById('del-addr1').value)document.getElementById('del-addr1').value=a.road||a.suburb||'';}).catch(()=>{});
-  });
+  delMap.on('click',e=>{delLat=e.latlng.lat;delLng=e.latlng.lng;if(delMarker)delMap.removeLayer(delMarker);delMarker=L.marker([delLat,delLng],{icon:delIcon}).addTo(delMap).bindPopup('📍 Delivery here').openPopup();document.getElementById('del-map-hint').textContent='📍 Pinned: '+delLat.toFixed(4)+', '+delLng.toFixed(4);fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+delLat+'&lon='+delLng).then(r=>r.json()).then(data=>{const a=data.address||{};if(!document.getElementById('del-city').value)document.getElementById('del-city').value=a.city||a.town||a.village||'';if(!document.getElementById('del-pin').value)document.getElementById('del-pin').value=a.postcode||'';if(!document.getElementById('del-addr1').value)document.getElementById('del-addr1').value=a.road||a.suburb||'';}).catch(()=>{});});
   if(_userLat&&_userLng){delLat=_userLat;delLng=_userLng;delMarker=L.marker([delLat,delLng],{icon:delIcon}).addTo(delMap).bindPopup('📍 Delivery here').openPopup();document.getElementById('del-map-hint').textContent='📍 Pinned: '+delLat.toFixed(4)+', '+delLng.toFixed(4);}
 }
 window.detectDeliveryLoc=()=>{
   if(!navigator.geolocation){toast('Geolocation not supported','err');return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    delLat=pos.coords.latitude;delLng=pos.coords.longitude;
-    delMap.flyTo([delLat,delLng],16);
-    const delIcon=L.divIcon({className:'',html:'<div style="width:14px;height:14px;background:#FF6B1A;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(255,107,26,.5)"></div>',iconSize:[14,14],iconAnchor:[7,7]});
-    if(delMarker)delMap.removeLayer(delMarker);
-    delMarker=L.marker([delLat,delLng],{icon:delIcon}).addTo(delMap).bindPopup('📍 Delivery here').openPopup();
-    document.getElementById('del-map-hint').textContent='📍 Detected: '+delLat.toFixed(4)+', '+delLng.toFixed(4);
-    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+delLat+'&lon='+delLng)
-      .then(r=>r.json()).then(data=>{const a=data.address||{};document.getElementById('del-city').value=a.city||a.town||a.village||'';document.getElementById('del-pin').value=a.postcode||'';document.getElementById('del-addr1').value=a.road||a.suburb||'';toast('Location detected ✅');}).catch(()=>{toast('Location set');});
-  },()=>toast('Location denied','err'));
+  navigator.geolocation.getCurrentPosition(pos=>{delLat=pos.coords.latitude;delLng=pos.coords.longitude;delMap.flyTo([delLat,delLng],16);const delIcon=L.divIcon({className:'',html:'<div style="width:14px;height:14px;background:#FF6B1A;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(255,107,26,.5)"></div>',iconSize:[14,14],iconAnchor:[7,7]});if(delMarker)delMap.removeLayer(delMarker);delMarker=L.marker([delLat,delLng],{icon:delIcon}).addTo(delMap).bindPopup('📍 Delivery here').openPopup();document.getElementById('del-map-hint').textContent='📍 Detected: '+delLat.toFixed(4)+', '+delLng.toFixed(4);fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+delLat+'&lon='+delLng).then(r=>r.json()).then(data=>{const a=data.address||{};document.getElementById('del-city').value=a.city||a.town||a.village||'';document.getElementById('del-pin').value=a.postcode||'';document.getElementById('del-addr1').value=a.road||a.suburb||'';toast('Location detected ✅');}).catch(()=>{toast('Location set');});},()=>toast('Location denied','err'));
 };
 
 window.confirmOrder=()=>{
   if(!_pendingOrder)return;
-  const addr1=document.getElementById('del-addr1').value.trim();
-  const city=document.getElementById('del-city').value.trim();
-  const pin=document.getElementById('del-pin').value.trim();
-  const phone=document.getElementById('del-phone').value.trim();
+  const addr1=document.getElementById('del-addr1').value.trim();const city=document.getElementById('del-city').value.trim();const pin=document.getElementById('del-pin').value.trim();const phone=document.getElementById('del-phone').value.trim();
   if(!addr1||!city||!pin||!phone){toast('Please fill all required fields','err');return;}
-  const landmark=document.getElementById('del-landmark').value.trim();
-  const fullAddr=addr1+(landmark?', Near '+landmark:'')+', '+city+' - '+pin;
-  const paymentMethod=document.querySelector('input[name="pay-method"]:checked')?.value||'cod';
-  const paymentLabel=paymentMethod==='cod'?'Cash on Delivery':'Online Payment';
+  const landmark=document.getElementById('del-landmark').value.trim();const fullAddr=addr1+(landmark?', Near '+landmark:'')+', '+city+' - '+pin;
+  const paymentMethod=document.querySelector('input[name="pay-method"]:checked')?.value||'cod';const paymentLabel=paymentMethod==='cod'?'Cash on Delivery':'Online Payment';
   save('ls_del_addr1',addr1);save('ls_del_city',city);save('ls_del_pin',pin);save('ls_del_land',landmark);save('ls_del_phone',phone);
-
   let order;
-  if(_pendingOrder.type==='cart'){
-    const{cart,shop}=_pendingOrder;
-    const total=cart.items.reduce((s,i)=>s+i.price*i.qty,0);
-    const itemCount=cart.items.reduce((s,i)=>s+i.qty,0);
-    order={
-      deviceId:DEVICE_ID,type:'cart',
-      shopId:cart.shopId,shopName:shop.name,shopAddress:shop.address||'',
-      shopLat:shop.lat||null,shopLng:shop.lng||null,
-      items:cart.items.map(i=>({productId:i.productId,name:i.name,price:i.price,qty:i.qty,image:i.image||'',category:i.category})),
-      productName:cart.items.length===1?cart.items[0].name:cart.items.length+' items from '+shop.name,
-      category:cart.items[0].category,image:cart.items[0].image||'',
-      price:cart.items[0].price,qty:itemCount,total,
-      deliveryAddress:fullAddr,deliveryLat:delLat,deliveryLng:delLng,
-      phone,paymentMethod,paymentLabel,
-      status:'Confirmed',
-      customerConfirmed:null, // null = pending, true = received, false = disputed
-      orderedAt:new Date().toISOString()
-    };
-    _cart={shopId:null,shopName:'',items:[]};updateCartUI();
-  }else{
-    const{product:p,shop:s,qty,productId,shopId}=_pendingOrder;
-    order={
-      deviceId:DEVICE_ID,type:'single',productId,shopId,
-      productName:p.name,category:p.category,image:p.image||'',
-      price:p.price,qty,total:p.price*qty,
-      shopName:s.name,shopAddress:s.address||'',
-      shopLat:s.lat||null,shopLng:s.lng||null,
-      deliveryAddress:fullAddr,deliveryLat:delLat,deliveryLng:delLng,
-      phone,paymentMethod,paymentLabel,
-      status:'Confirmed',
-      customerConfirmed:null,
-      orderedAt:new Date().toISOString()
-    };
-  }
-
-  db.collection('orders').add(order)
-    .then(()=>{
-      closeDeliveryModal();updateNavBadges();
-      const msg=paymentMethod==='cod'
-        ?'🎉 Order placed! Pay ₹'+order.total+' cash on delivery'
-        :'🎉 Order placed! Payment link will be sent via SMS';
-      toast(msg);
-      _pendingOrder=null;
-    })
-    .catch(e=>toast('Order failed: '+e.message,'err'));
+  if(_pendingOrder.type==='cart'){const{cart,shop}=_pendingOrder;const total=cart.items.reduce((s,i)=>s+i.price*i.qty,0);const itemCount=cart.items.reduce((s,i)=>s+i.qty,0);order={deviceId:DEVICE_ID,type:'cart',shopId:cart.shopId,shopName:shop.name,shopAddress:shop.address||'',shopLat:shop.lat||null,shopLng:shop.lng||null,items:cart.items.map(i=>({productId:i.productId,name:i.name,price:i.price,qty:i.qty,image:i.image||'',category:i.category})),productName:cart.items.length===1?cart.items[0].name:cart.items.length+' items from '+shop.name,category:cart.items[0].category,image:cart.items[0].image||'',price:cart.items[0].price,qty:itemCount,total,deliveryAddress:fullAddr,deliveryLat:delLat,deliveryLng:delLng,phone,paymentMethod,paymentLabel,status:'Confirmed',customerConfirmed:null,orderedAt:new Date().toISOString()};_cart={shopId:null,shopName:'',items:[]};updateCartUI();}
+  else{const{product:p,shop:s,qty,productId,shopId}=_pendingOrder;order={deviceId:DEVICE_ID,type:'single',productId,shopId,productName:p.name,category:p.category,image:p.image||'',price:p.price,qty,total:p.price*qty,shopName:s.name,shopAddress:s.address||'',shopLat:s.lat||null,shopLng:s.lng||null,deliveryAddress:fullAddr,deliveryLat:delLat,deliveryLng:delLng,phone,paymentMethod,paymentLabel,status:'Confirmed',customerConfirmed:null,orderedAt:new Date().toISOString()};}
+  db.collection('orders').add(order).then(()=>{closeDeliveryModal();updateNavBadges();const msg=paymentMethod==='cod'?'🎉 Order placed! Pay ₹'+order.total+' cash on delivery':'🎉 Order placed! Payment link will be sent via SMS';toast(msg);_pendingOrder=null;}).catch(e=>toast('Order failed: '+e.message,'err'));
 };
 
 // ── My Orders ────────────────────────────────────
 window.openOrdersModal=()=>{
-  const body=document.getElementById('orders-body');
-  body.innerHTML='<div style="text-align:center;padding:32px;color:var(--mid)">⏳ Loading orders…</div>';
+  const body=document.getElementById('orders-body');body.innerHTML='<div style="text-align:center;padding:32px;color:var(--mid)">⏳ Loading orders…</div>';
   document.getElementById('orders-modal').classList.add('open');document.body.style.overflow='hidden';
-  db.collection('orders').where('deviceId','==',DEVICE_ID).get()
-    .then(snap=>{
-      const orders=[];snap.forEach(d=>orders.push({id:d.id,...d.data()}));
-      orders.sort((a,b)=>new Date(b.orderedAt)-new Date(a.orderedAt));
-      renderOrdersModal(orders);
-    })
-    .catch(e=>{
-      body.innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:2rem;margin-bottom:10px">🔒</div><div style="font-weight:700;font-size:.95rem;margin-bottom:8px">Firestore Rules Blocking Access</div><div style="font-size:.82rem;color:var(--mid);margin-bottom:14px;line-height:1.65">Go to <b>Firebase Console → Firestore → Rules</b> and publish:</div><pre style="background:#f7f4f1;border-radius:9px;padding:13px;font-size:.73rem;text-align:left;border:1px solid #e8e2db;color:#333;line-height:1.5">rules_version = \'2\';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /{document=**} {\n      allow read, write: if true;\n    }\n  }\n}</pre><div style="font-size:.74rem;color:#aaa;margin-top:10px">'+e.message+'</div></div>';
-    });
+  db.collection('orders').where('deviceId','==',DEVICE_ID).get().then(snap=>{const orders=[];snap.forEach(d=>orders.push({id:d.id,...d.data()}));orders.sort((a,b)=>new Date(b.orderedAt)-new Date(a.orderedAt));renderOrdersModal(orders);}).catch(e=>{body.innerHTML='<div style="text-align:center;padding:32px"><div style="font-size:2rem;margin-bottom:10px">🔒</div><div style="font-weight:700;font-size:.95rem;margin-bottom:8px">Firestore Rules Blocking Access</div><div style="font-size:.82rem;color:var(--mid);margin-bottom:14px;line-height:1.65">Go to <b>Firebase Console → Firestore → Rules</b> and publish:</div><pre style="background:#f7f4f1;border-radius:9px;padding:13px;font-size:.73rem;text-align:left;border:1px solid #e8e2db;color:#333;line-height:1.5">rules_version = \'2\';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /{document=**} {\n      allow read, write: if true;\n    }\n  }\n}</pre><div style="font-size:.74rem;color:#aaa;margin-top:10px">'+e.message+'</div></div>';});
 };
 window.closeOrdersModal=()=>{document.getElementById('orders-modal').classList.remove('open');document.body.style.overflow='';};
 
@@ -1397,276 +1514,64 @@ function renderOrdersModal(orders){
   const body=document.getElementById('orders-body');
   if(!orders.length){body.innerHTML='<div style="text-align:center;padding:48px"><div style="font-size:2.8rem;margin-bottom:10px">📦</div><div style="font-family:var(--ff);font-weight:700;font-size:.95rem;margin-bottom:5px">No orders yet</div><div style="font-size:.83rem;color:var(--mid)">Browse shops and order products.</div></div>';return;}
   const statusClass=s=>s==='Confirmed'?'sp-confirmed':s==='Delivered'?'sp-delivered':s==='Preparing'?'sp-preparing':s==='Picked Up'?'sp-picked':s==='Out for Delivery'?'sp-out':'sp-cancelled';
-  const payPill=o=>{
-    if(!o.paymentMethod)return '';
-    const isCod=o.paymentMethod==='cod';
-    return '<span class="order-pay-pill '+(isCod?'opp-cod':'opp-online')+'">'+(isCod?'💵 COD':'💳 Online')+'</span>';
-  };
-  // Customer confirmation pill
-  const confirmPill=o=>{
-    if(o.status!=='Delivered')return '';
-    if(o.customerConfirmed===true)return '<span class="confirm-pill cp-confirmed">✅ You confirmed receipt</span>';
-    if(o.customerConfirmed===false)return '<span class="confirm-pill cp-disputed">🚨 Issue reported</span>';
-    return '<span class="confirm-pill cp-pending">⏳ Awaiting your confirmation</span>';
-  };
-  // Delivery confirmation banner (only for delivered, unconfirmed orders)
-  const confirmBanner=o=>{
-    if(o.status!=='Delivered'||o.customerConfirmed!==null&&o.customerConfirmed!==undefined)return '';
-    return '<div class="delivery-confirm-banner">'+
-      '<div class="dcb-text">'+
-        '<div class="dcb-title">📦 Did you receive this order?</div>'+
-        '<div class="dcb-sub">Please confirm delivery so the vendor and admin are notified.</div>'+
-      '</div>'+
-      '<button class="btn-confirm-received" onclick="openDelConfirmModal(\''+o.id+'\')">Confirm / Report →</button>'+
-    '</div>';
-  };
-  body.innerHTML=orders.map(o=>{
-    const isCart=o.type==='cart'&&o.items&&o.items.length>1;
-    const displayName=isCart?o.items.length+' items from '+o.shopName:o.productName;
-    const displayIcon=isCart?'🛒':prodIco(o.category);
-    const itemsHtml=isCart?'<div class="order-items-list">'+o.items.map(it=>'<div class="order-item-li"><span>'+it.name+'</span>&nbsp;×'+it.qty+'&nbsp;<span style="color:var(--orange);font-weight:700">₹'+(it.price*it.qty)+'</span></div>').join('')+'</div>':'';
-    return '<div class="order-card">'+
-      '<div class="order-ph">'+displayIcon+'</div>'+
-      '<div class="order-info" style="width:100%">'+
-        '<div class="order-name">'+displayName+'</div>'+
-        '<div class="order-shop">🏪 '+o.shopName+'</div>'+
-        '<div class="order-addr">📍 '+o.deliveryAddress+'</div>'+
-        itemsHtml+
-        '<div class="order-meta">'+
-          '<span class="order-price">₹'+o.total+'</span>'+
-          '<span class="order-qty">'+(isCart?o.items.reduce((s,i)=>s+i.qty,0)+' items total':'Qty: '+o.qty)+'</span>'+
-          '<span class="status-pill '+statusClass(o.status)+'">'+o.status+'</span>'+
-          payPill(o)+
-          confirmPill(o)+
-        '</div>'+
-        '<div class="order-time">'+new Date(o.orderedAt).toLocaleString()+' · #'+o.id.slice(-8)+'</div>'+
-        confirmBanner(o)+
-      '</div>'+
-      '<div class="order-actions">'+
-        (o.status!=='Cancelled'&&o.status!=='Delivered'?'<button class="btn-track-order" onclick="openTrackModal(\''+o.id+'\')">🛵 Track</button>':'')+
-        (o.status==='Confirmed'?'<button class="btn-cancel-order" onclick="cancelOrder(\''+o.id+'\')">Cancel</button>':'')+
-      '</div>'+
-    '</div>';
-  }).join('');
+  const payPill=o=>{if(!o.paymentMethod)return '';const isCod=o.paymentMethod==='cod';return '<span class="order-pay-pill '+(isCod?'opp-cod':'opp-online')+'">'+(isCod?'💵 COD':'💳 Online')+'</span>';};
+  const confirmPill=o=>{if(o.status!=='Delivered')return '';if(o.customerConfirmed===true)return '<span class="confirm-pill cp-confirmed">✅ You confirmed receipt</span>';if(o.customerConfirmed===false)return '<span class="confirm-pill cp-disputed">🚨 Issue reported</span>';return '<span class="confirm-pill cp-pending">⏳ Awaiting your confirmation</span>';};
+  const confirmBanner=o=>{if(o.status!=='Delivered'||o.customerConfirmed!==null&&o.customerConfirmed!==undefined)return '';return '<div class="delivery-confirm-banner"><div class="dcb-text"><div class="dcb-title">📦 Did you receive this order?</div><div class="dcb-sub">Please confirm delivery so the vendor and admin are notified.</div></div><button class="btn-confirm-received" onclick="openDelConfirmModal(\''+o.id+'\')">Confirm / Report →</button></div>';};
+  body.innerHTML=orders.map(o=>{const isCart=o.type==='cart'&&o.items&&o.items.length>1;const displayName=isCart?o.items.length+' items from '+o.shopName:o.productName;const displayIcon=isCart?'🛒':prodIco(o.category);const itemsHtml=isCart?'<div class="order-items-list">'+o.items.map(it=>'<div class="order-item-li"><span>'+it.name+'</span>&nbsp;×'+it.qty+'&nbsp;<span style="color:var(--orange);font-weight:700">₹'+(it.price*it.qty)+'</span></div>').join('')+'</div>':'';return '<div class="order-card"><div class="order-ph">'+displayIcon+'</div><div class="order-info" style="width:100%"><div class="order-name">'+displayName+'</div><div class="order-shop">🏪 '+o.shopName+'</div><div class="order-addr">📍 '+o.deliveryAddress+'</div>'+itemsHtml+'<div class="order-meta"><span class="order-price">₹'+o.total+'</span><span class="order-qty">'+(isCart?o.items.reduce((s,i)=>s+i.qty,0)+' items total':'Qty: '+o.qty)+'</span><span class="status-pill '+statusClass(o.status)+'">'+o.status+'</span>'+payPill(o)+confirmPill(o)+'</div><div class="order-time">'+new Date(o.orderedAt).toLocaleString()+' · #'+o.id.slice(-8)+'</div>'+confirmBanner(o)+'</div><div class="order-actions">'+(o.status!=='Cancelled'&&o.status!=='Delivered'?'<button class="btn-track-order" onclick="openTrackModal(\''+o.id+'\')">🛵 Track</button>':'')+(o.status==='Confirmed'?'<button class="btn-cancel-order" onclick="cancelOrder(\''+o.id+'\')">Cancel</button>':'')+'</div></div>';}).join('');
 }
 
-window.cancelOrder=id=>{
-  if(!confirm('Cancel this order?'))return;
-  db.collection('orders').doc(id).update({status:'Cancelled'}).then(()=>{toast('Order cancelled');openOrdersModal();}).catch(e=>toast('Failed: '+e.message,'err'));
-};
+window.cancelOrder=id=>{if(!confirm('Cancel this order?'))return;db.collection('orders').doc(id).update({status:'Cancelled'}).then(()=>{toast('Order cancelled');openOrdersModal();}).catch(e=>toast('Failed: '+e.message,'err'));};
 
 function updateNavBadges(){
   const wish=loadJ('ls_wishlist');const wb=document.getElementById('wish-count-badge');
   if(wish.length){wb.textContent=wish.length;wb.classList.add('show');}else wb.classList.remove('show');
-  db.collection('orders').where('deviceId','==',DEVICE_ID).get()
-    .then(snap=>{const ob=document.getElementById('orders-count-badge');const confirmed=snap.docs.filter(d=>{const s=d.data().status;return s!=='Cancelled'&&s!=='Delivered';}).length;if(confirmed){ob.textContent=confirmed;ob.classList.add('show');}else ob.classList.remove('show');}).catch(()=>{});
+  db.collection('orders').where('deviceId','==',DEVICE_ID).get().then(snap=>{const ob=document.getElementById('orders-count-badge');const confirmed=snap.docs.filter(d=>{const s=d.data().status;return s!=='Cancelled'&&s!=='Delivered';}).length;if(confirmed){ob.textContent=confirmed;ob.classList.add('show');}else ob.classList.remove('show');}).catch(()=>{});
 }
 
-// ════════════════════════════════════════════════════
-//  DELIVERY CONFIRMATION MODAL
-// ════════════════════════════════════════════════════
-
+// ── Delivery Confirmation Modal ───────────────────
 window.openDelConfirmModal=orderId=>{
   _confirmOrderId=orderId;
-  // Reset to initial state
   document.getElementById('dcm-question-area').style.display='block';
   document.getElementById('dcm-result-ok').classList.remove('show');
   document.getElementById('dcm-result-err').classList.remove('show');
-  // Load order details
-  db.collection('orders').doc(orderId).get().then(doc=>{
-    if(!doc.exists)return;
-    const o={id:doc.id,...doc.data()};
-    const isCart=o.type==='cart'&&o.items&&o.items.length>1;
-    const name=isCart?o.items.length+' items from '+o.shopName:o.productName;
-    document.getElementById('dcm-order-name').textContent=name;
-    document.getElementById('dcm-order-shop').textContent='🏪 '+o.shopName;
-    document.getElementById('dcm-order-total').textContent='₹'+o.total;
-    document.getElementById('dcm-order-icon').textContent=isCart?'🛒':prodIco(o.category);
-  }).catch(()=>{});
-  document.getElementById('del-confirm-modal').classList.add('open');
-  document.body.style.overflow='hidden';
+  db.collection('orders').doc(orderId).get().then(doc=>{if(!doc.exists)return;const o={id:doc.id,...doc.data()};const isCart=o.type==='cart'&&o.items&&o.items.length>1;const name=isCart?o.items.length+' items from '+o.shopName:o.productName;document.getElementById('dcm-order-name').textContent=name;document.getElementById('dcm-order-shop').textContent='🏪 '+o.shopName;document.getElementById('dcm-order-total').textContent='₹'+o.total;document.getElementById('dcm-order-icon').textContent=isCart?'🛒':prodIco(o.category);}).catch(()=>{});
+  document.getElementById('del-confirm-modal').classList.add('open');document.body.style.overflow='hidden';
 };
-
-window.closeDelConfirmModal=()=>{
-  document.getElementById('del-confirm-modal').classList.remove('open');
-  document.body.style.overflow='';
-  _confirmOrderId=null;
-  // Refresh orders list if open
-  if(document.getElementById('orders-modal').classList.contains('open'))openOrdersModal();
-};
-
+window.closeDelConfirmModal=()=>{document.getElementById('del-confirm-modal').classList.remove('open');document.body.style.overflow='';_confirmOrderId=null;if(document.getElementById('orders-modal').classList.contains('open'))openOrdersModal();};
 window.customerConfirmReceived=received=>{
   if(!_confirmOrderId)return;
-  const now=new Date().toISOString();
-  const updateData=received
-    ?{customerConfirmed:true,customerConfirmedAt:now}
-    :{customerConfirmed:false,customerDisputedAt:now,deliveryIssue:'not_received'};
-  // Hide question, show loading briefly
+  const now=new Date().toISOString();const updateData=received?{customerConfirmed:true,customerConfirmedAt:now}:{customerConfirmed:false,customerDisputedAt:now,deliveryIssue:'not_received'};
   document.getElementById('dcm-question-area').style.display='none';
-  db.collection('orders').doc(_confirmOrderId).update(updateData)
-    .then(()=>{
-      if(received){
-        document.getElementById('dcm-result-ok').classList.add('show');
-        toast('Thank you! Delivery confirmed ✅');
-      }else{
-        document.getElementById('dcm-result-err').classList.add('show');
-        toast('Issue reported — support will contact you','info');
-      }
-    })
-    .catch(e=>{
-      document.getElementById('dcm-question-area').style.display='block';
-      toast('Failed to update: '+e.message,'err');
-    });
+  db.collection('orders').doc(_confirmOrderId).update(updateData).then(()=>{if(received){document.getElementById('dcm-result-ok').classList.add('show');toast('Thank you! Delivery confirmed ✅');}else{document.getElementById('dcm-result-err').classList.add('show');toast('Issue reported — support will contact you','info');}}).catch(e=>{document.getElementById('dcm-question-area').style.display='block';toast('Failed to update: '+e.message,'err');});
 };
 
-// Auto-prompt confirmation when tracking shows Delivered
-function promptDeliveryConfirmation(order){
-  if(!order||order.customerConfirmed!==null&&order.customerConfirmed!==undefined)return;
-  if(order.status!=='Delivered')return;
-  // Close track modal and open confirm modal
-  closeTrackModal();
-  setTimeout(()=>openDelConfirmModal(order.id),350);
-}
+function promptDeliveryConfirmation(order){if(!order||order.customerConfirmed!==null&&order.customerConfirmed!==undefined)return;if(order.status!=='Delivered')return;closeTrackModal();setTimeout(()=>openDelConfirmModal(order.id),350);}
 
 // ── Live Order Tracking ───────────────────────────
-const ORDER_STATUSES=[
-  {key:'Confirmed',label:'Order Confirmed',icon:'✅',sub:'Your order has been received by the shop.'},
-  {key:'Preparing',label:'Preparing Your Order',icon:'🧑‍🍳',sub:'The shop is packing your items.'},
-  {key:'Picked Up',label:'Picked Up',icon:'🛵',sub:'Delivery partner has picked up your order.'},
-  {key:'Out for Delivery',label:'Out for Delivery',icon:'🏃',sub:'Your order is nearby. Almost there!'},
-  {key:'Delivered',label:'Delivered',icon:'🎉',sub:'Order delivered successfully. Enjoy!'}
-];
+const ORDER_STATUSES=[{key:'Confirmed',label:'Order Confirmed',icon:'✅',sub:'Your order has been received by the shop.'},{key:'Preparing',label:'Preparing Your Order',icon:'🧑‍🍳',sub:'The shop is packing your items.'},{key:'Picked Up',label:'Picked Up',icon:'🛵',sub:'Delivery partner has picked up your order.'},{key:'Out for Delivery',label:'Out for Delivery',icon:'🏃',sub:'Your order is nearby. Almost there!'},{key:'Delivered',label:'Delivered',icon:'🎉',sub:'Order delivered successfully. Enjoy!'}];
 function getStatusIndex(status){return ORDER_STATUSES.findIndex(s=>s.key===status);}
-function simulateDeliveryPosition(order,progressFraction){
-  const shopLat=order.shopLat||(order.deliveryLat?order.deliveryLat-0.04:11.02);
-  const shopLng=order.shopLng||(order.deliveryLng?order.deliveryLng-0.02:76.97);
-  const destLat=order.deliveryLat||11.0168,destLng=order.deliveryLng||76.9558;
-  const wobble=0.0005*(Math.random()-.5);
-  return{lat:shopLat+(destLat-shopLat)*progressFraction+wobble,lng:shopLng+(destLng-shopLng)*progressFraction+wobble};
-}
-window.openTrackModal=orderId=>{
-  closeOrdersModal();
-  document.getElementById('track-modal').classList.add('open');document.body.style.overflow='hidden';
-  document.getElementById('track-order-id').textContent='Order #'+orderId.slice(-8);
-  document.getElementById('track-order-info').innerHTML='<div class="toi-img"><span style="font-size:1.5rem">⏳</span></div><div class="toi-info"><div class="toi-name">Loading order…</div></div>';
-  document.getElementById('track-timeline').innerHTML='';
-  document.getElementById('track-eta').textContent='—';
-  document.getElementById('track-status-txt').textContent='Loading…';
-  db.collection('orders').doc(orderId).get()
-    .then(doc=>{if(!doc.exists){toast('Order not found','err');return;}const order={id:doc.id,...doc.data()};_trackOrder=order;initTrackUI(order);initTrackMap(order);startLiveTracking(order);})
-    .catch(e=>{toast('Could not load order: '+e.message,'err');});
-};
+function simulateDeliveryPosition(order,progressFraction){const shopLat=order.shopLat||(order.deliveryLat?order.deliveryLat-0.04:11.02);const shopLng=order.shopLng||(order.deliveryLng?order.deliveryLng-0.02:76.97);const destLat=order.deliveryLat||11.0168,destLng=order.deliveryLng||76.9558;const wobble=0.0005*(Math.random()-.5);return{lat:shopLat+(destLat-shopLat)*progressFraction+wobble,lng:shopLng+(destLng-shopLng)*progressFraction+wobble};}
+window.openTrackModal=orderId=>{closeOrdersModal();document.getElementById('track-modal').classList.add('open');document.body.style.overflow='hidden';document.getElementById('track-order-id').textContent='Order #'+orderId.slice(-8);document.getElementById('track-order-info').innerHTML='<div class="toi-img"><span style="font-size:1.5rem">⏳</span></div><div class="toi-info"><div class="toi-name">Loading order…</div></div>';document.getElementById('track-timeline').innerHTML='';document.getElementById('track-eta').textContent='—';document.getElementById('track-status-txt').textContent='Loading…';db.collection('orders').doc(orderId).get().then(doc=>{if(!doc.exists){toast('Order not found','err');return;}const order={id:doc.id,...doc.data()};_trackOrder=order;initTrackUI(order);initTrackMap(order);startLiveTracking(order);}).catch(e=>{toast('Could not load order: '+e.message,'err');});};
 window.closeTrackModal=()=>{stopLiveTracking();document.getElementById('track-modal').classList.remove('open');document.body.style.overflow='';_trackOrder=null;};
-function initTrackUI(order){
-  const isCart=order.type==='cart'&&order.items&&order.items.length>1;
-  const name=isCart?order.items.length+' items':order.productName;
-  const payBadge=order.paymentMethod
-    ?'<span class="order-pay-pill '+(order.paymentMethod==='cod'?'opp-cod':'opp-online')+'" style="margin-top:2px;display:inline-flex">'+(order.paymentMethod==='cod'?'💵 Pay Cash on Delivery':'💳 Paid Online')+'</span>'
-    :'';
-  document.getElementById('track-order-info').innerHTML=
-    '<div class="toi-img">'+(isCart?'<span style="font-size:1.4rem">🛒</span>':(order.image?'<img src="'+order.image+'" style="width:52px;height:52px;border-radius:8px;object-fit:cover;">':'<span style="font-size:1.4rem">'+prodIco(order.category)+'</span>'))+'</div>'+
-    '<div class="toi-info">'+
-      '<div class="toi-name">'+name+'</div>'+
-      '<div class="toi-shop">🏪 '+order.shopName+'</div>'+
-      '<div class="toi-price">₹'+order.total+(isCart?' &nbsp;·&nbsp; '+order.items.reduce((s,i)=>s+i.qty,0)+' items total':' &nbsp;·&nbsp; Qty: '+order.qty)+'</div>'+
-      payBadge+
-    '</div>';
-  renderTrackTimeline(order.status);
-  document.getElementById('track-contact-btn').textContent='📞 '+(order.shopName||'Contact Shop');
-  document.getElementById('track-cancel-btn').onclick=()=>{if(order.status==='Confirmed'){cancelOrder(order.id);}else{toast('Order already in transit — cannot cancel','err');}closeTrackModal();};
-  document.getElementById('track-cancel-btn').style.display=order.status==='Confirmed'?'block':'none';
-}
-function renderTrackTimeline(currentStatus){
-  const currentIdx=getStatusIndex(currentStatus);
-  document.getElementById('track-timeline').innerHTML=ORDER_STATUSES.map((s,i)=>{
-    const state=i<currentIdx?'done':i===currentIdx?'active':'pending';
-    const timeNote=i<currentIdx?'Completed':i===currentIdx?'In progress':'Pending';
-    return '<div class="tl-step '+state+'"><div class="tl-icon">'+(state==='done'?'✓':s.icon)+'</div><div class="tl-info"><div class="tl-title">'+s.label+'</div><div class="tl-sub">'+s.sub+'</div><div class="tl-time">'+timeNote+'</div></div></div>';
-  }).join('');
-}
-function initTrackMap(order){
-  setTimeout(()=>{
-    if(trackMap){trackMap.remove();trackMap=null;trackMapInit=false;}
-    trackMapInit=true;
-    const destLat=order.deliveryLat||_userLat||11.0168,destLng=order.deliveryLng||_userLng||76.9558;
-    const shopLat=order.shopLat||(destLat-0.04),shopLng=order.shopLng||(destLng-0.02);
-    trackMap=L.map('track-map',{zoomControl:false,attributionControl:false}).setView([(shopLat+destLat)/2,(shopLng+destLng)/2],14);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(trackMap);
-    const shopIcon=L.divIcon({className:'',html:'<div style="width:32px;height:32px;background:var(--navy);border:3px solid #fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;box-shadow:0 3px 10px rgba(0,0,0,.2);color:#fff">🏪</div>',iconSize:[32,32],iconAnchor:[16,16]});
-    L.marker([shopLat,shopLng],{icon:shopIcon}).addTo(trackMap).bindPopup('<b>'+order.shopName+'</b>');
-    const destIcon=L.divIcon({className:'',html:'<div style="width:32px;height:32px;background:var(--orange);border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;box-shadow:0 3px 10px rgba(255,107,26,.4);color:#fff">🏠</div>',iconSize:[32,32],iconAnchor:[16,16]});
-    trackUserMarker=L.marker([destLat,destLng],{icon:destIcon}).addTo(trackMap).bindPopup('<b>Your delivery location</b>');
-    trackPolyline=L.polyline([[shopLat,shopLng],[destLat,destLng]],{color:'#FF6B1A',weight:3,opacity:.5,dashArray:'8 5'}).addTo(trackMap);
-    const progress=getTrackProgress(order.status);const pos=simulateDeliveryPosition(order,progress);
-    const riderIcon=L.divIcon({className:'',html:'<div style="width:36px;height:36px;background:#fff;border:3px solid var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 3px 14px rgba(255,107,26,.45)">🛵</div>',iconSize:[36,36],iconAnchor:[18,18]});
-    trackDeliveryMarker=L.marker([pos.lat,pos.lng],{icon:riderIcon}).addTo(trackMap).bindPopup('<b>🛵 Delivery Partner</b>');
-    trackMap.fitBounds(L.latLngBounds([[shopLat,shopLng],[destLat,destLng],[pos.lat,pos.lng]]),{padding:[40,40]});
-  },120);
-}
+function initTrackUI(order){const isCart=order.type==='cart'&&order.items&&order.items.length>1;const name=isCart?order.items.length+' items':order.productName;const payBadge=order.paymentMethod?'<span class="order-pay-pill '+(order.paymentMethod==='cod'?'opp-cod':'opp-online')+'" style="margin-top:2px;display:inline-flex">'+(order.paymentMethod==='cod'?'💵 Pay Cash on Delivery':'💳 Paid Online')+'</span>':'';document.getElementById('track-order-info').innerHTML='<div class="toi-img">'+(isCart?'<span style="font-size:1.4rem">🛒</span>':(order.image?'<img src="'+order.image+'" style="width:52px;height:52px;border-radius:8px;object-fit:cover;">':'<span style="font-size:1.4rem">'+prodIco(order.category)+'</span>'))+'</div><div class="toi-info"><div class="toi-name">'+name+'</div><div class="toi-shop">🏪 '+order.shopName+'</div><div class="toi-price">₹'+order.total+(isCart?' &nbsp;·&nbsp; '+order.items.reduce((s,i)=>s+i.qty,0)+' items total':' &nbsp;·&nbsp; Qty: '+order.qty)+'</div>'+payBadge+'</div>';renderTrackTimeline(order.status);document.getElementById('track-contact-btn').textContent='📞 '+(order.shopName||'Contact Shop');document.getElementById('track-cancel-btn').onclick=()=>{if(order.status==='Confirmed'){cancelOrder(order.id);}else{toast('Order already in transit — cannot cancel','err');}closeTrackModal();};document.getElementById('track-cancel-btn').style.display=order.status==='Confirmed'?'block':'none';}
+function renderTrackTimeline(currentStatus){const currentIdx=getStatusIndex(currentStatus);document.getElementById('track-timeline').innerHTML=ORDER_STATUSES.map((s,i)=>{const state=i<currentIdx?'done':i===currentIdx?'active':'pending';const timeNote=i<currentIdx?'Completed':i===currentIdx?'In progress':'Pending';return '<div class="tl-step '+state+'"><div class="tl-icon">'+(state==='done'?'✓':s.icon)+'</div><div class="tl-info"><div class="tl-title">'+s.label+'</div><div class="tl-sub">'+s.sub+'</div><div class="tl-time">'+timeNote+'</div></div></div>';}).join('');}
+function initTrackMap(order){setTimeout(()=>{if(trackMap){trackMap.remove();trackMap=null;trackMapInit=false;}trackMapInit=true;const destLat=order.deliveryLat||_userLat||11.0168,destLng=order.deliveryLng||_userLng||76.9558;const shopLat=order.shopLat||(destLat-0.04),shopLng=order.shopLng||(destLng-0.02);trackMap=L.map('track-map',{zoomControl:false,attributionControl:false}).setView([(shopLat+destLat)/2,(shopLng+destLng)/2],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(trackMap);const shopIcon=L.divIcon({className:'',html:'<div style="width:32px;height:32px;background:var(--navy);border:3px solid #fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;box-shadow:0 3px 10px rgba(0,0,0,.2);color:#fff">🏪</div>',iconSize:[32,32],iconAnchor:[16,16]});L.marker([shopLat,shopLng],{icon:shopIcon}).addTo(trackMap).bindPopup('<b>'+order.shopName+'</b>');const destIcon=L.divIcon({className:'',html:'<div style="width:32px;height:32px;background:var(--orange);border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;box-shadow:0 3px 10px rgba(255,107,26,.4);color:#fff">🏠</div>',iconSize:[32,32],iconAnchor:[16,16]});trackUserMarker=L.marker([destLat,destLng],{icon:destIcon}).addTo(trackMap).bindPopup('<b>Your delivery location</b>');trackPolyline=L.polyline([[shopLat,shopLng],[destLat,destLng]],{color:'#FF6B1A',weight:3,opacity:.5,dashArray:'8 5'}).addTo(trackMap);const progress=getTrackProgress(order.status);const pos=simulateDeliveryPosition(order,progress);const riderIcon=L.divIcon({className:'',html:'<div style="width:36px;height:36px;background:#fff;border:3px solid var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 3px 14px rgba(255,107,26,.45)">🛵</div>',iconSize:[36,36],iconAnchor:[18,18]});trackDeliveryMarker=L.marker([pos.lat,pos.lng],{icon:riderIcon}).addTo(trackMap).bindPopup('<b>🛵 Delivery Partner</b>');trackMap.fitBounds(L.latLngBounds([[shopLat,shopLng],[destLat,destLng],[pos.lat,pos.lng]]),{padding:[40,40]});},120);}
 function getTrackProgress(status){return{'Confirmed':0.02,'Preparing':0.05,'Picked Up':0.35,'Out for Delivery':0.75,'Delivered':1,'Cancelled':0}[status]||0;}
 function getETAMinutes(status){return{'Confirmed':55,'Preparing':45,'Picked Up':30,'Out for Delivery':10,'Delivered':0,'Cancelled':0}[status]||0;}
-let _liveProgress=0,_liveStep=0;
-let _prevTrackStatus=null; // track status changes for auto-prompt
-
+let _liveProgress=0,_liveStep=0,_prevTrackStatus=null;
 function startLiveTracking(order){
   stopLiveTracking();_liveProgress=getTrackProgress(order.status);_liveStep=0;_prevTrackStatus=order.status;
-  const unsub=db.collection('orders').doc(order.id).onSnapshot(snap=>{
-    if(!snap.exists||!_trackOrder)return;
-    const updated={id:snap.id,...snap.data()};
-    const oldStatus=_prevTrackStatus;
-    _prevTrackStatus=updated.status;
-    _trackOrder=updated;
-    renderTrackTimeline(updated.status);updateTrackOverlay(updated.status);
-    // Auto-prompt customer confirmation when status first becomes Delivered
-    if(oldStatus!=='Delivered'&&updated.status==='Delivered'){
-      setTimeout(()=>promptDeliveryConfirmation(updated),1500);
-    }
-    if(updated.status==='Delivered'||updated.status==='Cancelled')stopLiveTracking();
-  });
-  _trackInterval=setInterval(()=>{
-    if(!_trackOrder||!trackMap||!trackDeliveryMarker)return;
-    const targetProgress=getTrackProgress(_trackOrder.status);
-    if(_liveProgress<targetProgress){_liveProgress=Math.min(_liveProgress+0.008,targetProgress);}
-    const pos=simulateDeliveryPosition(_trackOrder,_liveProgress);
-    trackDeliveryMarker.setLatLng([pos.lat,pos.lng]);
-    const baseETA=getETAMinutes(_trackOrder.status);
-    const remainingFraction=_trackOrder.status==='Delivered'?0:Math.max(0,1-_liveProgress/Math.max(targetProgress,0.01));
-    const displayETA=Math.max(0,Math.round(baseETA*remainingFraction));
-    document.getElementById('track-eta').textContent=_trackOrder.status==='Delivered'?'Delivered!':displayETA+' min';
-    const dist=haversine(pos.lat,pos.lng,_trackOrder.deliveryLat||_userLat||11.02,_trackOrder.deliveryLng||_userLng||76.96);
-    document.getElementById('track-dist-txt').textContent=dist<1?(dist*1000).toFixed(0)+' m away':dist.toFixed(1)+' km away';
-    _liveStep++;
-  },2000);
+  const unsub=db.collection('orders').doc(order.id).onSnapshot(snap=>{if(!snap.exists||!_trackOrder)return;const updated={id:snap.id,...snap.data()};const oldStatus=_prevTrackStatus;_prevTrackStatus=updated.status;_trackOrder=updated;renderTrackTimeline(updated.status);updateTrackOverlay(updated.status);if(oldStatus!=='Delivered'&&updated.status==='Delivered'){setTimeout(()=>promptDeliveryConfirmation(updated),1500);}if(updated.status==='Delivered'||updated.status==='Cancelled')stopLiveTracking();});
+  _trackInterval=setInterval(()=>{if(!_trackOrder||!trackMap||!trackDeliveryMarker)return;const targetProgress=getTrackProgress(_trackOrder.status);if(_liveProgress<targetProgress){_liveProgress=Math.min(_liveProgress+0.008,targetProgress);}const pos=simulateDeliveryPosition(_trackOrder,_liveProgress);trackDeliveryMarker.setLatLng([pos.lat,pos.lng]);const baseETA=getETAMinutes(_trackOrder.status);const remainingFraction=_trackOrder.status==='Delivered'?0:Math.max(0,1-_liveProgress/Math.max(targetProgress,0.01));const displayETA=Math.max(0,Math.round(baseETA*remainingFraction));document.getElementById('track-eta').textContent=_trackOrder.status==='Delivered'?'Delivered!':displayETA+' min';const dist=haversine(pos.lat,pos.lng,_trackOrder.deliveryLat||_userLat||11.02,_trackOrder.deliveryLng||_userLng||76.96);document.getElementById('track-dist-txt').textContent=dist<1?(dist*1000).toFixed(0)+' m away':dist.toFixed(1)+' km away';_liveStep++;},2000);
   window._trackUnsub=unsub;
 }
 function stopLiveTracking(){if(_trackInterval){clearInterval(_trackInterval);_trackInterval=null;}if(window._trackUnsub){try{window._trackUnsub();}catch(e){}window._trackUnsub=null;}}
-function updateTrackOverlay(status){
-  document.getElementById('track-status-txt').textContent=ORDER_STATUSES.find(s=>s.key===status)?.label||status;
-  if(status==='Delivered'){document.getElementById('track-eta').textContent='Delivered!';}
-}
+function updateTrackOverlay(status){document.getElementById('track-status-txt').textContent=ORDER_STATUSES.find(s=>s.key===status)?.label||status;if(status==='Delivered'){document.getElementById('track-eta').textContent='Delivered!';}}
 
 // ── Profile ───────────────────────────────────────
 window.openProfileModal=()=>{loadProfileUI();document.getElementById('profile-modal').classList.add('open');document.body.style.overflow='hidden';};
 window.closeProfileModal=()=>{document.getElementById('profile-modal').classList.remove('open');document.body.style.overflow='';};
-function loadProfileUI(){
-  const name=load('ls_name'),email=load('ls_email'),phone=load('ls_phone');
-  const addr=load('ls_del_addr1'),city=load('ls_del_city'),pin=load('ls_del_pin');
-  document.getElementById('av-circle').textContent=name?name[0].toUpperCase():'👤';
-  document.getElementById('av-name').textContent=name||'Guest User';
-  document.getElementById('av-email').textContent=email||'No email saved';
-  document.getElementById('pi-name').textContent=name||'—';
-  document.getElementById('pi-email').textContent=email||'—';
-  document.getElementById('pi-phone').textContent=phone||'—';
-  document.getElementById('pi-city').textContent=city||'—';
-  document.getElementById('pi-addr').textContent=addr?(addr+(city?', '+city:'')+(pin?' - '+pin:'')):'—';
-  document.getElementById('edit-name').value=name;
-  document.getElementById('edit-email').value=email;
-  document.getElementById('edit-phone').value=phone;
-  document.getElementById('edit-addr').value=addr;
-  document.getElementById('edit-city').value=city;
-  document.getElementById('edit-pin').value=pin;
-  document.getElementById('edit-land').value=load('ls_del_land');
-}
+function loadProfileUI(){const name=load('ls_name'),email=load('ls_email'),phone=load('ls_phone');const addr=load('ls_del_addr1'),city=load('ls_del_city'),pin=load('ls_del_pin');document.getElementById('av-circle').textContent=name?name[0].toUpperCase():'👤';document.getElementById('av-name').textContent=name||'Guest User';document.getElementById('av-email').textContent=email||'No email saved';document.getElementById('pi-name').textContent=name||'—';document.getElementById('pi-email').textContent=email||'—';document.getElementById('pi-phone').textContent=phone||'—';document.getElementById('pi-city').textContent=city||'—';document.getElementById('pi-addr').textContent=addr?(addr+(city?', '+city:'')+(pin?' - '+pin:'')):'—';document.getElementById('edit-name').value=name;document.getElementById('edit-email').value=email;document.getElementById('edit-phone').value=phone;document.getElementById('edit-addr').value=addr;document.getElementById('edit-city').value=city;document.getElementById('edit-pin').value=pin;document.getElementById('edit-land').value=load('ls_del_land');}
 window.switchTab=t=>{document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['info','edit','address'][i]===t));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById('tab-'+t).classList.add('active');};
 window.saveProfile=()=>{save('ls_name',document.getElementById('edit-name').value.trim());save('ls_email',document.getElementById('edit-email').value.trim());save('ls_phone',document.getElementById('edit-phone').value.trim());loadProfileUI();const s=document.getElementById('profile-ok');s.classList.add('show');setTimeout(()=>s.classList.remove('show'),3000);};
 window.saveAddress=()=>{save('ls_del_addr1',document.getElementById('edit-addr').value.trim());save('ls_del_city',document.getElementById('edit-city').value.trim());save('ls_del_pin',document.getElementById('edit-pin').value.trim());save('ls_del_land',document.getElementById('edit-land').value.trim());loadProfileUI();const s=document.getElementById('address-ok');s.classList.add('show');setTimeout(()=>s.classList.remove('show'),3000);};
@@ -1678,38 +1583,18 @@ window.closeMapModal=()=>{document.getElementById('map-modal').classList.remove(
 window.detectMainLoc=(silent)=>{
   if(!navigator.geolocation){if(!silent)toast('Geolocation not supported','err');return;}
   const btn=document.getElementById('loc-detect-btn');btn.disabled=true;btn.innerHTML='⏳ Detecting…';
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const lat=pos.coords.latitude,lng=pos.coords.longitude;
-    if(mainMarker)mainMap.removeLayer(mainMarker);if(mainCircle)mainMap.removeLayer(mainCircle);
-    mainMap.flyTo([lat,lng],14,{animate:true,duration:1});
-    mainMarker=L.marker([lat,lng],{icon:orangeIconMain()}).addTo(mainMap).bindPopup('<b>📍 You are here</b><br><small>'+lat.toFixed(5)+', '+lng.toFixed(5)+'</small>').openPopup();
-    mainCircle=L.circle([lat,lng],{radius:15000,color:'#FF6B1A',weight:1.5,fillColor:'#FF6B1A',fillOpacity:.06,dashArray:'6 4'}).addTo(mainMap);
-    _userLat=lat;_userLng=lng;save('ls_lat',lat+'');save('ls_lng',lng+'');save('ls_det_lat',lat+'');save('ls_det_lng',lng+'');
-    renderShops();
-    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng)
-      .then(r=>r.json()).then(data=>{
-        const a=data.address||{};const parts=[a.road||a.suburb,a.city||a.town||a.village,a.state].filter(Boolean);
-        const dispAddr=parts.length?parts.join(', '):(lat.toFixed(4)+', '+lng.toFixed(4));
-        save('ls_det_city',a.city||a.town||a.village||'');save('ls_det_pin',a.postcode||'');save('ls_detected_full',dispAddr);
-        document.getElementById('mm-addr-txt').textContent=dispAddr;document.getElementById('mm-addr').classList.add('show');
-        document.getElementById('loc-btn-txt').textContent='📍 '+(a.city||a.town||a.village||'Location Set');
-        document.getElementById('lp-addr').textContent=dispAddr;document.getElementById('lp-coords').textContent='Lat '+lat.toFixed(5)+'  ·  Lng '+lng.toFixed(5);
-        document.getElementById('loc-pill').classList.add('show');
-        document.getElementById('search-inp').placeholder='Search near '+(a.city||a.town||'your location')+'…';
-        btn.disabled=false;btn.innerHTML='✓ Location Set';
-      }).catch(()=>{document.getElementById('loc-btn-txt').textContent='📍 Location Set';document.getElementById('loc-pill').classList.add('show');btn.disabled=false;btn.innerHTML='✓ Set';});
-  },err=>{btn.disabled=false;btn.innerHTML='Detect My Location';if(!silent)toast(['','Permission denied','Unavailable','Timed out'][err.code]||'Error','err');},{enableHighAccuracy:true,timeout:10000});
+  navigator.geolocation.getCurrentPosition(pos=>{const lat=pos.coords.latitude,lng=pos.coords.longitude;if(mainMarker)mainMap.removeLayer(mainMarker);if(mainCircle)mainMap.removeLayer(mainCircle);mainMap.flyTo([lat,lng],14,{animate:true,duration:1});mainMarker=L.marker([lat,lng],{icon:orangeIconMain()}).addTo(mainMap).bindPopup('<b>📍 You are here</b><br><small>'+lat.toFixed(5)+', '+lng.toFixed(5)+'</small>').openPopup();mainCircle=L.circle([lat,lng],{radius:15000,color:'#FF6B1A',weight:1.5,fillColor:'#FF6B1A',fillOpacity:.06,dashArray:'6 4'}).addTo(mainMap);_userLat=lat;_userLng=lng;save('ls_lat',lat+'');save('ls_lng',lng+'');save('ls_det_lat',lat+'');save('ls_det_lng',lng+'');renderShops();fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng).then(r=>r.json()).then(data=>{const a=data.address||{};const parts=[a.road||a.suburb,a.city||a.town||a.village,a.state].filter(Boolean);const dispAddr=parts.length?parts.join(', '):(lat.toFixed(4)+', '+lng.toFixed(4));save('ls_det_city',a.city||a.town||a.village||'');save('ls_det_pin',a.postcode||'');save('ls_detected_full',dispAddr);document.getElementById('mm-addr-txt').textContent=dispAddr;document.getElementById('mm-addr').classList.add('show');document.getElementById('loc-btn-txt').textContent='📍 '+(a.city||a.town||a.village||'Location Set');document.getElementById('lp-addr').textContent=dispAddr;document.getElementById('lp-coords').textContent='Lat '+lat.toFixed(5)+'  ·  Lng '+lng.toFixed(5);document.getElementById('loc-pill').classList.add('show');document.getElementById('search-inp').placeholder='Search near '+(a.city||a.town||'your location')+'…';btn.disabled=false;btn.innerHTML='✓ Location Set';}).catch(()=>{document.getElementById('loc-btn-txt').textContent='📍 Location Set';document.getElementById('loc-pill').classList.add('show');btn.disabled=false;btn.innerHTML='✓ Set';});},err=>{btn.disabled=false;btn.innerHTML='Detect My Location';if(!silent)toast(['','Permission denied','Unavailable','Timed out'][err.code]||'Error','err');},{enableHighAccuracy:true,timeout:10000});
 };
 window.dismissLoc=()=>{document.getElementById('loc-pill').classList.remove('show');document.getElementById('loc-btn-txt').textContent='📍 Add Location';document.getElementById('search-inp').placeholder='Search products, shops…';};
 
-document.querySelector('.nav-links').addEventListener('click',e=>{
-  const a=e.target.closest('a');if(!a)return;
-  if(a.textContent.includes('Wishlist')){e.preventDefault();openWishModal();}
-});
+document.querySelector('.nav-links').addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;if(a.textContent.includes('Wishlist')){e.preventDefault();openWishModal();}});
 
+// ── Init ──────────────────────────────────────────
 window.addEventListener('load',()=>{
   updateNavBadges();
   if(_userLat&&_userLng){document.getElementById('loc-btn-txt').textContent='📍 '+(load('ls_det_city')||'Location Set');document.getElementById('lp-addr').textContent=load('ls_detected_full')||'Location saved';document.getElementById('lp-coords').textContent='Lat '+_userLat.toFixed(5)+'  ·  Lng '+_userLng.toFixed(5);document.getElementById('loc-pill').classList.add('show');}
+  // Start notification real-time listener
+  startNotifListener();
 });
 </script>
 </body>
