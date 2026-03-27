@@ -1189,7 +1189,7 @@ function startNotifListener(){
     .orderBy('createdAt','desc')
     .limit(50)
     .onSnapshot(snap=>{
-      const prev=_allNotifications.length;
+      const prev=_allNotifications.length;a
       _allNotifications=[];
       snap.forEach(d=>{
         const data={id:d.id,...d.data()};
@@ -1439,7 +1439,7 @@ function renderShops(){
   if(_activeCategory){list=list.filter(s=>{const scm=(s.category||'').toLowerCase().includes(_activeCategory.toLowerCase())||_activeCategory.toLowerCase().includes((s.category||'').toLowerCase());const pcm=_products.some(p=>p.shopId===s.id&&((p.category||'').toLowerCase().includes(_activeCategory.toLowerCase().split(' ')[0])||(s.category||'').includes(_activeCategory.split(' ')[0])));return scm||pcm;});}
   if(_userLat&&_userLng){list=list.map(s=>({...s,dist:haversine(_userLat,_userLng,s.lat,s.lng)})).filter(s=>s.dist<=15).sort((a,b)=>a.dist-b.dist);lbl.textContent=(_activeCategory?_activeCategory+' · ':'')+'Nearby Shops ('+list.length+')';note.style.display='flex';resetB.style.display='inline-flex';}
   else{lbl.textContent=_activeCategory?_activeCategory+' Shops ('+list.length+')':_searchTerm?'Search Results ('+list.length+')':'Shops on LocalShore';note.style.display='none';resetB.style.display=_searchTerm?'inline-flex':'none';}
-  if(!list.length){grid.innerHTML='';grid.style.display='none';empty.style.display='block';empty.querySelector('.se-t').textContent=_userLat?'No shops within 15 km':'No shops yet';empty.querySelector('.se-s').innerHTML=_userLat?'No shops found near you. <button onclick="resetFilter()" style="background:none;border:none;color:var(--orange);font-weight:600;cursor:pointer;font-family:inherit">Show all →</button>';return;}
+  if(!list.length){grid.innerHTML='';grid.style.display='none';empty.style.display='block';empty.querySelector('.se-t').textContent=_userLat?'No shops within 15 km':'No shops yet';empty.querySelector('.se-s').innerHTML=_userLat?'No shops found near you. <button onclick="resetFilter()" style="background:none;border:none;color:var(--orange);font-weight:600;cursor:pointer;font-family:inherit">Show all →</button>':'Vendors can join at <a href="https://localshorevendor.in" style="color:var(--orange);font-weight:600">localshore-vendor</a>';return;}
   empty.style.display='none';grid.style.display='grid';
   grid.innerHTML=list.map(s=>{const badge=s.dist!==undefined?distBadge(s.dist):'';const pc=s.productCount||0;return '<a class="store-card" href="#" onclick="openShopModal(\''+s.id+'\');return false"><div class="store-icon">'+catIco(s.category)+'</div><div class="store-name">'+s.name+'</div>'+(s.address?'<div class="store-meta">📍 '+s.address.split(',').slice(-2).join(',').trim()+'</div>':'')+'<div class="store-rating"><span class="star">★</span> '+(s.rating||4.5)+' / 5'+(badge?' &ensp;'+badge:'')+(pc?' <span style="color:var(--orange);font-weight:600;font-size:.66rem">'+pc+' items</span>':'')+'</div><div class="store-foot"><span class="store-tag">'+(s.category||'Shop')+'</span><div class="arr"><svg viewBox="0 0 14 14" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7h9M7.5 3l4 4-4 4"/></svg></div></div></a>';}).join('');
 }
