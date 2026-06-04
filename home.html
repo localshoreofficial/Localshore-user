@@ -35,26 +35,21 @@ body{font-family:var(--fb);background:var(--lighter);color:var(--black);overflow
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#ddd;border-radius:10px}
 
-/* ===== TOP BANNER ===== */
-.top-banner{background:var(--navy);padding:8px 0;text-align:center;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:.02em;position:relative}
-.top-banner strong{color:var(--orange-mid)}
-.tb-inner{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap}
-.tb-item{display:flex;align-items:center;gap:6px}
-.tb-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);opacity:.6}
+
 
 /* ===== FLOATING NAV ===== */
 .nav-float-wrap{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:900;width:calc(100% - 32px);max-width:1280px;pointer-events:none}
-nav{pointer-events:auto;background:rgba(255,255,255,.88);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.6);border-radius:var(--r-2xl);box-shadow:0 4px 32px rgba(0,0,0,.1),0 1px 0 rgba(255,255,255,.8) inset,0 0 0 1px rgba(255,107,26,.06);height:var(--nav-h);display:flex;align-items:center;padding:0 24px;gap:16px;transition:all .3s ease}
+nav{pointer-events:auto;background:rgb(207 186 186 / 88%);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.6);border-radius:var(--r-2xl);box-shadow:0 4px 32px rgba(0,0,0,.1),0 1px 0 rgba(255,255,255,.8) inset,0 0 0 1px rgba(255,107,26,.06);height:var(--nav-h);display:flex;align-items:center;padding:0 24px;gap:16px;transition:all .3s ease}
 .nav-logo{font-family:var(--ff);font-size:1.4rem;font-weight:800;letter-spacing:-.03em;text-decoration:none;display:flex;align-items:center;gap:2px;flex-shrink:0}
 .nav-logo .l{color:var(--navy)}.nav-logo .s{color:var(--orange)}
-.nav-logo-mark{width:28px;height:28px;background:linear-gradient(135deg,var(--orange),var(--orange-dark));border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:2px;flex-shrink:0;box-shadow:0 3px 8px rgba(255,107,26,.35)}
+.nav-logo-mark{width:28px;height:28px;background:linear-gradient(135deg,navy,var(--navy-light));border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:2px;flex-shrink:0;box-shadow:0 3px 8px rgba(255,107,26,.35)}
 .nav-logo-mark svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .nav-divider-v{width:1px;height:24px;background:var(--border-strong);flex-shrink:0}
 .nav-links{list-style:none;display:flex;gap:2px;align-items:center;flex:1}
 .nav-links a{text-decoration:none;color:var(--mid);font-weight:500;font-size:.8rem;padding:7px 12px;border-radius:100px;transition:all .18s;display:flex;align-items:center;gap:5px;cursor:pointer;position:relative;white-space:nowrap;letter-spacing:.01em}
-.nav-links a:hover{background:var(--orange-10);color:var(--orange-dark)}
+.nav-links a:hover{background:navy;color:white}
 .nav-icon{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.nav-badge{position:absolute;top:2px;right:4px;background:var(--orange);color:#fff;font-size:.5rem;font-weight:800;min-width:15px;height:15px;border-radius:30px;padding:0 3px;display:none;align-items:center;justify-content:center;line-height:1;box-shadow:0 1px 4px rgba(255,107,26,.5)}
+.nav-badge{position:absolute;top:2px;right:4px;background:var(--navy);color:#fff;font-size:.5rem;font-weight:800;min-width:15px;height:15px;border-radius:30px;padding:0 3px;display:none;align-items:center;justify-content:center;line-height:1;box-shadow:0 1px 4px navy}
 .nav-badge.show{display:flex}
 .nav-spacer{flex:1}
 .nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -62,7 +57,7 @@ nav{pointer-events:auto;background:rgba(255,255,255,.88);backdrop-filter:blur(20
 /* Notif */
 .notif-wrap{position:relative;display:flex;align-items:center}
 .notif-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:none;background:transparent;cursor:pointer;transition:all .2s;position:relative;color:var(--mid)}
-.notif-btn:hover{background:var(--orange-10);color:var(--orange-dark)}
+.notif-btn:hover{background:navy;color:var(--orange-dark)}
 .notif-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .18s}
 @keyframes bellShake{0%,100%{transform:rotate(0)}10%,30%,50%{transform:rotate(-12deg)}20%,40%{transform:rotate(12deg)}60%{transform:rotate(8deg)}}
 .notif-btn.ringing svg{animation:bellShake .7s ease}
@@ -71,7 +66,7 @@ nav{pointer-events:auto;background:rgba(255,255,255,.88);backdrop-filter:blur(20
 
 /* Profile btn */
 .nav-profile-btn{display:flex;align-items:center;gap:7px;padding:5px 14px 5px 5px;border-radius:100px;transition:all .18s;cursor:pointer;background:var(--lighter);border:1.5px solid var(--border-strong);text-decoration:none;color:var(--mid);font-weight:500;font-size:.8rem}
-.nav-profile-btn:hover{background:var(--orange-pale);border-color:rgba(255,107,26,.3);color:var(--orange-dark)}
+.nav-profile-btn:hover{background:var(--navy);border-color:rgba(255,107,26,.3);color:var(--orange-dark)}
 .nav-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--navy));display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;font-family:var(--ff);flex-shrink:0}
 
 /* Nav notif dropdown */
@@ -134,7 +129,7 @@ nav{pointer-events:auto;background:rgba(255,255,255,.88);backdrop-filter:blur(20
 .notif-popup-close:hover{background:#EDE9E4;color:var(--black)}
 
 /* ===== SEARCH BAR ===== */
-.search-bar{background:var(--white);border-bottom:1px solid var(--border);padding:16px 24px;position:sticky;top:calc(var(--nav-h) + 24px);z-index:100;backdrop-filter:blur(12px)}
+.search-bar{padding:16px 24px;position:sticky;top:calc(var(--nav-h) + 24px);z-index:100;backdrop-filter:blur(12px)}
 .search-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:700px;margin:0 auto}
 .search-row{display:flex;align-items:center;gap:8px;width:100%}
 .loc-btn{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:0 14px;height:44px;background:var(--white);border:1.5px solid var(--border-strong);border-radius:var(--r-lg);color:var(--navy);font-family:var(--fb);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:var(--sh-xs)}
@@ -194,19 +189,14 @@ nav{pointer-events:auto;background:rgba(255,255,255,.88);backdrop-filter:blur(20
 .cat-card:hover .cat-label,.cat-card.active-cat .cat-label{color:var(--cat-accent,var(--orange-dark))}
 
 /* Category accent colors */
-.cat-groceries{--cat-bg:#FFF7F0;--cat-accent:#F97316}
-.cat-veggies{--cat-bg:#F0FDF4;--cat-accent:#16A34A}
-.cat-medical{--cat-bg:#FFF1F2;--cat-accent:#E11D48}
-.cat-stationery{--cat-bg:#EFF6FF;--cat-accent:#2563EB}
+
 .cat-fashion{--cat-bg:#FDF4FF;--cat-accent:#9333EA}
 .cat-kids{--cat-bg:#FFFBEB;--cat-accent:#D97706}
 .cat-appliances{--cat-bg:#F0F9FF;--cat-accent:#0284C7}
 .cat-sports{--cat-bg:#ECFDF5;--cat-accent:#059669}
 .cat-meat{--cat-bg:#FFF5F5;--cat-accent:#DC2626}
-.cat-snacks{--cat-bg:#FFFBEB;--cat-accent:#B45309}
 .cat-electronics{--cat-bg:#F8FAFF;--cat-accent:#4F46E5}
-.cat-bakery{--cat-bg:#FFF8F0;--cat-accent:#EA580C}
-.cat-dairy{--cat-bg:#F0F9FF;--cat-accent:#0369A1}
+
 
 /* ===== BANNER GALLERY ===== */
 .banner-gallery{position:relative;width:100%;height:380px;border-radius:var(--r-2xl);overflow:hidden;margin-bottom:28px;background:#000;box-shadow:var(--sh-lg)}
@@ -610,13 +600,7 @@ footer{background:var(--black);margin-top:60px}
 </head>
 <body>
 
-<div class="top-banner">
-  <div class="tb-inner">
-    <div class="tb-item"><span class="tb-dot"></span> Fast Delivery to Your Location</div>
-    <div class="tb-item"><span class="tb-dot"></span> Delivery in <strong>60 minutes</strong></div>
-    <div class="tb-item"><span class="tb-dot"></span> <strong>Cash on Delivery</strong> Available</div>
-  </div>
-</div>
+
 
 <!-- FLOATING NAV -->
 <div class="nav-float-wrap">
@@ -701,7 +685,7 @@ footer{background:var(--black);margin-top:60px}
     <div class="search-row">
       <button class="loc-btn" id="loc-btn" onclick="openMapModal()">
         <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-        <span id="loc-btn-txt">Add Location</span>
+        <span id="loc-btn-txt">your Location</span>
       </button>
       <div class="search-box-wrap">
         <div class="search-box">
@@ -734,38 +718,6 @@ footer{background:var(--black);margin-top:60px}
       </div>
     </div>
     <div class="cats-scroller" id="cats-row">
-      <!-- Groceries -->
-      <a class="cat-card cat-groceries" href="#" onclick="filterByShopCategory('Groceries');return false">
-        <div class="cat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cat-accent,#F97316)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        </div>
-        <div class="cat-bar"></div>
-        <span class="cat-label">Groceries</span>
-      </a>
-      <!-- Vegetables -->
-      <a class="cat-card cat-veggies" href="#" onclick="filterByShopCategory('Fruits & Vegetables');return false">
-        <div class="cat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cat-accent,#16A34A)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <div class="cat-bar"></div>
-        <span class="cat-label">Vegetables</span>
-      </a>
-      <!-- Medical -->
-      <a class="cat-card cat-medical" href="#" onclick="filterByShopCategory('Medical / Pharmacy');return false">
-        <div class="cat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cat-accent,#E11D48)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        </div>
-        <div class="cat-bar"></div>
-        <span class="cat-label">Medical</span>
-      </a>
-      <!-- Stationery -->
-      <a class="cat-card cat-stationery" href="#" onclick="filterByShopCategory('Books & Stationery');return false">
-        <div class="cat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cat-accent,#2563EB)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        </div>
-        <div class="cat-bar"></div>
-        <span class="cat-label">Stationery</span>
-      </a>
       <!-- Fashion -->
       <a class="cat-card cat-fashion" href="#" onclick="filterByShopCategory('Fashion & Clothing');return false">
         <div class="cat-icon-wrap">
@@ -806,14 +758,7 @@ footer{background:var(--black);margin-top:60px}
         <div class="cat-bar"></div>
         <span class="cat-label">Meat</span>
       </a>
-      <!-- Snacks -->
-      <a class="cat-card cat-snacks" href="#" onclick="filterByShopCategory('Food & Sweets');return false">
-        <div class="cat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cat-accent,#B45309)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-        </div>
-        <div class="cat-bar"></div>
-        <span class="cat-label">Snacks</span>
-      </a>
+      
       <!-- Electronics -->
       <a class="cat-card cat-electronics" href="#" onclick="filterByShopCategory('Electronics');return false">
         <div class="cat-icon-wrap">
@@ -822,22 +767,7 @@ footer{background:var(--black);margin-top:60px}
         <div class="cat-bar"></div>
         <span class="cat-label">Electronics</span>
       </a>
-      <!-- Bakery -->
-      <a class="cat-card cat-bakery" href="#" onclick="filterByShopCategory('Bakery');return false">
-        <div class="cat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cat-accent,#EA580C)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
-        </div>
-        <div class="cat-bar"></div>
-        <span class="cat-label">Bakery</span>
-      </a>
-      <!-- Dairy -->
-      <a class="cat-card cat-dairy" href="#" onclick="filterByShopCategory('Dairy & Eggs');return false">
-        <div class="cat-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cat-accent,#0369A1)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-        </div>
-        <div class="cat-bar"></div>
-        <span class="cat-label">Dairy</span>
-      </a>
+    
     </div>
   </div>
 
