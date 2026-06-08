@@ -6,10 +6,20 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Product — LocalShore</title>
   <meta name="description" content="View product details, ratings, and order from nearby shops on LocalShore.">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script>
+    try {
+      if (localStorage.getItem('ls_logged_in') !== 'true') {
+        window.location.replace('index.html');
+      }
+    } catch (e) {
+      window.location.replace('index.html');
+    }
+  </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -17,16 +27,17 @@
   --navy:#0B2D6B;--navy-light:#1446A0;--navy-deep:#081B43;--black:#101828;--mid:#667085;--light:#F6F4F1;--white:#FFFFFF;
   --surface:rgba(255,255,255,.84);--surface-strong:rgba(255,255,255,.96);
   --success:#0EA66B;--error:#E53E3E;--warning:#D97706;--info:#2563EB;
-  --ff:Syne,Georgia,serif;--fb:'DM Sans',system-ui,sans-serif;
-  --shadow-sm:0 10px 24px rgba(16,24,40,.06),0 2px 8px rgba(16,24,40,.04);
-  --shadow-md:0 18px 40px rgba(16,24,40,.08),0 6px 18px rgba(16,24,40,.05);
-  --shadow-lg:0 28px 72px rgba(16,24,40,.12),0 10px 28px rgba(16,24,40,.06);
-  --shadow-xl:0 36px 96px rgba(16,24,40,.16),0 14px 34px rgba(16,24,40,.08);
+  --ff:'Cormorant Garamond',Georgia,serif;--fb:'Plus Jakarta Sans',system-ui,sans-serif;
+  --max-content:1320px;--max-wide:1360px;
+  --shadow-sm:0 14px 30px rgba(16,24,40,.06),0 3px 10px rgba(16,24,40,.04);
+  --shadow-md:0 22px 52px rgba(16,24,40,.09),0 8px 22px rgba(16,24,40,.05);
+  --shadow-lg:0 34px 84px rgba(16,24,40,.13),0 12px 30px rgba(16,24,40,.07);
+  --shadow-xl:0 44px 108px rgba(16,24,40,.18),0 18px 42px rgba(16,24,40,.09);
   --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;--radius-2xl:24px;
   --border:rgba(19,46,103,.10);
 }
 html{scroll-behavior:smooth}
-body{font-family:var(--fb);font-weight:550;background:radial-gradient(circle at top left,rgba(255,107,26,.12),transparent 24%),radial-gradient(circle at bottom right,rgba(11,45,107,.10),transparent 28%),linear-gradient(180deg,#FCFDFF 0%,#F6F8FC 46%,#F8F3EE 100%);color:var(--black);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:var(--fb);font-weight:500;background:radial-gradient(circle at top left,rgba(255,107,26,.12),transparent 24%),radial-gradient(circle at bottom right,rgba(11,45,107,.10),transparent 28%),linear-gradient(180deg,#FCFDFF 0%,#F6F8FC 46%,#F8F3EE 100%);color:var(--black);overflow-x:hidden;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
 body::before,body::after{content:'';position:fixed;border-radius:999px;filter:blur(90px);opacity:.55;pointer-events:none;z-index:-1}
 body::before{width:280px;height:280px;top:90px;left:-60px;background:rgba(255,107,26,.12)}
 body::after{width:340px;height:340px;right:-110px;bottom:80px;background:rgba(20,70,160,.12)}
@@ -38,8 +49,8 @@ body::after{width:340px;height:340px;right:-110px;bottom:80px;background:rgba(20
 .top-banner span{color:var(--orange-mid);font-weight:700}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:200}
-.nav-c{display:flex;justify-content:space-between;align-items:center;padding:0 48px;height:68px;background:rgba(255,255,255,.84);backdrop-filter:blur(20px) saturate(170%);border-bottom:1px solid rgba(255,255,255,.74);box-shadow:0 14px 34px rgba(16,24,40,.06)}
+nav{position:sticky;top:0;z-index:200;padding:12px 18px 0}
+.nav-c{max-width:var(--max-wide);margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:72px;background:rgba(255,255,255,.82);backdrop-filter:blur(24px) saturate(170%);border:1px solid rgba(255,255,255,.78);border-radius:28px;box-shadow:0 18px 44px rgba(16,24,40,.08)}
 .logo{font-family:var(--ff);font-size:1.5rem;font-weight:900;letter-spacing:.02em;text-decoration:none;display:flex;align-items:center;line-height:.9}
 .logo .l{color:var(--navy)}.logo .s{color:var(--orange)}
 .back-btn{display:flex;align-items:center;gap:7px;padding:7px 14px;background:rgba(255,255,255,.92);border:1.5px solid rgba(19,46,103,.08);border-radius:100px;font-size:.82rem;font-weight:700;color:var(--mid);text-decoration:none;transition:all .18s;box-shadow:var(--shadow-sm);backdrop-filter:blur(10px)}
@@ -47,17 +58,20 @@ nav{position:sticky;top:0;z-index:200}
 .cart-nav-pill{display:none;align-items:center;gap:7px;padding:8px 18px;background:linear-gradient(135deg,var(--orange),var(--orange-mid));color:#fff;border:none;border-radius:100px;font-family:var(--ff);font-size:.8rem;font-weight:700;cursor:pointer;transition:all .18s;box-shadow:0 12px 24px rgba(255,107,26,.22)}
 .cart-nav-pill.show{display:flex}
 .cart-nav-pill:hover{background:linear-gradient(135deg,var(--orange-dark),var(--orange));transform:translateY(-2px);box-shadow:0 16px 30px rgba(255,107,26,.28)}
+.nav-logout-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:linear-gradient(135deg,#FFF1EA,#FFE1D2);color:var(--error);border:none;border-radius:100px;font-family:var(--ff);font-size:.78rem;font-weight:800;cursor:pointer;transition:all .18s;box-shadow:0 10px 22px rgba(229,62,62,.10)}
+.nav-logout-btn:hover{background:linear-gradient(135deg,var(--error),#C53030);color:#fff;transform:translateY(-1px)}
+.nav-logout-ico{line-height:1}
 
 /* BREADCRUMB */
-.breadcrumb{max-width:1200px;margin:0 auto;padding:14px 24px 0;display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--mid)}
+.breadcrumb{max-width:var(--max-content);margin:0 auto;padding:18px 24px 0;display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mid)}
 .bc-sep{opacity:.4}.bc-link{color:var(--mid);text-decoration:none;transition:color .18s}.bc-link:hover{color:var(--orange)}.bc-current{color:var(--black);font-weight:600}
 
 /* PRODUCT PAGE LAYOUT */
-.product-page{max-width:1200px;margin:0 auto;padding:20px 24px 60px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.product-page{max-width:var(--max-content);margin:0 auto;padding:24px 24px 72px;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:54px;align-items:start}
 
 /* GALLERY */
 .gallery-col{position:sticky;top:86px}
-.main-img-wrap{width:100%;aspect-ratio:1/1;border-radius:calc(var(--radius-2xl) + 2px);overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.9));border:1.5px solid rgba(255,255,255,.74);box-shadow:var(--shadow-lg);position:relative;cursor:zoom-in;backdrop-filter:blur(16px)}
+.main-img-wrap{width:100%;aspect-ratio:1/1;border-radius:30px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.99),rgba(255,255,255,.92));border:1px solid rgba(255,255,255,.82);box-shadow:var(--shadow-xl);position:relative;cursor:zoom-in;backdrop-filter:blur(16px)}
 .main-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.34,1.2,.64,1)}
 .main-img:hover{transform:scale(1.06)}
 .main-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:7rem;background:linear-gradient(135deg,var(--orange-pale),#FFF8F0)}
@@ -81,7 +95,7 @@ nav{position:sticky;top:0;z-index:200}
 .shop-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;background:var(--white);border:1.5px solid var(--border);border-radius:100px;font-size:.76rem;font-weight:600;color:var(--navy);text-decoration:none;transition:all .18s;box-shadow:var(--shadow-sm)}
 .shop-chip:hover{border-color:var(--navy);background:#EEF3FF}
 .cat-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;background:var(--orange-pale);border-radius:100px;font-size:.72rem;font-weight:700;color:var(--orange-dark)}
-.prod-name-big{font-family:var(--fb);font-size:1.96rem;font-weight:900;color:#172033;line-height:1.02;letter-spacing:-.055em;margin-bottom:10px;text-wrap:balance}
+.prod-name-big{font-family:var(--ff);font-size:3.15rem;font-weight:700;color:#162033;line-height:.96;letter-spacing:-.045em;margin-bottom:14px;text-wrap:balance}
 .rating-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .stars-display{display:flex;gap:2px}
 .rating-val{font-family:var(--ff);font-size:1rem;font-weight:800;color:var(--black)}
@@ -89,8 +103,8 @@ nav{position:sticky;top:0;z-index:200}
 .rating-divider{width:4px;height:4px;border-radius:50%;background:var(--border)}
 .verified-badge{display:inline-flex;align-items:center;gap:4px;font-size:.68rem;font-weight:700;color:var(--success);background:#EDFBF3;border:1px solid rgba(14,166,107,.2);padding:3px 9px;border-radius:100px}
 
-.price-block{display:flex;align-items:center;gap:12px;padding:18px 22px;background:linear-gradient(135deg,#FFF5ED,#FFFFFF 72%);border:1.5px solid rgba(255,107,26,.15);border-radius:var(--radius-xl);margin-bottom:18px;box-shadow:var(--shadow-sm)}
-.price-main{font-family:var(--ff);font-size:2.4rem;font-weight:800;color:var(--black);line-height:1}
+.price-block{display:flex;align-items:center;gap:14px;padding:22px 24px;background:linear-gradient(135deg,rgba(255,245,237,.96),rgba(255,255,255,.96) 72%);border:1px solid rgba(255,107,26,.14);border-radius:26px;margin-bottom:20px;box-shadow:var(--shadow-md)}
+.price-main{font-family:var(--ff);font-size:3rem;font-weight:700;color:var(--black);line-height:.95}
 .price-main sup{font-size:1rem;vertical-align:top;margin-top:5px;color:var(--mid)}
 .price-orig{font-size:1.1rem;color:#C0B8B0;text-decoration:line-through;font-weight:500}
 .price-save{font-size:.78rem;font-weight:800;color:var(--success);background:#EDFBF3;padding:4px 10px;border-radius:100px;border:1px solid rgba(14,166,107,.2)}
@@ -105,7 +119,7 @@ nav{position:sticky;top:0;z-index:200}
 .desc-section{margin-bottom:18px}
 .section-label{font-family:var(--fb);font-size:.64rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--orange-dark);margin-bottom:10px;display:flex;align-items:center;gap:12px;line-height:1}
 .section-label::after{content:'';flex:1;height:2px;border-radius:999px;background:linear-gradient(90deg,rgba(255,107,26,.32),transparent)}
-.desc-text{font-size:.88rem;color:var(--black);line-height:1.75;font-weight:500}
+.desc-text{font-size:.95rem;color:var(--black);line-height:1.85;font-weight:500}
 .desc-text.clamped{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .read-more-btn{font-size:.78rem;font-weight:700;color:var(--orange);background:none;border:none;cursor:pointer;font-family:var(--fb);padding:6px 0;display:inline-flex;align-items:center;gap:4px}
 
@@ -121,7 +135,7 @@ nav{position:sticky;top:0;z-index:200}
 .dc-title{font-size:.84rem;font-weight:700;color:var(--navy);margin-bottom:2px}
 .dc-sub{font-size:.74rem;color:#1d4ed8;line-height:1.5}
 
-.action-bar{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.92));border:1.5px solid rgba(255,255,255,.74);border-radius:calc(var(--radius-xl) + 2px);padding:22px;margin-bottom:18px;box-shadow:var(--shadow-lg);backdrop-filter:blur(18px)}
+.action-bar{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.93));border:1px solid rgba(255,255,255,.8);border-radius:28px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow-lg);backdrop-filter:blur(18px)}
 .qty-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
 .qty-label{font-size:.76rem;font-weight:700;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;flex:1}
 .qty-ctrl{display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);background:rgba(255,255,255,.82)}
@@ -145,14 +159,14 @@ nav{position:sticky;top:0;z-index:200}
 .trust-ico{width:28px;height:28px;border-radius:var(--radius-sm);background:var(--light);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
 
 /* FULL SECTIONS */
-.full-section{max-width:1200px;margin:0 auto;padding:0 24px 60px}
-.section-hdr{font-family:var(--fb);font-size:1.42rem;font-weight:900;color:#172033;margin-bottom:22px;display:flex;align-items:center;gap:14px;letter-spacing:-.05em;line-height:1.04;text-wrap:balance}
+.full-section{max-width:var(--max-content);margin:0 auto;padding:0 24px 72px}
+.section-hdr{font-family:var(--ff);font-size:2.35rem;font-weight:700;color:#172033;margin-bottom:24px;display:flex;align-items:center;gap:14px;letter-spacing:-.04em;line-height:.98;text-wrap:balance}
 .section-hdr::after{content:'';flex:1;height:2px;border-radius:999px;background:linear-gradient(90deg,rgba(255,107,26,.22),transparent)}
 
 /* SHOP INFO */
-.shop-info-card{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.92));border:1.5px solid rgba(255,255,255,.74);border-radius:calc(var(--radius-xl) + 2px);padding:26px;box-shadow:var(--shadow-lg);display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;backdrop-filter:blur(18px)}
+.shop-info-card{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.92));border:1px solid rgba(255,255,255,.8);border-radius:30px;padding:28px;box-shadow:var(--shadow-lg);display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;backdrop-filter:blur(18px)}
 .sic-icon{width:64px;height:64px;border-radius:var(--radius-lg);background:var(--orange-pale);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0}
-.sic-name{font-family:var(--ff);font-size:1.05rem;font-weight:800;color:var(--black);margin-bottom:3px}
+.sic-name{font-family:var(--ff);font-size:1.5rem;font-weight:700;color:var(--black);margin-bottom:4px;letter-spacing:-.025em}
 .sic-cat{font-size:.75rem;color:var(--orange);font-weight:600;margin-bottom:5px}
 .sic-meta{display:flex;gap:10px;flex-wrap:wrap}
 .sic-meta-item{font-size:.72rem;color:var(--mid);display:flex;align-items:center;gap:4px}
@@ -184,7 +198,7 @@ nav{position:sticky;top:0;z-index:200}
 
 /* Review cards */
 .reviews-list{display:flex;flex-direction:column;gap:14px}
-.review-card{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.9));border:1.5px solid rgba(255,255,255,.72);border-radius:var(--radius-xl);padding:20px 22px;box-shadow:var(--shadow-sm);transition:all .18s;backdrop-filter:blur(14px)}
+.review-card{background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(255,255,255,.91));border:1px solid rgba(255,255,255,.78);border-radius:26px;padding:22px 24px;box-shadow:var(--shadow-sm);transition:all .18s;backdrop-filter:blur(14px)}
 .review-card:hover{border-color:rgba(255,107,26,.18);box-shadow:var(--shadow-md)}
 .review-card.verified-purchase{border-left:3px solid var(--success)}
 .rc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
@@ -260,7 +274,7 @@ textarea.form-i{min-height:90px;resize:vertical}
    RETURN & REFUND SECTION
 ══════════════════════════════════════════ */
 .return-refund-section{margin-bottom:40px}
-.rr-card{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.92));border:1.5px solid rgba(255,255,255,.74);border-radius:calc(var(--radius-xl) + 2px);overflow:hidden;box-shadow:var(--shadow-lg);backdrop-filter:blur(18px)}
+.rr-card{background:linear-gradient(180deg,rgba(255,255,255,.99),rgba(255,255,255,.93));border:1px solid rgba(255,255,255,.8);border-radius:30px;overflow:hidden;box-shadow:var(--shadow-lg);backdrop-filter:blur(18px)}
 .rr-header{background:linear-gradient(135deg,var(--navy),var(--navy-light));padding:20px 24px;display:flex;align-items:center;gap:14px}
 .rr-header-icon{width:48px;height:48px;border-radius:var(--radius-md);background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
 .rr-header-info{flex:1}
@@ -416,7 +430,7 @@ textarea.form-i{min-height:90px;resize:vertical}
 /* SKELETON */
 .skel{background:linear-gradient(90deg,#f0ebe4 25%,#e8e2db 50%,#f0ebe4 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.skeleton-page{max-width:1200px;margin:0 auto;padding:20px 24px 60px;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.skeleton-page{max-width:var(--max-content);margin:0 auto;padding:24px 24px 72px;display:grid;grid-template-columns:1fr 1fr;gap:54px}
 .skel-img{aspect-ratio:1/1;border-radius:var(--radius-2xl)}
 .skel-col{display:flex;flex-direction:column;gap:12px;padding-top:8px}
 
@@ -427,11 +441,11 @@ textarea.form-i{min-height:90px;resize:vertical}
 .nf-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;background:var(--orange);color:#fff;border:none;border-radius:var(--radius-md);font-family:var(--ff);font-size:.88rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s}
 
 /* Responsive */
-@media(max-width:1200px){.nav-c,.breadcrumb,.product-page,.full-section,.skeleton-page{padding-left:18px;padding-right:18px}.product-page,.skeleton-page{gap:28px}.related-grid{grid-template-columns:repeat(4,1fr)}.reviews-layout{grid-template-columns:260px 1fr}}
+@media(max-width:1200px){.nav-c,.breadcrumb,.product-page,.full-section,.skeleton-page{padding-left:18px;padding-right:18px}.product-page,.skeleton-page{gap:32px}.related-grid{grid-template-columns:repeat(4,1fr)}.reviews-layout{grid-template-columns:260px 1fr}.prod-name-big{font-size:2.6rem}.section-hdr{font-size:2rem}.price-main{font-size:2.6rem}}
 @media(max-width:1024px){.reviews-layout{grid-template-columns:240px 1fr}.product-page,.skeleton-page{grid-template-columns:1fr;gap:24px}.gallery-col{position:static}}
 @media(max-width:900px){.nav-c{padding:0 18px}.breadcrumb{padding-top:12px;flex-wrap:wrap}.reviews-layout{grid-template-columns:1fr}.rating-overview{position:static}.shop-info-card{grid-template-columns:auto 1fr;grid-template-rows:auto auto}.rr-policies{grid-template-columns:1fr}.rr-type-grid{grid-template-columns:1fr}.trust-row{gap:8px}.trust-item{min-width:calc(50% - 8px)}}
 @media(max-width:768px){.top-banner{font-size:.66rem;padding:8px 10px;line-height:1.6}.nav-c{padding:0 14px;height:62px;gap:10px}.logo{font-size:1.32rem}.back-btn{padding:7px 11px;font-size:.76rem}.product-page{padding:14px 14px 100px}.full-section{padding:0 14px 40px}.related-grid{grid-template-columns:repeat(2,1fr)}.sticky-buy-bar{display:block}.specs-grid{grid-template-columns:1fr}.spec-row{border-right:none!important}.price-block{flex-wrap:wrap}.actions-grid{grid-template-columns:1fr}.qty-row{flex-wrap:wrap;gap:10px}.shop-info-card{grid-template-columns:1fr;gap:14px}.btn-visit-shop{width:100%}.rr-header{padding:18px 18px}.rr-body,.shop-info-card,.rating-overview,.review-form{padding:18px}.modal{width:min(100%,calc(100vw - 20px))}}
-@media(max-width:560px){.nav-c{padding:0 12px}.back-btn{font-size:0;padding:8px 10px}.back-btn::after{content:'Back';font-size:.74rem}.cart-nav-pill{padding:8px 12px;font-size:.74rem}.product-page{padding-left:12px;padding-right:12px}.full-section{padding-left:12px;padding-right:12px}.main-img-wrap{border-radius:20px}.thumb{width:58px;height:58px}.shop-chip,.cat-chip{font-size:.68rem}.prod-name-big{font-size:1.56rem}.price-main{font-size:2rem}.price-orig{font-size:.95rem}.delivery-card{padding:14px}.trust-item{min-width:100%}.related-grid{grid-template-columns:1fr}.sticky-buy-bar{padding:10px 12px}.sbb-inner{gap:8px}.btn-add-to-cart,.btn-buy-now{padding:13px 16px}}
+@media(max-width:560px){.nav-c{padding:0 12px}.back-btn{font-size:0;padding:8px 10px}.back-btn::after{content:'Back';font-size:.74rem}.nav-logout-btn{padding:8px 10px}.nav-logout-txt{display:none}.cart-nav-pill{padding:8px 12px;font-size:.74rem}.product-page{padding-left:12px;padding-right:12px}.full-section{padding-left:12px;padding-right:12px}.main-img-wrap{border-radius:20px}.thumb{width:58px;height:58px}.shop-chip,.cat-chip{font-size:.68rem}.prod-name-big{font-size:1.56rem}.price-main{font-size:2rem}.price-orig{font-size:.95rem}.delivery-card{padding:14px}.trust-item{min-width:100%}.related-grid{grid-template-columns:1fr}.sticky-buy-bar{padding:10px 12px}.sbb-inner{gap:8px}.btn-add-to-cart,.btn-buy-now{padding:13px 16px}}
 @media(max-width:420px){.modal-hdr{padding:18px 18px 0}.modal-title{font-size:1rem}.section-hdr{font-size:1.14rem}.price-main{font-size:1.86rem}.rating-row{gap:8px}.nf-title{font-size:1.34rem}}
 </style>
 </head>
@@ -443,6 +457,7 @@ textarea.form-i{min-height:90px;resize:vertical}
   <div class="nav-c">
     <a class="logo" href="index.html"><span class="l">Local</span><span class="s">Shore</span></a>
     <a class="back-btn" href="index.html">← Back to Shops</a>
+    <button class="nav-logout-btn" onclick="doLogout()"><span class="nav-logout-ico">↩</span><span class="nav-logout-txt">Logout</span></button>
     <button class="cart-nav-pill" id="cart-nav-pill" onclick="scrollToBuy()">🛒 <span id="cart-pill-txt">Add to Cart</span></button>
   </div>
 </nav>
@@ -650,7 +665,7 @@ textarea.form-i{min-height:90px;resize:vertical}
         <div class="rr-header-icon">🛡️</div>
         <div class="rr-header-info">
           <div class="rr-header-title">LocalShore Buyer Protection</div>
-          <div class="rr-header-sub">Easy returns within 7 days · Fast refund processing · No questions asked on damaged items</div>
+          <div class="rr-header-sub">Easy returns within 7 days · Refunds completed within 24 hours · No questions asked on damaged items</div>
         </div>
       </div>
 
@@ -669,7 +684,7 @@ textarea.form-i{min-height:90px;resize:vertical}
         <div class="rr-policy">
           <div class="rr-pol-icon">⚡</div>
           <div class="rr-pol-title">Fast Processing</div>
-          <div class="rr-pol-sub">Refunds processed within 3–5 business days</div>
+          <div class="rr-pol-sub">Refunds completed within 24 hours after approval</div>
         </div>
       </div>
 
@@ -680,7 +695,7 @@ textarea.form-i{min-height:90px;resize:vertical}
         <div id="rr-no-orders" class="no-eligible-orders">
           <div class="neo-icon">📦</div>
           <div class="neo-title">No eligible orders found</div>
-          <div class="neo-sub">You need to have a delivered order for this product to request a return or refund.</div>
+          <div class="neo-sub">Return and refund requests become available only after delivery, within 7 days of receiving the product.</div>
         </div>
 
         <!-- Request form (shown when eligible orders exist) -->
@@ -700,7 +715,7 @@ textarea.form-i{min-height:90px;resize:vertical}
             <button class="rr-type-btn" id="rr-type-refund" onclick="setRRType('refund')">
               <span class="rr-type-icon">💰</span>
               <span class="rr-type-label">Refund Only</span>
-              <span class="rr-type-sub">Keep item, get partial refund</span>
+              <span class="rr-type-sub">Request money back for a delivery issue</span>
             </button>
           </div>
 
@@ -826,6 +841,9 @@ firebase.initializeApp({
 });
 var db = firebase.firestore();
 var storage = firebase.storage();
+var authApp;
+try{authApp=firebase.app('localshoreAuth');}catch(e){authApp=firebase.initializeApp({apiKey:"AIzaSyBhJFfwG-nccspkiaayrbZ3KBedut_pmYo",authDomain:"localshore-otp.firebaseapp.com",projectId:"localshore-otp",storageBucket:"localshore-otp.firebasestorage.app",messagingSenderId:"495414372051",appId:"1:495414372051:web:8af84c326f3d5939fad626",measurementId:"G-05BETR2Y4D"},'localshoreAuth');}
+var auth = firebase.auth(authApp);
 
 // ─── Utils ────────────────────────────────────────────
 function sv(k,v){try{localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v));}catch(e){}}
@@ -835,6 +853,7 @@ function eh(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(
 function getDeviceId(){var id=localStorage.getItem('ls_device_id');if(!id){id='dev_'+Math.random().toString(36).slice(2)+Date.now();localStorage.setItem('ls_device_id',id);}return id;}
 var DEVICE_ID=getDeviceId();
 function toast(m,t){var e=document.getElementById('toast');e.textContent=m;e.className='toast-pop show'+(t?' '+t:'');clearTimeout(toast._t);toast._t=setTimeout(function(){e.className='toast-pop';},3200);}
+function doLogout(){if(!confirm('Sign out of LocalShore?'))return;try{localStorage.setItem('ls_force_login','true');localStorage.removeItem('ls_logged_in');localStorage.removeItem('ls_user_data');}catch(e){}toast('Signed out. Redirecting to login...','info');auth.signOut().catch(function(){}).finally(function(){setTimeout(function(){window.location.replace('index.html');},300);});}
 function prodIco(c){var m={'Groceries':'🛒','Fruits & Vegetables':'🍎','Dairy & Eggs':'🥛','Electronics':'📱','Fashion & Clothing':'👗','Home & Kitchen':'🍳','Medical & Health':'💊','Sports & Fitness':'⚽','Kids & Toys':'🧸','Books & Stationery':'📚','Meat & Seafood':'🥩','Bakery & Sweets':'🍮','Food & Sweets':'🍮','Medical / Pharmacy':'💊'};return m[c]||'📦';}
 function catIco(c){var m={'General Store':'🏪','Electronics':'📱','Fruits & Vegetables':'🍎','Medical / Pharmacy':'💊','Fashion & Clothing':'👗','Bakery':'🥐','Groceries':'🛒','Dairy & Eggs':'🥛'};return m[c]||'🏪';}
 function starsHtml(rating,size){size=size||'1rem';var s=Math.round(rating*2)/2;var h='';for(var i=1;i<=5;i++){if(s>=i)h+='<span style="color:#F5A623;font-size:'+size+'">★</span>';else if(s>=i-.5)h+='<span style="color:#F5A623;font-size:'+size+'">½</span>';else h+='<span style="color:#DDD;font-size:'+size+'">★</span>';}return h;}
@@ -1379,22 +1398,77 @@ document.addEventListener('keydown',function(e){
 // RETURN & REFUND SYSTEM
 // ══════════════════════════════════════════════════════
 var _eligibleOrders=[];
+var RR_ELIGIBLE_STATUSES=['Delivered'];
+
+function matchesProductInOrder(order,productId){
+  if(order.productId===productId)return true;
+  if(order.items&&order.items.some(function(item){return item.productId===productId;}))return true;
+  return false;
+}
+
+function getOrderReferenceDate(order){
+  return order.deliveredAt||order.updatedAt||order.orderedAt||order.createdAt||new Date().toISOString();
+}
+
+function isEligibleOrderStatus(status){
+  return RR_ELIGIBLE_STATUSES.indexOf(status)>=0;
+}
+
+function getOrderDaysAgo(order){
+  var refDate=new Date(getOrderReferenceDate(order));
+  if(isNaN(refDate.getTime()))return 0;
+  return Math.max(0,Math.round((Date.now()-refDate.getTime())/(1000*60*60*24)));
+}
+
+function getRRProductSnapshot(order){
+  if(!order)return {name:'Product',amount:0,icon:'📦'};
+  if(order.productId===(_product?_product.id:'')){
+    return {
+      name:order.productName||(_product?_product.name:'Product'),
+      amount:order.total||((order.price||0)*(order.qty||1))||0,
+      icon:prodIco(order.category)
+    };
+  }
+  if(order.items&&order.items.length){
+    var matched=order.items.find(function(item){return item.productId===(_product?_product.id:'');});
+    if(matched){
+      return {
+        name:matched.name||matched.productName||(_product?_product.name:'Product'),
+        amount:matched.total||((matched.price||0)*(matched.qty||1))||order.total||0,
+        icon:prodIco(matched.category||order.category)
+      };
+    }
+    return {
+      name:order.items.length+' items',
+      amount:order.total||0,
+      icon:'🛒'
+    };
+  }
+  return {name:order.productName||'Product',amount:order.total||0,icon:prodIco(order.category)};
+}
+
+function getOrderStatusText(status){
+  var labels={
+    'Confirmed':'Order placed',
+    'Processing':'Preparing your order',
+    'Packed':'Packed and ready',
+    'Out for Delivery':'Out for delivery',
+    'Delivered':'Delivered'
+  };
+  return labels[status]||status||'Order placed';
+}
 
 function loadEligibleOrders(productId){
-  db.collection('orders').where('deviceId','==',DEVICE_ID).where('status','==','Delivered').get().then(function(snap){
+  db.collection('orders').where('deviceId','==',DEVICE_ID).get().then(function(snap){
     _eligibleOrders=[];
     snap.docs.forEach(function(d){
       var o=Object.assign({id:d.id},d.data());
-      var isEligible=false;
-      if(o.productId===productId)isEligible=true;
-      if(o.items&&o.items.some(function(i){return i.productId===productId;}))isEligible=true;
-      // Check within 7 days
-      if(isEligible){
-        var orderDate=new Date(o.orderedAt);var now=new Date();
-        var daysDiff=(now-orderDate)/(1000*60*60*24);
+      if(matchesProductInOrder(o,productId)&&isEligibleOrderStatus(o.status)){
+        var daysDiff=getOrderDaysAgo(o);
         if(daysDiff<=7)_eligibleOrders.push(o);
       }
     });
+    _eligibleOrders.sort(function(a,b){return new Date(getOrderReferenceDate(b))-new Date(getOrderReferenceDate(a));});
     renderEligibleOrders();
     checkVerifiedPurchase(productId);
   }).catch(function(){});
@@ -1408,17 +1482,19 @@ function renderEligibleOrders(){
 
   // Pre-fill phone
   document.getElementById('rr-phone').value=ld('ls_del_phone');
+  if(!document.getElementById('rr-phone').value){
+    var currentUser=ldJ('ls_user_data',null);
+    document.getElementById('rr-phone').value=currentUser&&currentUser.phone?currentUser.phone:'';
+  }
 
   var selector=document.getElementById('rr-order-selector');
   selector.innerHTML=_eligibleOrders.map(function(o,idx){
-    var isCart=o.type==='cart'&&o.items&&o.items.length>1;
-    var name=isCart?o.items.length+' items':o.productName;
-    var icon=isCart?'🛒':prodIco(o.category);
-    var daysAgo=Math.round((new Date()-new Date(o.orderedAt))/(1000*60*60*24));
+    var snapshot=getRRProductSnapshot(o);
+    var daysAgo=getOrderDaysAgo(o);
     return'<div class="order-sel-item'+(idx===0?' selected':'')+'" onclick="selectRROrder(\''+o.id+'\',this)" data-id="'+o.id+'">'
-      +'<div class="osi-icon">'+icon+'</div>'
-      +'<div class="osi-info"><div class="osi-name">'+eh(name)+'</div><div class="osi-meta">'+daysAgo+'d ago · #'+o.id.slice(-8)+'</div></div>'
-      +'<div class="osi-price">₹'+o.total+'</div>'
+      +'<div class="osi-icon">'+snapshot.icon+'</div>'
+      +'<div class="osi-info"><div class="osi-name">'+eh(snapshot.name)+'</div><div class="osi-meta">'+getOrderStatusText(o.status)+' · '+daysAgo+'d ago · #'+o.id.slice(-8)+'</div></div>'
+      +'<div class="osi-price">₹'+snapshot.amount+'</div>'
       +'<div class="osi-check">✓</div>'
       +'</div>';
   }).join('');
@@ -1487,22 +1563,21 @@ function submitReturnRequest(){
 
   uploadEvidenceImages().then(function(evidenceUrls){
     var order=_eligibleOrders.find(function(o){return o.id===_rrSelectedOrderId;});
-    var isCart=order&&order.type==='cart'&&order.items&&order.items.length>1;
-    var productName=order?(isCart?order.items.length+' items':order.productName):'Product';
+    var snapshot=getRRProductSnapshot(order);
     var request={
       deviceId:DEVICE_ID,productId:_product?_product.id:'',
-      productName:_product?_product.name:productName,
+      productName:snapshot.name||(_product?_product.name:'Product'),
       orderId:_rrSelectedOrderId,shopId:_product?_product.shopId:'',
       shopName:_shop?_shop.name:'',
       requestType:_rrType,reason:reason,description:desc,
       evidenceImages:evidenceUrls,phone:phone,
-      status:'pending',
-      refundAmount:order?order.total:0,
+      status:'pending',orderStatus:order?order.status:'',
+      refundAmount:snapshot.amount||0,
       createdAt:new Date().toISOString()
     };
     return db.collection('return_requests').add(request);
   }).then(function(){
-    toast(_rrType==='return'?'↩️ Return request submitted! We\'ll contact you shortly.':'💰 Refund request submitted! Processing in 3-5 days.','info');
+    toast(_rrType==='return'?'↩️ Return request submitted! We\'ll contact you shortly.':'💰 Refund request submitted! It will be completed within 24 hours.','info');
     document.getElementById('rr-reason').value='';
     document.getElementById('rr-description').value='';
     _evImgFiles=[];document.getElementById('ev-preview').innerHTML='';
@@ -1532,12 +1607,12 @@ function renderReturnRequests(requests){
     var statusLabel=STATUS_LABELS[r.status]||r.status;var statusClass=STATUS_CLASSES[r.status]||'rrs-pending';
     var bgMap={'return':'background:#F5F3FF','refund':'background:#EDFBF3'};
     return'<div class="rr-status-card">'
-      +'<div class="rr-sc-icon" style="'+((bgMap[r.requestType])||'background:var(--light))+'">'+(TYPE_ICONS[r.requestType]||'📋')+'</div>'
+      +'<div class="rr-sc-icon" style="'+((bgMap[r.requestType])||'background:var(--light)')+'">'+(TYPE_ICONS[r.requestType]||'📋')+'</div>'
       +'<div class="rr-sc-info">'
       +'<div class="rr-sc-title">'+(r.requestType==='return'?'Return Request':'Refund Request')+' · ₹'+(r.refundAmount||0)+'</div>'
       +'<div class="rr-sc-meta">'+formatDate(r.createdAt)+' · Order #'+r.orderId.slice(-8)+'<br><span style="font-size:.67rem;color:var(--mid)">Reason: '+eh(r.reason)+'</span></div>'
       +'<span class="rr-sc-status '+statusClass+'">'+statusLabel+'</span>'
-      +(r.status==='approved'?'<div style="font-size:.72rem;color:var(--success);margin-top:5px;font-weight:600">✅ Refund will be processed in 3–5 business days</div>':'')
+      +(r.status==='approved'?'<div style="font-size:.72rem;color:var(--success);margin-top:5px;font-weight:600">✅ Refund will be completed within 24 hours</div>':'')
       +(r.status==='rejected'?'<div style="font-size:.72rem;color:var(--error);margin-top:5px">❌ Request was rejected. Contact support for help.</div>':'')
       +'</div>'
       +'</div>';
