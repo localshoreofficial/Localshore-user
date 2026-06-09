@@ -497,9 +497,7 @@ radial-gradient(circle at top right,rgba(255,107,26,.10),transparent 28%)}
 .btn-wish:hover{border-color:#ff6b6b;background:#FFF0F0}.btn-wish.wished{background:#FFF0F0;border-color:#ff6b6b}
 .out-label{flex:1;text-align:center;font-size:.71rem;color:var(--error);font-weight:700;padding:9px;background:#FEF2F2;border-radius:10px}
 
-/* CART DRAWER */
-.cart-drawer{flex-shrink:0;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.92));border-top:2px solid var(--orange);box-shadow:0 -18px 48px rgba(16,24,40,.10);max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(16px)}
-.cart-drawer.open{max-height:420px}
+/* CART POPUP */
 .cart-drawer-inner{padding:16px 24px 20px}
 .cart-drawer-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .cart-drawer-title{display:flex;align-items:center;gap:9px}
@@ -535,16 +533,8 @@ radial-gradient(circle at top right,rgba(255,107,26,.10),transparent 28%)}
 .btn-cart-checkout{padding:12px 28px;background:linear-gradient(135deg,var(--orange),var(--orange-mid));color:#fff;border:none;border-radius:var(--r-md);font-family:var(--ff);font-size:.9rem;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;box-shadow:0 4px 16px rgba(255,107,26,.35);letter-spacing:.01em}
 .btn-cart-checkout:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,26,.45)}
 .btn-cart-checkout:disabled{cursor:not-allowed;opacity:.6;transform:none;box-shadow:none;background:linear-gradient(135deg,#CBD5E1,#94A3B8)}
-.cart-toggle-bar{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:linear-gradient(135deg,var(--orange),var(--orange-mid));cursor:pointer;transition:background .18s;flex-shrink:0}
-.cart-toggle-bar:hover{background:linear-gradient(135deg,var(--orange-dark),var(--orange))}
-.cart-toggle-bar.hidden{display:none}
-.ctb-left{display:flex;align-items:center;gap:10px}
-.ctb-badge{background:rgba(255,255,255,.25);color:#fff;font-size:.72rem;font-weight:800;padding:2px 9px;border-radius:100px}
-.ctb-title{color:#fff;font-size:.85rem;font-weight:700;font-family:var(--ff)}
-.ctb-right{display:flex;align-items:center;gap:10px}
-.ctb-total{color:rgba(255,255,255,.9);font-size:.9rem;font-weight:800}
-.ctb-arrow{color:rgba(255,255,255,.7);font-size:.75rem;transition:transform .25s}
-.cart-toggle-bar.cart-open .ctb-arrow{transform:rotate(180deg)}
+#cart-modal .modal{max-width:760px;max-height:88vh;display:flex;flex-direction:column}
+#cart-modal .cart-modal-body{padding:18px 24px 22px;overflow-y:auto}
 
 /* DELIVERY MODAL */
 #delivery-modal .modal{max-width:490px}
@@ -1103,8 +1093,14 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
   <div class="modal">
     <div class="shop-modal-hdr"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div><div class="modal-title" id="sm-title">Shop</div><div style="font-size:.73rem;color:var(--mid);margin-top:3px" id="sm-sub"></div></div><button class="modal-close" onclick="closeShopModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div>
     <div class="shop-modal-body" id="sm-body"></div>
-    <div class="cart-toggle-bar hidden" id="cart-toggle-bar" onclick="toggleCartDrawer()"><div class="ctb-left"><span style="font-size:1rem">🛒</span><span class="ctb-title">Your Cart</span><span class="ctb-badge" id="ctb-badge">0</span></div><div class="ctb-right"><span class="ctb-total" id="ctb-total">₹0</span><span class="ctb-arrow">▲</span></div></div>
-    <div class="cart-drawer" id="cart-drawer"><div class="cart-drawer-inner"><div class="cart-drawer-hdr"><div class="cart-drawer-title"><h3>Cart</h3><span class="cart-count-pill" id="cart-count-pill">0 items</span></div><button class="cart-clear-btn" onclick="clearCart()">Clear All</button></div><div class="cart-items-list" id="cart-items-list"></div><div class="cart-footer-row"><div class="cart-total-block"><div class="cart-total-lbl">Total Bill</div><div class="cart-total-val" id="cart-total-val">₹0</div></div><button class="btn-cart-checkout" onclick="checkoutCart()"><span>Checkout</span><span style="font-size:.75rem;opacity:.85">→</span></button></div></div></div>
+  </div>
+</div>
+
+<!-- CART MODAL -->
+<div class="overlay" id="cart-modal" onclick="if(event.target===this)closeCartModal()">
+  <div class="modal">
+    <div class="modal-hdr" style="padding-bottom:16px;border-bottom:1px solid var(--border);flex-shrink:0"><div class="modal-title">Your Cart</div><button class="modal-close" onclick="closeCartModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="cart-drawer-inner cart-modal-body"><div class="cart-drawer-hdr"><div class="cart-drawer-title"><h3>Cart</h3><span class="cart-count-pill" id="cart-count-pill">0 items</span></div><button class="cart-clear-btn" onclick="clearCart()">Clear All</button></div><div class="cart-items-list" id="cart-items-list"></div><div class="cart-footer-row"><div class="cart-total-block"><div class="cart-total-lbl">Total Bill</div><div class="cart-total-val" id="cart-total-val">₹0</div></div><button class="btn-cart-checkout" onclick="checkoutCart()"><span>Checkout</span><span style="font-size:.75rem;opacity:.85">→</span></button></div></div>
   </div>
 </div>
 
@@ -1228,7 +1224,7 @@ var trackMap=null,trackMapInit=false,trackDeliveryMarker=null,trackUserMarker=nu
 var _trackInterval=null,_trackOrder=null,_confirmOrderId=null;
 var _ordersCache=[],_activeOrdersFilter='all';
 var _cart=ldJ('ls_cart',{shopId:null,shopName:'',items:[]});
-var _cartDrawerOpen=false;
+var _cartModalOpen=false;
 var _cartRequested=false;
 var _currentUser=null;
 var _banners=[],_offers=[];
@@ -1327,7 +1323,7 @@ function setLanguage(lang){if(!I18N[lang])lang='en';_lang=lang;sv('ls_lang',_lan
 function toggleSettingsPanel(){var wrap=document.getElementById('settings-wrap');if(!wrap)return;wrap.classList.toggle('open');updateSettingsButtons();}
 function closeSettingsPanel(){var wrap=document.getElementById('settings-wrap');if(wrap)wrap.classList.remove('open');updateSettingsButtons();}
 function updateNavCartBtn(){var btn=document.getElementById('nav-cart-btn'),countEl=document.getElementById('nav-cart-count'),label=document.getElementById('nav-cart-lbl');if(!btn||!countEl||!label)return;var count=getCartItemCount();countEl.textContent=count;label.textContent='Cart';btn.classList.toggle('empty-cart',count<1);}
-function handleNavCartClick(){_cartRequested=true;updateCartUI();openCartDrawer();var drawer=document.getElementById('cart-toggle-bar');if(drawer)drawer.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function handleNavCartClick(){_cartRequested=true;updateCartUI();openCartModal();}
 
 // ====== AUTH ======
 function loadCurrentUser(){var raw=ld('ls_user_data');if(raw){try{_currentUser=JSON.parse(raw);}catch(e){_currentUser=null;}}updateNavProfileBtn();}
@@ -1681,38 +1677,30 @@ function refreshProductCard(pid){var card=document.getElementById('pcard-'+pid);
 function toggleProductQuickView(e,pid){if(e.target.closest('button,input,a,label'))return;var card=document.getElementById('pcard-'+pid);if(!card)return;var willOpen=!card.classList.contains('show-quick');document.querySelectorAll('.prod-card.show-quick').forEach(function(el){if(el!==card)el.classList.remove('show-quick');});card.classList.toggle('show-quick',willOpen);}
 function updateCartUI(){
   var total=getCartTotal();var count=_cart.items.length;var itemCount=getCartItemCount();
-  var tb=document.getElementById('cart-toggle-bar');var drawer=document.getElementById('cart-drawer');
   sv('ls_cart',JSON.stringify(_cart));
   updateNavCartBtn();
-  var clearBtn=document.querySelector('.cart-clear-btn');
-  var checkoutBtn=document.querySelector('.btn-cart-checkout');
+  var clearBtn=document.querySelector('#cart-modal .cart-clear-btn');
+  var checkoutBtn=document.querySelector('#cart-modal .btn-cart-checkout');
   if(!count){
-    tb.classList.toggle('hidden',!_cartRequested);
-    document.getElementById('ctb-badge').textContent='0 items';
-    document.getElementById('ctb-total').textContent='₹0';
     document.getElementById('cart-count-pill').textContent='0 items';
     document.getElementById('cart-total-val').innerHTML='₹0 <span>· 0 items</span>';
     document.getElementById('cart-items-list').innerHTML='<div class="cart-empty-card"><div class="cart-empty-ico">🛒</div><div class="cart-empty-title">Your cart is empty</div><div class="cart-empty-sub">Add products from nearby shops and they will appear here instantly.</div></div>';
     if(clearBtn)clearBtn.disabled=true;
     if(checkoutBtn)checkoutBtn.disabled=true;
-    if(_cartRequested){openCartDrawer();}else{drawer.classList.remove('open');tb.classList.remove('cart-open');_cartDrawerOpen=false;}
+    if(_cartRequested)openCartModal();
     return;
   }
   if(clearBtn)clearBtn.disabled=false;
   if(checkoutBtn)checkoutBtn.disabled=false;
-  tb.classList.remove('hidden');
-  document.getElementById('ctb-badge').textContent=itemCount+(itemCount===1?' item':' items');
-  document.getElementById('ctb-total').textContent='₹'+total;
   document.getElementById('cart-count-pill').textContent=count+(count===1?' item':' items');
   document.getElementById('cart-total-val').innerHTML='₹'+total+' <span>· '+itemCount+' item'+(itemCount>1?'s':'')+'</span>';
   document.getElementById('cart-items-list').innerHTML=_cart.items.map(function(item){
     return '<div class="cart-item-row"><div class="cart-item-thumb">'+(item.image?'<img src="'+item.image+'" onerror="this.style.display=\'none\'">':prodIco(item.category))+'</div><div class="cart-item-info"><div class="cart-item-name">'+eh(item.name)+'</div><div class="cart-item-price">₹'+item.price+' each</div></div><div class="cart-item-qty-ctrl"><button class="qty-btn" onclick="updateCartItemQty(\''+item.productId+'\',-1)">−</button><span class="cart-item-qty-val">'+item.qty+'</span><button class="qty-btn" onclick="updateCartItemQty(\''+item.productId+'\',1)">+</button></div><div class="cart-item-subtotal">₹'+(item.price*item.qty)+'</div><button class="cart-item-rm" onclick="removeFromCart(\''+item.productId+'\')">×</button></div>';
   }).join('');
-  if(count===1&&!_cartDrawerOpen)openCartDrawer();
+  if(_cartRequested&&!_cartModalOpen)openCartModal();
 }
-function toggleCartDrawer(){if(_cartDrawerOpen)closeCartDrawer();else openCartDrawer();}
-function openCartDrawer(){_cartRequested=true;_cartDrawerOpen=true;document.getElementById('cart-drawer').classList.add('open');document.getElementById('cart-toggle-bar').classList.add('cart-open');}
-function closeCartDrawer(){_cartRequested=false;_cartDrawerOpen=false;document.getElementById('cart-drawer').classList.remove('open');document.getElementById('cart-toggle-bar').classList.remove('cart-open');}
+function openCartModal(){_cartRequested=true;_cartModalOpen=true;document.getElementById('cart-modal').classList.add('open');document.body.style.overflow='hidden';}
+function closeCartModal(){_cartRequested=false;_cartModalOpen=false;document.getElementById('cart-modal').classList.remove('open');document.body.style.overflow='';}
 
 // ====== FIREBASE LISTENERS ======
 showShopsStatus(t('shops_status_loading'),'#EEF3FF','#1446A0');
@@ -1811,7 +1799,7 @@ function resetFilter(){_userLat=null;_userLng=null;_searchTerm='';document.getEl
 // ====== SHOP MODAL ======
 var _currentShopId=null;
 function openShopModal(shopId){goToShopPage(shopId);}
-function closeShopModal(){document.getElementById('shop-modal').classList.remove('open');document.body.style.overflow='';_cartDrawerOpen=false;document.getElementById('cart-drawer').classList.remove('open');document.getElementById('cart-toggle-bar').classList.remove('cart-open');}
+function closeShopModal(){document.getElementById('shop-modal').classList.remove('open');document.body.style.overflow='';}
 
 // ====== WISHLIST ======
 function toggleWish(productId,shopId){
@@ -1837,6 +1825,7 @@ function checkoutCart(){
   document.getElementById('del-summary').innerHTML=summaryHTML;
   prefillDeliveryForm();document.getElementById('pay-cod').checked=true;onPayMethodChange();
   _pendingOrder={type:'cart',cart:JSON.parse(JSON.stringify(_cart)),shop:shop};
+  closeCartModal();
   document.getElementById('delivery-modal').classList.add('open');document.body.style.overflow='hidden';setTimeout(initDelMap,100);
 }
 function prefillDeliveryForm(){document.getElementById('del-addr1').value=ld('ls_del_addr1');document.getElementById('del-city').value=ld('ls_del_city')||ld('ls_det_city');document.getElementById('del-pin').value=ld('ls_del_pin')||ld('ls_det_pin');document.getElementById('del-landmark').value=ld('ls_del_land');document.getElementById('del-phone').value=ld('ls_del_phone')||(_currentUser?_currentUser.phone||'':'');}
