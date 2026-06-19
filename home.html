@@ -12,15 +12,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script>
-    try {
-      if (localStorage.getItem('ls_logged_in') !== 'true') {
-        window.location.replace('index.html');
-      }
-    } catch (e) {
-      window.location.replace('index.html');
-    }
-  </script>
 <style>
 /* ===== RESET & ROOT ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -78,6 +69,16 @@ nav::before{content:'';position:absolute;left:18px;right:18px;top:0;height:1px;b
 .nav-badge.show{display:flex}
 .nav-spacer{flex:1}
 .nav-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.guest-auth-actions{display:none;align-items:center;gap:10px;flex-shrink:0}
+.guest-auth-link{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:999px;text-decoration:none;font-size:.8rem;font-weight:700;color:var(--mid);transition:all .18s;white-space:nowrap}
+.guest-auth-link:hover{background:rgba(255,255,255,.88);color:var(--navy);box-shadow:0 10px 22px rgba(16,24,40,.06),0 0 0 1px rgba(19,46,103,.05) inset}
+.guest-auth-primary{padding:10px 18px;background:linear-gradient(135deg,var(--orange),var(--orange-mid));color:#fff;box-shadow:0 12px 24px rgba(255,107,26,.18)}
+.guest-auth-primary:hover{background:linear-gradient(135deg,var(--orange-dark),var(--orange));color:#fff;transform:translateY(-1px);box-shadow:0 16px 30px rgba(255,107,26,.24)}
+body.guest-mode .nav-links,
+body.guest-mode .notif-wrap,
+body.guest-mode #nav-auth-divider,
+body.guest-mode #nav-profile-link{display:none}
+body.guest-mode .guest-auth-actions{display:flex}
 
 /* Notif */
 .notif-wrap{position:relative;display:flex;align-items:center}
@@ -456,6 +457,25 @@ border:1px solid rgba(255,255,255,.72);box-shadow:0 30px 72px rgba(16,24,40,.13)
 .form-l{font-size:.7rem;font-weight:700;color:var(--mid);letter-spacing:.05em;text-transform:uppercase}
 .form-i{padding:10px 13px;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);font-family:var(--fb);font-size:.87rem;color:var(--black);background:var(--white);outline:none;transition:all .18s;width:100%}
 .form-i:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,107,26,.1)}
+.auth-modal .modal{max-width:460px}
+.auth-modal-card{padding:22px 22px 20px}
+.auth-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.auth-modal-kicker{font-size:.65rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--orange-dark);margin-bottom:8px}
+.auth-modal-title{font-family:var(--ff);font-size:1.34rem;font-weight:800;color:#172033;letter-spacing:-.04em;line-height:1.02}
+.auth-modal-sub{font-size:.82rem;color:var(--mid);line-height:1.6;margin-top:6px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:6px;border-radius:16px;background:rgba(11,45,107,.05);margin-bottom:18px}
+.auth-tab{padding:10px 14px;border:none;border-radius:12px;background:transparent;color:var(--mid);font-family:var(--fb);font-size:.83rem;font-weight:800;cursor:pointer;transition:all .18s}
+.auth-tab.active{background:linear-gradient(135deg,var(--navy),var(--navy-light));color:#fff;box-shadow:0 12px 22px rgba(11,45,107,.18)}
+.auth-panel{display:none}
+.auth-panel.active{display:block}
+.auth-submit{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 16px;border:none;border-radius:16px;background:linear-gradient(135deg,var(--orange),var(--orange-mid));color:#fff;font-family:var(--fb);font-size:.9rem;font-weight:800;cursor:pointer;box-shadow:0 14px 28px rgba(255,107,26,.22);transition:all .18s}
+.auth-submit:hover{transform:translateY(-1px);box-shadow:0 18px 34px rgba(255,107,26,.28)}
+.auth-submit:disabled{opacity:.7;cursor:not-allowed;transform:none;box-shadow:none}
+.auth-inline-note{font-size:.76rem;color:var(--mid);line-height:1.55;margin-top:10px}
+.auth-inline-note a{color:var(--orange-dark);font-weight:700;text-decoration:none}
+.auth-inline-note a:hover{text-decoration:underline}
+.auth-error{display:none;font-size:.73rem;color:var(--error);margin-top:6px}
+.auth-error.show{display:block}
 
 /* SHOP PRODUCTS MODAL */
 #shop-modal .modal{max-width:780px;max-height:92vh;display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,.99),rgba(255,255,255,.95));border:1px solid rgba(255,255,255,.82);box-shadow:0 34px 96px rgba(16,24,40,.18),0 14px 34px rgba(16,24,40,.08)}
@@ -910,6 +930,10 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
     </ul>
     <div class="nav-spacer"></div>
     <div class="nav-actions">
+      <div class="guest-auth-actions" id="guest-auth-actions">
+        <a class="guest-auth-link" id="guest-signup-link" href="home.html?auth=signup" onclick="openAuthModal('signup');return false;">New here?</a>
+        <a class="guest-auth-link guest-auth-primary" id="guest-login-link" href="home.html?auth=login" onclick="openAuthModal('login');return false;">Login</a>
+      </div>
       <div class="notif-wrap">
         <button class="notif-btn" id="notif-bell-btn" onclick="toggleNotifDropdown()" title="Notifications">
           <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -922,7 +946,7 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
           <div class="nd-footer"><button class="nd-footer-link" id="notif-viewall-txt" onclick="markAllNotifRead()">View all notifications →</button></div>
         </div>
       </div>
-      <div class="nav-divider-v"></div>
+      <div class="nav-divider-v" id="nav-auth-divider"></div>
       <button class="nav-cart-btn" id="nav-cart-btn" onclick="handleNavCartClick()">
         <span class="nav-cart-ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.6"></circle><circle cx="18" cy="20" r="1.6"></circle><path d="M3 4h2l2.2 10.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.78L20 7H6.2"></path></svg></span>
         <span id="nav-cart-lbl">Cart</span>
@@ -1091,6 +1115,40 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
   <div class="footer-btm"><div class="footer-btm-inner"><div class="footer-copy">© 2025 LocalShore. All rights reserved.</div><div class="socials"><a class="soc-pill" href="#">Twitter</a><a class="soc-pill" href="#">Instagram</a><a class="soc-pill" href="#">LinkedIn</a></div></div></div>
 </footer>
 
+<!-- AUTH MODAL -->
+<div class="overlay auth-modal" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="modal">
+    <div class="auth-modal-card">
+      <div class="auth-modal-head">
+        <div>
+          <div class="auth-modal-kicker" id="auth-kicker">Welcome Back</div>
+          <div class="auth-modal-title" id="auth-title">Sign in to LocalShore</div>
+          <div class="auth-modal-sub" id="auth-sub">Browse first, then log in whenever you want to save items, order, and manage your account.</div>
+        </div>
+        <button class="modal-close" type="button" onclick="closeAuthModal()" aria-label="Close auth modal"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="auth-tab-login" type="button" onclick="switchAuthTab('login')">Login</button>
+        <button class="auth-tab" id="auth-tab-signup" type="button" onclick="switchAuthTab('signup')">Sign Up</button>
+      </div>
+      <div class="auth-panel active" id="auth-panel-login">
+        <div class="form-g"><label class="form-l">Email Address</label><input class="form-i" id="auth-login-email" type="email" autocomplete="email" placeholder="you@example.com"><div class="auth-error" id="auth-login-email-err">Enter a valid email address.</div></div>
+        <div class="form-g"><label class="form-l">Password</label><input class="form-i" id="auth-login-password" type="password" autocomplete="current-password" placeholder="Enter your password"></div>
+        <button class="auth-submit" id="auth-login-btn" type="button" onclick="handleAuthLogin()">Login to LocalShore</button>
+        <div class="auth-inline-note">New on LocalShore? <a href="#" onclick="switchAuthTab('signup');return false;">Create an account</a></div>
+      </div>
+      <div class="auth-panel" id="auth-panel-signup">
+        <div class="form-g"><label class="form-l">Full Name</label><input class="form-i" id="auth-signup-name" type="text" autocomplete="name" placeholder="Your full name"></div>
+        <div class="form-g"><label class="form-l">Email Address</label><input class="form-i" id="auth-signup-email" type="email" autocomplete="email" placeholder="you@example.com"><div class="auth-error" id="auth-signup-email-err">Enter a valid email address.</div></div>
+        <div class="form-g"><label class="form-l">Mobile Number</label><input class="form-i" id="auth-signup-mobile" type="tel" autocomplete="tel" placeholder="9876543210" maxlength="10"><div class="auth-error" id="auth-signup-mobile-err">Enter a valid 10-digit Indian mobile number.</div></div>
+        <div class="form-g"><label class="form-l">Password</label><input class="form-i" id="auth-signup-password" type="password" autocomplete="new-password" placeholder="Minimum 6 characters"><div class="auth-error" id="auth-signup-password-err">Password must be at least 6 characters.</div></div>
+        <button class="auth-submit" id="auth-signup-btn" type="button" onclick="handleAuthSignup()">Create My Account</button>
+        <div class="auth-inline-note">Already have an account? <a href="#" onclick="switchAuthTab('login');return false;">Log in here</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- SHOP PRODUCTS MODAL -->
 <div class="overlay" id="shop-modal" onclick="if(event.target===this)closeShopModal()">
   <div class="modal">
@@ -1211,6 +1269,29 @@ function ldJ(k,def){def=def===undefined?[]:def;try{var v=localStorage.getItem(k)
 function eh(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function toast(m,t){var e=document.getElementById('toast');e.textContent=m;e.className='toast-pop show'+(t?' '+t:'');clearTimeout(toast._t);toast._t=setTimeout(function(){e.className='toast-pop';},3200);}
 function haversine(la1,ln1,la2,ln2){var R=6371,dLat=(la2-la1)*Math.PI/180,dLng=(ln2-ln1)*Math.PI/180;var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
+function isLoggedIn(){return ld('ls_logged_in')==='true';}
+function getCurrentPathWithQuery(){return (window.location.pathname.split('/').pop()||'home.html')+window.location.search+window.location.hash;}
+function buildAuthUrl(tab){var current=getCurrentPathWithQuery();return 'home.html?auth='+(tab||'login')+'&return='+encodeURIComponent(current);}
+function syncAuthQuery(tab){try{var url=new URL(window.location.href);if(tab)url.searchParams.set('auth',tab);else url.searchParams.delete('auth');url.searchParams.delete('return');history.replaceState({},'',url.pathname+url.search+url.hash);}catch(e){}}
+function getPostAuthDestination(){try{var params=new URLSearchParams(window.location.search);return params.get('return')||'home.html';}catch(e){return'home.html';}}
+function persistAuthSession(profile){try{var existing=JSON.parse(localStorage.getItem('ls_user_data')||'null')||{};var merged=Object.assign({},existing,profile||{});Object.keys(merged).forEach(function(key){if(merged[key]===''||merged[key]===null||merged[key]===undefined)delete merged[key];});localStorage.setItem('ls_logged_in','true');localStorage.removeItem('ls_force_login');localStorage.setItem('ls_user_data',JSON.stringify(merged));}catch(e){}}
+function emailValid(v){return/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v||'').trim());}
+function mobileValid(v){return/^[6-9]\d{9}$/.test((v||'').replace(/\D/g,''));}
+function closeAuthModal(){var modal=document.getElementById('auth-modal');if(modal)modal.classList.remove('open');document.body.style.overflow='';syncAuthQuery('');}
+function closeOverlayBeforeAuth(){
+  if(_cartModalOpen)closeCartModal();
+  if(document.getElementById('delivery-modal').classList.contains('open'))closeDeliveryModal();
+  if(document.getElementById('orders-modal').classList.contains('open'))closeOrdersModal();
+  if(document.getElementById('wish-modal').classList.contains('open'))closeWishModal();
+  if(document.getElementById('profile-modal').classList.contains('open'))closeProfileModal();
+}
+function switchAuthTab(tab){var login=tab!=='signup';var loginPanel=document.getElementById('auth-panel-login'),signupPanel=document.getElementById('auth-panel-signup'),loginTab=document.getElementById('auth-tab-login'),signupTab=document.getElementById('auth-tab-signup'),kicker=document.getElementById('auth-kicker'),title=document.getElementById('auth-title');if(loginPanel)loginPanel.classList.toggle('active',login);if(signupPanel)signupPanel.classList.toggle('active',!login);if(loginTab)loginTab.classList.toggle('active',login);if(signupTab)signupTab.classList.toggle('active',!login);if(kicker)kicker.textContent=login?'Welcome Back':'Create Account';if(title)title.textContent=login?'Sign in to LocalShore':'Create your LocalShore account';syncAuthQuery(login?'login':'signup');}
+function openAuthModal(tab){if(isLoggedIn()){var target=getPostAuthDestination();if(target&&target!=='home.html'){window.location.replace(target);}return false;}closeOverlayBeforeAuth();var modal=document.getElementById('auth-modal');switchAuthTab(tab||'login');if(modal)modal.classList.add('open');document.body.style.overflow='hidden';setTimeout(function(){var field=document.getElementById(tab==='signup'?'auth-signup-name':'auth-login-email');if(field)field.focus();},60);return false;}
+function requireLogin(message,tab){if(message)toast(message,'info');openAuthModal(tab||'login');return false;}
+function setAuthBtn(id,loading,label){var el=document.getElementById(id);if(!el)return;el.disabled=loading;el.textContent=loading?'Please wait...':label;}
+function authError(code){var m={'auth/user-not-found':'No account found with this email.','auth/wrong-password':'Incorrect password. Please try again.','auth/invalid-credential':'Invalid email or password.','auth/email-already-in-use':'An account with this email already exists.','auth/weak-password':'Password must be at least 6 characters.','auth/invalid-email':'Please enter a valid email address.','auth/too-many-requests':'Too many attempts. Try again later.','auth/network-request-failed':'Network error. Check your connection.'};return m[code]||('Something went wrong ('+(code||'unknown')+').');}
+function handleAuthLogin(){var email=(document.getElementById('auth-login-email').value||'').trim(),password=document.getElementById('auth-login-password').value||'';document.getElementById('auth-login-email-err').classList.toggle('show',!!email&&!emailValid(email));if(!email||!password){toast('Please fill in all fields.','err');return;}if(!emailValid(email)){toast('Enter a valid email address.','err');return;}setAuthBtn('auth-login-btn',true,'Login to LocalShore');auth.signInWithEmailAndPassword(email,password).then(function(cred){persistAuthSession({email:email,uid:cred.user&&cred.user.uid||''});closeAuthModal();loadCurrentUser();window.location.replace(getPostAuthDestination());}).catch(function(err){toast(authError(err&&err.code),'err');}).finally(function(){setAuthBtn('auth-login-btn',false,'Login to LocalShore');});}
+function handleAuthSignup(){var name=(document.getElementById('auth-signup-name').value||'').trim(),email=(document.getElementById('auth-signup-email').value||'').trim(),mobile=(document.getElementById('auth-signup-mobile').value||'').trim().replace(/\D/g,''),password=document.getElementById('auth-signup-password').value||'';document.getElementById('auth-signup-email-err').classList.toggle('show',!!email&&!emailValid(email));document.getElementById('auth-signup-mobile-err').classList.toggle('show',!!mobile&&!mobileValid(mobile));document.getElementById('auth-signup-password-err').classList.toggle('show',!!password&&password.length<6);if(!name||!email||!mobile||!password){toast('Please fill in all fields.','err');return;}if(!emailValid(email)){toast('Enter a valid email address.','err');return;}if(!mobileValid(mobile)){toast('Enter a valid 10-digit Indian mobile number.','err');return;}if(password.length<6){toast('Password needs at least 6 characters.','err');return;}setAuthBtn('auth-signup-btn',true,'Create My Account');auth.createUserWithEmailAndPassword(email,password).then(function(cred){persistAuthSession({name:name,email:email,phone:mobile,uid:cred.user&&cred.user.uid||''});closeAuthModal();loadCurrentUser();window.location.replace(getPostAuthDestination());}).catch(function(err){toast(authError(err&&err.code),'err');}).finally(function(){setAuthBtn('auth-signup-btn',false,'Create My Account');});}
 function catIco(c){var m={'General Store':'🏪','Electronics':'📱','Fruits & Vegetables':'🍎','Medical / Pharmacy':'💊','Fashion & Clothing':'👗','Food & Sweets':'🍮','Kids & Toys':'🧸','Sports & Fitness':'⚽','Kitchen & Home':'🍳','Books & Stationery':'📚','Meat & Seafood':'🥩','Bakery':'🥐','Groceries':'🛒','Dairy & Eggs':'🥛','Snacks & Beverages':'🍿'};return m[c]||'🏪';}
 function prodIco(c){var m={'Groceries':'🛒','Fruits & Vegetables':'🍎','Dairy & Eggs':'🥛','Snacks & Beverages':'🍿','Electronics':'📱','Fashion & Clothing':'👗','Home & Kitchen':'🍳','Medical & Health':'💊','Sports & Fitness':'⚽','Kids & Toys':'🧸','Bakery & Sweets':'🍮','Meat & Seafood':'🥩'};return m[c]||'📦';}
 function catCardSymbol(name){var key=(name||'').toLowerCase();if(key.indexOf('fashion')!==-1||key.indexOf('clothing')!==-1)return'👗';if(key.indexOf('kid')!==-1||key.indexOf('toy')!==-1)return'🧸';if(key.indexOf('appliance')!==-1)return'📺';if(key.indexOf('electronic')!==-1)return'📱';if(key.indexOf('sport')!==-1||key.indexOf('fitness')!==-1)return'⚽';if(key.indexOf('meat')!==-1||key.indexOf('seafood')!==-1)return'🥩';if(key.indexOf('fruit')!==-1||key.indexOf('vegetable')!==-1)return'🍎';if(key.indexOf('medical')!==-1||key.indexOf('pharmacy')!==-1)return'💊';if(key.indexOf('bakery')!==-1||key.indexOf('sweet')!==-1)return'🥐';if(key.indexOf('book')!==-1||key.indexOf('stationery')!==-1)return'📚';if(key.indexOf('grocery')!==-1)return'🛒';return'✨';}
@@ -1310,14 +1391,14 @@ function applyTheme(){document.body.classList.toggle('theme-dark',_theme==='dark
 function applyLanguage(){
   document.documentElement.lang=_lang==='hi'?'hi':(_lang==='ta'?'ta':'en');
   setTxt('nav-wishlist-txt','nav_wishlist');setTxt('nav-orders-txt','nav_orders');
-  setTxt('settings-title','settings_title');setTxt('settings-sub','settings_sub');setTxt('settings-theme-label','settings_theme');setTxt('theme-light-txt','theme_light');setTxt('theme-dark-txt','theme_dark');setTxt('settings-language-label','settings_language');setTxt('lang-en-txt','lang_en');setTxt('lang-hi-txt','lang_hi');setTxt('lang-ta-txt','lang_ta');setTxt('settings-logout-txt','settings_logout');
+  setTxt('settings-title','settings_title');setTxt('settings-theme-label','settings_theme');setTxt('theme-light-txt','theme_light');setTxt('theme-dark-txt','theme_dark');setTxt('settings-language-label','settings_language');setTxt('lang-en-txt','lang_en');setTxt('lang-hi-txt','lang_hi');setTxt('lang-ta-txt','lang_ta');setTxt('settings-logout-txt','settings_logout');
   setTxt('search-btn-txt','search');setTxt('cats-sec-label','cats_label');setTxt('cats-sec-title','cats_title');setTxt('cats-sec-copy','cats_copy');setTxt('cats-tip','cats_tip');setTxt('offers-sec-label','offers_label');setTxt('offers-sec-title','offers_title');setTxt('stores-sec-label','stores_label');setTxt('nearby-note-txt','stores_note');setTxt('reset-btn-txt','clear_filters');setTxt('stores-empty-title','stores_empty_title');setTxt('stores-empty-sub','stores_empty_sub');setTxt('stores-empty-link','change_location');setTxt('new-sec-label','new_label');setTxt('new-sec-title','new_title');setTxt('new-sec-copy','new_copy');setTxt('new-empty-title','new_empty_title');setTxt('new-empty-sub','new_empty_sub');
   setTxt('cat-fashion-label','cat_fashion_label');setTxt('cat-fashion-meta','cat_fashion_meta');setTxt('cat-kids-label','cat_kids_label');setTxt('cat-kids-meta','cat_kids_meta');setTxt('cat-appliances-label','cat_appliances_label');setTxt('cat-appliances-meta','cat_appliances_meta');setTxt('cat-sports-label','cat_sports_label');setTxt('cat-sports-meta','cat_sports_meta');setTxt('cat-meat-label','cat_meat_label');setTxt('cat-meat-meta','cat_meat_meta');setTxt('cat-electronics-label','cat_electronics_label');setTxt('cat-electronics-meta','cat_electronics_meta');
   setTxt('notif-title-txt','notif_title');setTxt('notif-markall-txt','notif_markall');setTxt('notif-tab-all','notif_tab_all');setTxt('notif-tab-offers','notif_tab_offers');setTxt('notif-tab-orders','notif_tab_orders');setTxt('notif-tab-alerts','notif_tab_alerts');setTxt('notif-viewall-txt','notif_viewall');setTxt('notif-loading-txt','notif_loading');
   var searchInp=document.getElementById('search-inp');if(searchInp&&!_userLat)searchInp.placeholder=t('search_placeholder');
   var locBtn=document.getElementById('loc-btn-txt');if(locBtn&&!_userLat)locBtn.textContent=t('location');
   var settingsBtn=document.getElementById('settings-btn');if(settingsBtn)settingsBtn.title=t('settings_title');
-  updateNavProfileBtn();updateSettingsButtons();renderShops();renderNewProducts();
+  updateNavProfileBtn();updateSettingsButtons();updateAuthUI();renderShops();renderNewProducts();
   var notifLoading=document.getElementById('nd-list');if(notifLoading&&notifLoading.textContent.trim()==='Loading...')notifLoading.innerHTML='<div style="padding:24px;text-align:center;color:#aaa;font-size:.8rem">'+t('notif_loading')+'</div>';
 }
 function updateSettingsButtons(){['en','hi','ta'].forEach(function(code){var btn=document.getElementById('lang-'+code+'-btn');if(btn)btn.classList.toggle('active',_lang===code);});var wrap=document.getElementById('settings-wrap');var btn=document.getElementById('settings-btn');if(wrap&&btn)btn.setAttribute('aria-expanded',wrap.classList.contains('open')?'true':'false');}
@@ -1329,11 +1410,12 @@ function updateNavCartBtn(){var btn=document.getElementById('nav-cart-btn'),coun
 function handleNavCartClick(){_cartRequested=true;updateCartUI();openCartModal();}
 
 // ====== AUTH ======
-function loadCurrentUser(){var raw=ld('ls_user_data');if(raw){try{_currentUser=JSON.parse(raw);}catch(e){_currentUser=null;}}updateNavProfileBtn();}
+function loadCurrentUser(){var raw=ld('ls_user_data');if(raw){try{_currentUser=JSON.parse(raw);}catch(e){_currentUser=null;}}updateNavProfileBtn();updateAuthUI();}
 function updateNavProfileBtn(){var lbl=document.getElementById('nav-profile-lbl');var av=document.getElementById('nav-av');if(_currentUser&&_currentUser.name){var init=(_currentUser.name||'U').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();av.innerHTML='<span style="font-size:.72rem;font-weight:800;color:#fff;font-family:var(--ff)">'+init+'</span>';}else{av.innerHTML='<svg style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';}lbl.textContent=t('nav_account');}
-function handleProfileClick(){openProfileModal();}
-function clearAuthState(){_currentUser=null;try{localStorage.setItem('ls_force_login','true');localStorage.removeItem('ls_logged_in');localStorage.removeItem('ls_user_data');}catch(e){}updateNavProfileBtn();}
-function doLogout(){if(!confirm('Sign out of LocalShore?'))return;clearAuthState();closeProfileModal();closeSettingsPanel();toast('Signed out. Redirecting to login...','info');auth.signOut().catch(function(){toast('Signed out on this device. Redirecting to login...','info');}).finally(function(){setTimeout(function(){window.location.replace('index.html');},300);});}
+function updateAuthUI(){var loggedIn=isLoggedIn();document.body.classList.toggle('guest-mode',!loggedIn);document.body.classList.toggle('signed-in-mode',loggedIn);var logoutBtn=document.getElementById('settings-logout-btn');if(logoutBtn)logoutBtn.style.display=loggedIn?'flex':'none';var settingsSub=document.getElementById('settings-sub');if(settingsSub)settingsSub.textContent=loggedIn?t('settings_sub'):'Change theme and language while you browse. Sign in from the top bar for orders, wishlist, and checkout.';var guestLogin=document.getElementById('guest-login-link'),guestSignup=document.getElementById('guest-signup-link');if(guestLogin)guestLogin.href=buildAuthUrl('login');if(guestSignup)guestSignup.href=buildAuthUrl('signup');}
+function handleProfileClick(){if(!isLoggedIn())return requireLogin('Please sign in to view your account.');openProfileModal();}
+function clearAuthState(){_currentUser=null;try{localStorage.setItem('ls_force_login','true');localStorage.removeItem('ls_logged_in');localStorage.removeItem('ls_user_data');}catch(e){}updateNavProfileBtn();updateAuthUI();}
+function doLogout(){if(!confirm('Sign out of LocalShore?'))return;clearAuthState();closeProfileModal();closeSettingsPanel();toast('Signed out. You can keep browsing as a guest.','info');auth.signOut().catch(function(){}).finally(function(){setTimeout(function(){window.location.replace('home.html');},300);});}
 
 // ======================================================
 //  BANNERS — adaptive size, reads Firebase admin_banners
@@ -1602,7 +1684,7 @@ var NTYPE={promo:{icon:'🎁',cls:'nd-icon-promo',label:'Offer'},offer:{icon:'�
 function getNMeta(type){return NTYPE[type]||NTYPE['info'];}
 function relTime(iso){if(!iso)return'just now';var diff=Date.now()-new Date(iso).getTime();var m=Math.floor(diff/60000);if(m<1)return'just now';if(m<60)return m+'m ago';var h=Math.floor(m/60);if(h<24)return h+'h ago';var d=Math.floor(h/24);return d===1?'yesterday':d+'d ago';}
 function playNotifTone(){try{var ctx=new(window.AudioContext||window.webkitAudioContext)();var notes=[523,659,784,1047];for(var i=0;i<notes.length;i++){(function(freq,idx){var osc=ctx.createOscillator();var gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=freq;osc.type='sine';var t=ctx.currentTime+idx*0.13;gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(0.18,t+0.04);gain.gain.exponentialRampToValueAtTime(0.001,t+0.22);osc.start(t);osc.stop(t+0.22);})(notes[i],i);}}catch(e){}}
-function showNotifPopup(n){var meta=getNMeta(n.type);document.getElementById('notif-popup-icon').textContent=meta.icon;document.getElementById('notif-popup-title').textContent=n.title||'New notification';document.getElementById('notif-popup-body').textContent=n.body||'';var popup=document.getElementById('notif-popup');var bar=document.getElementById('notif-popup-bar');bar.style.animation='none';void bar.offsetWidth;bar.style.animation='';popup.classList.add('show');clearTimeout(_popupTimer);_popupTimer=setTimeout(closeNotifPopup,5200);}
+function showNotifPopup(n){if(!isLoggedIn())return;var meta=getNMeta(n.type);document.getElementById('notif-popup-icon').textContent=meta.icon;document.getElementById('notif-popup-title').textContent=n.title||'New notification';document.getElementById('notif-popup-body').textContent=n.body||'';var popup=document.getElementById('notif-popup');var bar=document.getElementById('notif-popup-bar');bar.style.animation='none';void bar.offsetWidth;bar.style.animation='';popup.classList.add('show');clearTimeout(_popupTimer);_popupTimer=setTimeout(closeNotifPopup,5200);}
 function closeNotifPopup(){document.getElementById('notif-popup').classList.remove('show');clearTimeout(_popupTimer);}
 function startNotifListener(){
   if(_notifUnsub){_notifUnsub();_notifUnsub=null;}
@@ -1620,8 +1702,8 @@ function startNotifListener(){
   },function(){});
 }
 function getUnreadCount(){return _allNotifs.filter(function(n){return!isRead(n.id);}).length;}
-function updateNotifBadge(){var count=getUnreadCount();var badge=document.getElementById('notif-bell-badge');if(count>0){badge.textContent=count>9?'9+':count;badge.classList.add('show');}else{badge.classList.remove('show');}var pill=document.getElementById('nd-unread-count');if(pill)pill.textContent=count>0?count+' new':'All read';}
-function toggleNotifDropdown(){_notifDropOpen=!_notifDropOpen;var dd=document.getElementById('notif-dropdown');dd.classList.toggle('open',_notifDropOpen);if(_notifDropOpen)renderNotifList();}
+function updateNotifBadge(){var count=isLoggedIn()?getUnreadCount():0;var badge=document.getElementById('notif-bell-badge');if(count>0){badge.textContent=count>9?'9+':count;badge.classList.add('show');}else{badge.classList.remove('show');}var pill=document.getElementById('nd-unread-count');if(pill)pill.textContent=count>0?count+' new':'All read';}
+function toggleNotifDropdown(){if(!isLoggedIn())return requireLogin('Please sign in to view notifications.');_notifDropOpen=!_notifDropOpen;var dd=document.getElementById('notif-dropdown');dd.classList.toggle('open',_notifDropOpen);if(_notifDropOpen)renderNotifList();}
 function closeNotifDropdown(){_notifDropOpen=false;document.getElementById('notif-dropdown').classList.remove('open');}
 document.addEventListener('click',function(e){if(!e.target.closest('.notif-wrap')&&_notifDropOpen)closeNotifDropdown();});
 function filterNotifs(type,btn){_notifFilter=type;document.querySelectorAll('.nd-tab').forEach(function(t){t.classList.remove('active');});if(btn)btn.classList.add('active');renderNotifList();}
@@ -1739,12 +1821,16 @@ function filterByShopCategory(cat){
   document.getElementById('stores-section').scrollIntoView({behavior:'smooth',block:'start'});
   renderShops();
 }
-function renderShops(){
-  var grid=document.getElementById('stores-grid'),empty=document.getElementById('stores-empty'),note=document.getElementById('nearby-note'),resetB=document.getElementById('reset-btn'),lbl=document.getElementById('stores-lbl');
-  var emptyTitle=document.getElementById('stores-empty-title'),emptySub=document.getElementById('stores-empty-sub'),emptyLink=document.getElementById('stores-empty-link'),resetTxt=document.getElementById('reset-btn-txt');
+function getVisibleNearbyShops(){
   var list=_shops.slice();
   if(_searchTerm){list=list.filter(function(s){var sm=s.name.toLowerCase().indexOf(_searchTerm)!==-1||(s.category||'').toLowerCase().indexOf(_searchTerm)!==-1;var pm=_products.some(function(p){return p.shopId===s.id&&(p.name.toLowerCase().indexOf(_searchTerm)!==-1||(p.category||'').toLowerCase().indexOf(_searchTerm)!==-1);});return sm||pm;});}
   if(_activeCategory){list=list.filter(function(s){return(s.category||'').toLowerCase().indexOf(_activeCategory.toLowerCase())!==-1||_activeCategory.toLowerCase().indexOf((s.category||'').toLowerCase())!==-1||_products.some(function(p){return p.shopId===s.id&&((p.category||'').toLowerCase().indexOf(_activeCategory.split(' ')[0].toLowerCase())!==-1);});});}
+  if(!_userLat||!_userLng)return [];
+  return list.map(function(s){return Object.assign({},s,{dist:haversine(_userLat,_userLng,s.lat,s.lng)});}).filter(function(s){return s.dist<=15;}).sort(function(a,b){return a.dist-b.dist;});
+}
+function renderShops(){
+  var grid=document.getElementById('stores-grid'),empty=document.getElementById('stores-empty'),note=document.getElementById('nearby-note'),resetB=document.getElementById('reset-btn'),lbl=document.getElementById('stores-lbl');
+  var emptyTitle=document.getElementById('stores-empty-title'),emptySub=document.getElementById('stores-empty-sub'),emptyLink=document.getElementById('stores-empty-link'),resetTxt=document.getElementById('reset-btn-txt');
   var hasFilters=!!(_searchTerm||_activeCategory);
   if(!_userLat||!_userLng){
     grid.classList.remove('single-store');
@@ -1757,7 +1843,7 @@ function renderShops(){
     if(emptyLink){emptyLink.textContent=t('location_add');emptyLink.onclick=function(){openMapModal();};}
     grid.innerHTML='';grid.style.display='none';empty.style.display='block';return;
   }
-  list=list.map(function(s){return Object.assign({},s,{dist:haversine(_userLat,_userLng,s.lat,s.lng)});}).filter(function(s){return s.dist<=15;}).sort(function(a,b){return a.dist-b.dist;});
+  var list=getVisibleNearbyShops();
   grid.classList.toggle('single-store',list.length===1);
   lbl.textContent=(_activeCategory?_activeCategory+' · ':'')+t('stores_nearby')+' ('+list.length+')';
   note.style.display='flex';
@@ -1799,9 +1885,12 @@ function getNewestVendorProducts(){
 function renderNewProducts(){
   var sec=document.getElementById('new-products-section'),grid=document.getElementById('new-products-grid'),empty=document.getElementById('new-products-empty');
   if(!sec||!grid||!empty)return;
-  if(!_products.length){sec.style.display='none';return;}
+  if(!_products.length||!_userLat||!_userLng){sec.style.display='none';return;}
+  var visibleShops=getVisibleNearbyShops();
+  if(!visibleShops.length){sec.style.display='none';return;}
   sec.style.display='block';
-  var items=getNewestVendorProducts();
+  var visibleShopIds={};visibleShops.forEach(function(s){visibleShopIds[s.id]=true;});
+  var items=getNewestVendorProducts().filter(function(p){return !!visibleShopIds[p.shopId];});
   if(!items.length){grid.style.display='none';empty.style.display='block';return;}
   grid.style.display='grid';empty.style.display='none';
   grid.innerHTML=items.map(function(p){
@@ -1832,12 +1921,14 @@ function closeShopModal(){document.getElementById('shop-modal').classList.remove
 
 // ====== WISHLIST ======
 function toggleWish(productId,shopId){
+  if(!isLoggedIn())return requireLogin('Please sign in to save items to your wishlist.');
   var wish=ldJ('ls_wishlist');var idx=wish.findIndex(function(w){return w.id===productId;});var btn=document.getElementById('wish-'+productId);
   if(idx>=0){wish.splice(idx,1);if(btn){btn.textContent='🤍';btn.classList.remove('wished');}toast('Removed from wishlist');}
   else{var p=_products.find(function(x){return x.id===productId;});var s=_shops.find(function(x){return x.id===shopId;});if(!p||!s){toast('Could not add','err');return;}wish.push({id:productId,name:p.name,price:p.price,image:p.image||'',category:p.category,shopId:shopId,shopName:s.name,addedAt:new Date().toISOString()});if(btn){btn.textContent='❤️';btn.classList.add('wished');}toast('Added to wishlist');}
   sv('ls_wishlist',JSON.stringify(wish));updateNavBadges();
 }
 function openWishModal(){
+  if(!isLoggedIn())return requireLogin('Please sign in to view your wishlist.');
   var wish=ldJ('ls_wishlist');var body=document.getElementById('wish-body');
   if(!wish.length){body.innerHTML='<div style="text-align:center;padding:48px"><div style="font-size:2.8rem;margin-bottom:10px">🤍</div><div style="font-family:var(--ff);font-weight:700;font-size:.95rem;margin-bottom:5px">'+t('wishlist_empty_title')+'</div><div style="font-size:.83rem;color:var(--mid)">'+t('wishlist_empty_sub')+'</div></div>';}
   else{body.innerHTML=wish.map(function(w){return'<div class="wish-card"><div class="wish-ph">'+prodIco(w.category)+'</div><div class="wish-info"><div class="wish-name">'+eh(w.name)+'</div><div class="wish-shop">'+eh(w.shopName)+'</div><div class="wish-price">₹'+w.price+'</div></div><button class="btn-wish-order" onclick="closeWishModal();goToShopPage(\''+w.shopId+'\')">'+t('open_shop')+'</button><button class="btn-wish-rm" onclick="toggleWish(\''+w.id+'\',\''+w.shopId+'\');openWishModal()">'+t('remove')+'</button></div>';}).join('');}
@@ -1847,6 +1938,7 @@ function closeWishModal(){document.getElementById('wish-modal').classList.remove
 
 // ====== ORDER FLOW ======
 function checkoutCart(){
+  if(!isLoggedIn())return requireLogin('Please sign in to continue to checkout.');
   if(!_cart.items.length){toast('Cart is empty','err');return;}
   var shop=_shops.find(function(s){return s.id===_cart.shopId;});if(!shop){toast('Shop not found','err');return;}
   var total=getCartTotal();var itemCount=getCartItemCount();
@@ -1886,6 +1978,7 @@ function detectDeliveryLoc(){
   },function(){toast('Location denied','err');});
 }
 function confirmOrder(){
+  if(!isLoggedIn())return requireLogin('Please sign in to place your order.');
   if(!_pendingOrder)return;
   var addr1=document.getElementById('del-addr1').value.trim(),city=document.getElementById('del-city').value.trim(),pin=document.getElementById('del-pin').value.trim(),phone=document.getElementById('del-phone').value.trim();
   if(!addr1||!city||!pin||!phone){toast('Please fill all required fields','err');return;}
@@ -1966,6 +2059,7 @@ function renderOrderItemsList(order){
   }).join('')+'</div>';
 }
 function openOrdersModal(){
+  if(!isLoggedIn())return requireLogin('Please sign in to view your orders.');
   var body=document.getElementById('orders-body');body.innerHTML='<div style="text-align:center;padding:32px;color:var(--mid)">Loading orders…</div>';
   document.getElementById('orders-modal').classList.add('open');document.body.style.overflow='hidden';
   db.collection('orders').where('deviceId','==',DEVICE_ID).get().then(function(snap){
@@ -2146,6 +2240,8 @@ function dismissLoc(){document.getElementById('loc-pill').classList.remove('show
 
 // ====== INIT ======
 window.addEventListener('load',function(){
+  var authParams=new URLSearchParams(window.location.search);var authMode=authParams.get('auth');var returnTo=authParams.get('return')||'home.html';
+  if(isLoggedIn()&&authMode&&returnTo&&returnTo!=='home.html'){window.location.replace(returnTo);return;}
   applyTheme();
   applyLanguage();
   loadCurrentUser();updateNavBadges();
@@ -2157,6 +2253,7 @@ window.addEventListener('load',function(){
   startOffersListener();   // loads admin-uploaded offer images at natural size
   startCategoriesListener();
   initOffersScroll();
+  if(!isLoggedIn()&&(authMode==='login'||authMode==='signup'))openAuthModal(authMode);
   // Scroll shadow on nav
   window.addEventListener('scroll',function(){var nav=document.querySelector('nav');if(window.scrollY>20){nav.style.boxShadow='0 8px 40px rgba(0,0,0,.15),0 1px 0 rgba(255,255,255,.8) inset';}else{nav.style.boxShadow='0 4px 32px rgba(0,0,0,.1),0 1px 0 rgba(255,255,255,.8) inset,0 0 0 1px rgba(255,107,26,.06)';}});
 });

@@ -11,15 +11,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script>
-    try {
-      if (localStorage.getItem('ls_logged_in') !== 'true') {
-        window.location.replace('index.html');
-      }
-    } catch (e) {
-      window.location.replace('index.html');
-    }
-  </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -60,6 +51,13 @@ nav{position:sticky;top:0;z-index:200;padding:12px 18px 0}
 .nav-logout-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;background:linear-gradient(135deg,#FFF1EA,#FFE1D2);color:var(--error);border:none;border-radius:100px;font-family:var(--ff);font-size:.78rem;font-weight:800;cursor:pointer;transition:all .18s;box-shadow:0 10px 22px rgba(229,62,62,.10)}
 .nav-logout-btn:hover{background:linear-gradient(135deg,var(--error),#C53030);color:#fff;transform:translateY(-1px)}
 .nav-logout-ico{line-height:1}
+.guest-auth-actions{display:none;align-items:center;gap:10px}
+.guest-auth-link{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:100px;text-decoration:none;font-size:.8rem;font-weight:700;color:var(--mid);transition:all .18s;white-space:nowrap}
+.guest-auth-link:hover{background:rgba(255,255,255,.9);color:var(--navy);box-shadow:var(--shadow-sm)}
+.guest-auth-primary{padding:8px 18px;background:linear-gradient(135deg,var(--orange),var(--orange-mid));color:#fff;box-shadow:0 12px 24px rgba(255,107,26,.22)}
+.guest-auth-primary:hover{background:linear-gradient(135deg,var(--orange-dark),var(--orange));color:#fff}
+body.guest-mode .nav-logout-btn{display:none}
+body.guest-mode .guest-auth-actions{display:flex}
 
 /* BREADCRUMB */
 .breadcrumb{max-width:var(--max-content);margin:0 auto;padding:18px 24px 0;display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mid)}
@@ -454,17 +452,21 @@ textarea.form-i{min-height:90px;resize:vertical}
 
 <nav>
   <div class="nav-c">
-    <a class="logo" href="index.html"><span class="l">Local</span><span class="s">Shore</span></a>
-    <a class="back-btn" href="index.html">← Back to Shops</a>
-    <button class="nav-logout-btn" onclick="doLogout()"><span class="nav-logout-ico">↩</span><span class="nav-logout-txt">Logout</span></button>
+    <a class="logo" href="home.html"><span class="l">Local</span><span class="s">Shore</span></a>
+    <a class="back-btn" href="home.html">← Back to Shops</a>
+    <div class="guest-auth-actions" id="guest-auth-actions">
+      <a class="guest-auth-link" id="guest-signup-link" href="#">New here?</a>
+      <a class="guest-auth-link guest-auth-primary" id="guest-login-link" href="#">Login</a>
+    </div>
+    <button class="nav-logout-btn" id="nav-logout-btn" onclick="doLogout()"><span class="nav-logout-ico">↩</span><span class="nav-logout-txt">Logout</span></button>
     <button class="cart-nav-pill" id="cart-nav-pill" onclick="handleCartNavClick()">🛒 <span id="cart-pill-txt">Cart</span></button>
   </div>
 </nav>
 
 <div class="breadcrumb" id="breadcrumb">
-  <a class="bc-link" href="index.html">Home</a>
+  <a class="bc-link" href="home.html">Home</a>
   <span class="bc-sep">›</span>
-    <a class="bc-link" href="index.html" id="bc-shop">Shop</a>
+    <a class="bc-link" href="home.html" id="bc-shop">Shop</a>
   <span class="bc-sep">›</span>
   <span class="bc-current" id="bc-product">Product</span>
 </div>
@@ -486,7 +488,7 @@ textarea.form-i{min-height:90px;resize:vertical}
   <div class="nf-icon">🔍</div>
   <div class="nf-title">Product Not Found</div>
   <div class="nf-sub">This product may have been removed or is no longer available.</div>
-  <a class="nf-btn" href="index.html">← Browse Shops</a>
+  <a class="nf-btn" href="home.html">← Browse Shops</a>
 </div>
 
 <!-- MAIN PRODUCT PAGE -->
@@ -506,7 +508,7 @@ textarea.form-i{min-height:90px;resize:vertical}
 
   <div class="info-col" id="info-col">
     <div class="shop-tag-row">
-      <a class="shop-chip" href="index.html" id="shop-chip">🏪 <span id="shop-chip-name">Shop</span></a>
+      <a class="shop-chip" href="home.html" id="shop-chip">🏪 <span id="shop-chip-name">Shop</span></a>
       <span class="cat-chip" id="cat-chip">Category</span>
     </div>
     <h1 class="prod-name-big" id="prod-name">Product Name</h1>
@@ -588,7 +590,7 @@ textarea.form-i{min-height:90px;resize:vertical}
           <span class="sic-meta-item" id="sic-phone-wrap" style="display:none">📞 <span id="sic-phone"></span></span>
         </div>
       </div>
-      <div><button class="btn-visit-shop" id="visit-shop-btn" onclick="window.location.href='index.html'">🏪 Visit Shop</button></div>
+      <div><button class="btn-visit-shop" id="visit-shop-btn" onclick="window.location.href='home.html'">🏪 Visit Shop</button></div>
     </div>
   </div>
 
@@ -852,7 +854,11 @@ function eh(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(
 function getDeviceId(){var id=localStorage.getItem('ls_device_id');if(!id){id='dev_'+Math.random().toString(36).slice(2)+Date.now();localStorage.setItem('ls_device_id',id);}return id;}
 var DEVICE_ID=getDeviceId();
 function toast(m,t){var e=document.getElementById('toast');e.textContent=m;e.className='toast-pop show'+(t?' '+t:'');clearTimeout(toast._t);toast._t=setTimeout(function(){e.className='toast-pop';},3200);}
-function doLogout(){if(!confirm('Sign out of LocalShore?'))return;try{localStorage.setItem('ls_force_login','true');localStorage.removeItem('ls_logged_in');localStorage.removeItem('ls_user_data');}catch(e){}toast('Signed out. Redirecting to login...','info');auth.signOut().catch(function(){}).finally(function(){setTimeout(function(){window.location.replace('index.html');},300);});}
+function isLoggedIn(){return ld('ls_logged_in')==='true';}
+function buildAuthUrl(tab){var ret='product.html'+window.location.search+window.location.hash;return 'home.html?auth='+(tab||'login')+'&return='+encodeURIComponent(ret);}
+function requireLogin(message,tab){toast(message||'Please sign in to continue.','info');setTimeout(function(){window.location.href=buildAuthUrl(tab||'login');},220);return false;}
+function updateAuthUI(){document.body.classList.toggle('guest-mode',!isLoggedIn());var login=document.getElementById('guest-login-link'),signup=document.getElementById('guest-signup-link');if(login)login.href=buildAuthUrl('login');if(signup)signup.href=buildAuthUrl('signup');}
+function doLogout(){if(!confirm('Sign out of LocalShore?'))return;try{localStorage.setItem('ls_force_login','true');localStorage.removeItem('ls_logged_in');localStorage.removeItem('ls_user_data');}catch(e){}toast('Signed out. You can keep browsing as a guest.','info');auth.signOut().catch(function(){}).finally(function(){setTimeout(function(){window.location.replace('home.html');},300);});}
 function prodIco(c){var m={'Groceries':'🛒','Fruits & Vegetables':'🍎','Dairy & Eggs':'🥛','Electronics':'📱','Fashion & Clothing':'👗','Home & Kitchen':'🍳','Medical & Health':'💊','Sports & Fitness':'⚽','Kids & Toys':'🧸','Books & Stationery':'📚','Meat & Seafood':'🥩','Bakery & Sweets':'🍮','Food & Sweets':'🍮','Medical / Pharmacy':'💊'};return m[c]||'📦';}
 function catIco(c){var m={'General Store':'🏪','Electronics':'📱','Fruits & Vegetables':'🍎','Medical / Pharmacy':'💊','Fashion & Clothing':'👗','Bakery':'🥐','Groceries':'🛒','Dairy & Eggs':'🥛'};return m[c]||'🏪';}
 function starsHtml(rating,size){size=size||'1rem';var s=Math.round(rating*2)/2;var h='';for(var i=1;i<=5;i++){if(s>=i)h+='<span style="color:#F5A623;font-size:'+size+'">★</span>';else if(s>=i-.5)h+='<span style="color:#F5A623;font-size:'+size+'">½</span>';else h+='<span style="color:#DDD;font-size:'+size+'">★</span>';}return h;}
@@ -881,6 +887,7 @@ var _lbIdx=0;
 
 // ─── Boot ─────────────────────────────────────────────
 window.addEventListener('load',function(){
+  updateAuthUI();
   var productId=getParam('id');
   if(!productId){showNotFound();return;}
   loadProduct(productId);
@@ -958,9 +965,9 @@ function renderProduct(){
 
   // Info
   document.getElementById('shop-chip-name').textContent=s?s.name:'Shop';
-  document.getElementById('shop-chip').href=s?'shop.html?id='+encodeURIComponent(s.id):'index.html';
-  document.getElementById('bc-shop').href=s?'shop.html?id='+encodeURIComponent(s.id):'index.html';
-  document.getElementById('visit-shop-btn').onclick=function(){window.location.href=s?'shop.html?id='+encodeURIComponent(s.id):'index.html';};
+  document.getElementById('shop-chip').href=s?'shop.html?id='+encodeURIComponent(s.id):'home.html';
+  document.getElementById('bc-shop').href=s?'shop.html?id='+encodeURIComponent(s.id):'home.html';
+  document.getElementById('visit-shop-btn').onclick=function(){window.location.href=s?'shop.html?id='+encodeURIComponent(s.id):'home.html';};
   document.getElementById('cat-chip').textContent=p.category||'Product';
   document.getElementById('prod-name').textContent=p.name||'Product';
   updateRatingDisplay(parseFloat(p.averageRating)||0,parseInt(p.reviewCount)||0);
@@ -1112,6 +1119,7 @@ function updateWishBtn(){
   if(btn){btn.textContent=inWish?'❤️ Wishlisted':'🤍 Add to Wishlist';btn.classList.toggle('wished',inWish);}
 }
 function doToggleWish(){
+  if(!isLoggedIn())return requireLogin('Please sign in to save this item to your wishlist.');
   if(!_product||!_shop)return;
   var wish=ldJ('ls_wishlist');var idx=wish.findIndex(function(w){return w.id===_product.id;});
   if(idx>=0){wish.splice(idx,1);toast('Removed from wishlist');}
@@ -1121,6 +1129,7 @@ function doToggleWish(){
 
 // ─── Buy Now ──────────────────────────────────────────
 function doBuyNow(){
+  if(!isLoggedIn())return requireLogin('Please sign in to buy this product.');
   if(!_product||!_shop)return;
   if(!parseInt(_product.stock||0)){toast('Out of stock','err');return;}
   _pendingOrder={product:_product,shop:_shop,qty:_qty};
@@ -1151,6 +1160,7 @@ function prefillDeliveryForm(){
   document.getElementById('del-phone').value=ld('ls_del_phone')||(cu?cu.phone||'':'');
 }
 function confirmOrder(){
+  if(!isLoggedIn())return requireLogin('Please sign in to place your order.');
   if(!_pendingOrder)return;
   var addr1=document.getElementById('del-addr1').value.trim(),city=document.getElementById('del-city').value.trim(),pin=document.getElementById('del-pin').value.trim(),phone=document.getElementById('del-phone').value.trim();
   if(!addr1||!city||!pin||!phone){toast('Please fill all required fields','err');return;}
@@ -1254,6 +1264,7 @@ function markHelpful(reviewId,btn){
 // ─── Write Review Form ─────────────────────────────────
 var _selectedStar=0;
 function toggleReviewForm(){
+  if(!isLoggedIn())return requireLogin('Please sign in to write a review.');
   var form=document.getElementById('review-form');form.classList.toggle('open');
   if(form.classList.contains('open'))form.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
@@ -1321,6 +1332,7 @@ function uploadReviewImages(){
 
 // ─── Submit Review ─────────────────────────────────────
 function submitReview(){
+  if(!isLoggedIn())return requireLogin('Please sign in to submit a review.');
   if(!_product)return;
   var name=document.getElementById('rv-name').value.trim();
   var title=document.getElementById('rv-title').value.trim();
