@@ -56,15 +56,15 @@ body::after{width:420px;height:420px;right:-130px;bottom:48px;background:rgba(20
 .nav-float-wrap{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:900;width:calc(100% - 36px);max-width:1240px;pointer-events:none}
 nav{pointer-events:auto;position:relative;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.82));backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,.84);border-radius:30px;box-shadow:0 20px 48px rgba(16,24,40,.08),0 1px 0 rgba(255,255,255,.96) inset,0 0 0 1px rgba(255,107,26,.04);height:72px;display:flex;align-items:center;padding:0 22px;gap:18px;transition:all .3s ease}
 nav::before{content:'';position:absolute;left:18px;right:18px;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.98),transparent);pointer-events:none}
-.nav-logo{font-family:var(--ff);font-size:1.7rem;font-weight:900;letter-spacing:-.06em;text-decoration:none;display:flex;align-items:center;gap:14px;flex-shrink:0;padding:11px 22px 11px 13px;border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.99),rgba(255,255,255,.94));border:1px solid rgba(19,46,103,.08);box-shadow:0 8px 18px rgba(16,24,40,.04),0 1px 0 rgba(255,255,255,.94) inset;position:relative;overflow:hidden}
-.nav-logo::before{content:'';position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.98),transparent)}
+.nav-logo{font-family:var(--ff);font-size:1.7rem;font-weight:900;letter-spacing:-.06em;text-decoration:none;display:flex;align-items:center;gap:14px;flex-shrink:0;padding:10px 18px 10px 10px;border-radius:22px;background:rgba(255,255,255,.88);border:1px solid rgba(19,46,103,.06);box-shadow:none;position:relative;overflow:hidden}
+.nav-logo::before{display:none}
 .nav-logo::after{display:none}
 .nav-logo .l,.nav-logo .s{font-family:var(--ff);font-size:2rem;font-weight:900;line-height:.88;letter-spacing:.02em;position:relative;z-index:1;text-transform:capitalize}
 .nav-logo .l{color:var(--navy)}
 .nav-logo .s{color:var(--orange)}
 .nav-logo .l,.nav-logo .s{text-shadow:none}
-.nav-logo-mark{width:44px;height:44px;background:linear-gradient(155deg,#0A2458 0%,#123C87 72%,#1A56B8 100%);border-radius:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 14px rgba(11,45,107,.16),0 0 0 1px rgba(255,255,255,.22) inset;position:relative;z-index:1}
-.nav-logo-mark::before{content:'';position:absolute;inset:1px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0));pointer-events:none}
+.nav-logo-mark{width:42px;height:42px;background:#123C87;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:none;position:relative;z-index:1}
+.nav-logo-mark::before{display:none}
 .nav-logo-mark svg{width:19px;height:19px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;filter:none}
 .nav-divider-v{width:1px;height:30px;background:linear-gradient(180deg,transparent,rgba(19,46,103,.14),transparent);flex-shrink:0}
 .nav-links{list-style:none;display:flex;gap:8px;align-items:center;flex:1}
@@ -365,6 +365,9 @@ border:1px solid rgba(255,255,255,.7);box-shadow:var(--sh-lg);backdrop-filter:bl
 .dist-badge{display:inline-flex;align-items:center;gap:3px;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:100px}
 .dist-badge.near{background:#EDFBF3;color:#1A7A45}.dist-badge.med{background:#FFF8E7;color:#92600A}.dist-badge.far{background:#FEF2F2;color:#991B1B}
 .stores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.stores-grid.single-store{grid-template-columns:minmax(340px,520px);justify-content:start}
+.stores-grid.single-store .store-card{width:min(100%,520px);max-width:520px;justify-self:start}
+.stores-grid.single-store .store-foot{flex-wrap:wrap;gap:10px}
 .store-card{background:linear-gradient(160deg,#071938 0%,#0B2D6B 56%,#123C87 100%);border-radius:calc(var(--r-2xl) + 4px);border:1px solid rgba(255,255,255,.14);padding:24px 20px;display:flex;flex-direction:column;gap:12px;cursor:pointer;text-decoration:none;transition:all .24s;position:relative;overflow:hidden;box-shadow:0 24px 54px rgba(11,45,107,.28),0 10px 28px rgba(16,24,40,.12);backdrop-filter:blur(16px)}
 .store-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,rgba(255,255,255,.92),rgba(255,255,255,.2));transform:scaleX(.52);transform-origin:left;transition:transform .28s cubic-bezier(.34,1.2,.64,1)}
 .store-card::after{content:'';position:absolute;right:-24px;bottom:-32px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18) 0%,rgba(255,255,255,0) 72%);pointer-events:none}
@@ -813,9 +816,9 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
 @media(max-width:768px){
   .nav-float-wrap{width:calc(100% - 20px);top:8px}
   nav{padding:0 16px;height:62px;border-radius:24px}
-  .nav-logo{padding:8px 14px 8px 8px;gap:10px;border-radius:22px}
+  .nav-logo{padding:8px 12px 8px 8px;gap:10px;border-radius:18px}
   .nav-logo .l,.nav-logo .s{font-size:1.56rem}
-  .nav-logo-mark{width:34px;height:34px;border-radius:14px}
+  .nav-logo-mark{width:34px;height:34px;border-radius:12px}
   .nav-links li:nth-child(-n+2){display:none}
   .page{padding:16px 14px}
   .search-bar{padding:14px 14px 10px}
@@ -1243,7 +1246,7 @@ var I18N={
     cats_label:'Browse',cats_title:'Shop by Category',cats_copy:'Choose a category to quickly filter shops and discover products that match what you need.',cats_tip:'Tap a card to filter shops',
     offers_label:'Deals',offers_title:'Hot Offers',
     stores_label:'Nearby',stores_default:'Shops on LocalShore',stores_nearby:'Nearby Shops',stores_search:'Search Results',stores_suffix:'Shops',
-    stores_note:'Showing shops within 15 km',show_all:'Show all shops',show_all_arrow:'Show all →',
+    stores_note:'Showing shops within 15 km',show_all:'Show all shops',show_all_arrow:'Show all →',clear_filters:'Clear filters',change_location:'Change location',stores_need_location_title:'Set your location to view nearby shops',stores_need_location_sub:'We only show shops within 15 km of your current location.',
     stores_empty_title:'No shops found nearby',stores_empty_sub:'No shops within 15 km.',
     new_label:'Fresh Picks',new_title:'Newly Added Products',new_copy:'Recently added products from different LocalShore vendors.',new_empty_title:'No new products yet',new_empty_sub:'Fresh products from different vendors will appear here once they are added.',
     cat_fashion_label:'Fashion',cat_fashion_meta:'Clothing, accessories and everyday style picks.',cat_kids_label:'Kids',cat_kids_meta:'Toys, school needs and playful essentials.',cat_appliances_label:'Appliances',cat_appliances_meta:'Home gadgets, devices and utility upgrades.',cat_sports_label:'Sports',cat_sports_meta:'Fitness gear, training items and activewear.',cat_meat_label:'Meat',cat_meat_meta:'Fresh cuts, seafood and protein essentials.',cat_electronics_label:'Electronics',cat_electronics_meta:'Phones, accessories and everyday tech finds.',
@@ -1308,7 +1311,7 @@ function applyLanguage(){
   document.documentElement.lang=_lang==='hi'?'hi':(_lang==='ta'?'ta':'en');
   setTxt('nav-wishlist-txt','nav_wishlist');setTxt('nav-orders-txt','nav_orders');
   setTxt('settings-title','settings_title');setTxt('settings-sub','settings_sub');setTxt('settings-theme-label','settings_theme');setTxt('theme-light-txt','theme_light');setTxt('theme-dark-txt','theme_dark');setTxt('settings-language-label','settings_language');setTxt('lang-en-txt','lang_en');setTxt('lang-hi-txt','lang_hi');setTxt('lang-ta-txt','lang_ta');setTxt('settings-logout-txt','settings_logout');
-  setTxt('search-btn-txt','search');setTxt('cats-sec-label','cats_label');setTxt('cats-sec-title','cats_title');setTxt('cats-sec-copy','cats_copy');setTxt('cats-tip','cats_tip');setTxt('offers-sec-label','offers_label');setTxt('offers-sec-title','offers_title');setTxt('stores-sec-label','stores_label');setTxt('nearby-note-txt','stores_note');setTxt('reset-btn-txt','show_all');setTxt('stores-empty-title','stores_empty_title');setTxt('stores-empty-sub','stores_empty_sub');setTxt('stores-empty-link','show_all_arrow');setTxt('new-sec-label','new_label');setTxt('new-sec-title','new_title');setTxt('new-sec-copy','new_copy');setTxt('new-empty-title','new_empty_title');setTxt('new-empty-sub','new_empty_sub');
+  setTxt('search-btn-txt','search');setTxt('cats-sec-label','cats_label');setTxt('cats-sec-title','cats_title');setTxt('cats-sec-copy','cats_copy');setTxt('cats-tip','cats_tip');setTxt('offers-sec-label','offers_label');setTxt('offers-sec-title','offers_title');setTxt('stores-sec-label','stores_label');setTxt('nearby-note-txt','stores_note');setTxt('reset-btn-txt','clear_filters');setTxt('stores-empty-title','stores_empty_title');setTxt('stores-empty-sub','stores_empty_sub');setTxt('stores-empty-link','change_location');setTxt('new-sec-label','new_label');setTxt('new-sec-title','new_title');setTxt('new-sec-copy','new_copy');setTxt('new-empty-title','new_empty_title');setTxt('new-empty-sub','new_empty_sub');
   setTxt('cat-fashion-label','cat_fashion_label');setTxt('cat-fashion-meta','cat_fashion_meta');setTxt('cat-kids-label','cat_kids_label');setTxt('cat-kids-meta','cat_kids_meta');setTxt('cat-appliances-label','cat_appliances_label');setTxt('cat-appliances-meta','cat_appliances_meta');setTxt('cat-sports-label','cat_sports_label');setTxt('cat-sports-meta','cat_sports_meta');setTxt('cat-meat-label','cat_meat_label');setTxt('cat-meat-meta','cat_meat_meta');setTxt('cat-electronics-label','cat_electronics_label');setTxt('cat-electronics-meta','cat_electronics_meta');
   setTxt('notif-title-txt','notif_title');setTxt('notif-markall-txt','notif_markall');setTxt('notif-tab-all','notif_tab_all');setTxt('notif-tab-offers','notif_tab_offers');setTxt('notif-tab-orders','notif_tab_orders');setTxt('notif-tab-alerts','notif_tab_alerts');setTxt('notif-viewall-txt','notif_viewall');setTxt('notif-loading-txt','notif_loading');
   var searchInp=document.getElementById('search-inp');if(searchInp&&!_userLat)searchInp.placeholder=t('search_placeholder');
@@ -1738,12 +1741,38 @@ function filterByShopCategory(cat){
 }
 function renderShops(){
   var grid=document.getElementById('stores-grid'),empty=document.getElementById('stores-empty'),note=document.getElementById('nearby-note'),resetB=document.getElementById('reset-btn'),lbl=document.getElementById('stores-lbl');
+  var emptyTitle=document.getElementById('stores-empty-title'),emptySub=document.getElementById('stores-empty-sub'),emptyLink=document.getElementById('stores-empty-link'),resetTxt=document.getElementById('reset-btn-txt');
   var list=_shops.slice();
   if(_searchTerm){list=list.filter(function(s){var sm=s.name.toLowerCase().indexOf(_searchTerm)!==-1||(s.category||'').toLowerCase().indexOf(_searchTerm)!==-1;var pm=_products.some(function(p){return p.shopId===s.id&&(p.name.toLowerCase().indexOf(_searchTerm)!==-1||(p.category||'').toLowerCase().indexOf(_searchTerm)!==-1);});return sm||pm;});}
   if(_activeCategory){list=list.filter(function(s){return(s.category||'').toLowerCase().indexOf(_activeCategory.toLowerCase())!==-1||_activeCategory.toLowerCase().indexOf((s.category||'').toLowerCase())!==-1||_products.some(function(p){return p.shopId===s.id&&((p.category||'').toLowerCase().indexOf(_activeCategory.split(' ')[0].toLowerCase())!==-1);});});}
-  if(_userLat&&_userLng){list=list.map(function(s){return Object.assign({},s,{dist:haversine(_userLat,_userLng,s.lat,s.lng)});}).filter(function(s){return s.dist<=15;}).sort(function(a,b){return a.dist-b.dist;});lbl.textContent=(_activeCategory?_activeCategory+' · ':'')+t('stores_nearby')+' ('+list.length+')';note.style.display='flex';resetB.style.display='inline-flex';}
-  else{lbl.textContent=_activeCategory?_activeCategory+' '+t('stores_suffix')+' ('+list.length+')':_searchTerm?t('stores_search')+' ('+list.length+')':t('stores_default');note.style.display='none';resetB.style.display=_searchTerm?'inline-flex':'none';}
-  if(!list.length){grid.innerHTML='';grid.style.display='none';empty.style.display='block';return;}
+  var hasFilters=!!(_searchTerm||_activeCategory);
+  if(!_userLat||!_userLng){
+    grid.classList.remove('single-store');
+    lbl.textContent=t('stores_nearby');
+    note.style.display='none';
+    resetB.style.display=hasFilters?'inline-flex':'none';
+    if(resetTxt)resetTxt.textContent=t('clear_filters');
+    if(emptyTitle)emptyTitle.textContent=t('stores_need_location_title');
+    if(emptySub)emptySub.textContent=t('stores_need_location_sub');
+    if(emptyLink){emptyLink.textContent=t('location_add');emptyLink.onclick=function(){openMapModal();};}
+    grid.innerHTML='';grid.style.display='none';empty.style.display='block';return;
+  }
+  list=list.map(function(s){return Object.assign({},s,{dist:haversine(_userLat,_userLng,s.lat,s.lng)});}).filter(function(s){return s.dist<=15;}).sort(function(a,b){return a.dist-b.dist;});
+  grid.classList.toggle('single-store',list.length===1);
+  lbl.textContent=(_activeCategory?_activeCategory+' · ':'')+t('stores_nearby')+' ('+list.length+')';
+  note.style.display='flex';
+  resetB.style.display=hasFilters?'inline-flex':'none';
+  if(resetTxt)resetTxt.textContent=t('clear_filters');
+  if(!list.length){
+    if(emptyTitle)emptyTitle.textContent=t('stores_empty_title');
+    if(emptySub)emptySub.textContent=t('stores_empty_sub');
+    if(emptyLink){
+      emptyLink.textContent=hasFilters?t('clear_filters'):t('change_location');
+      emptyLink.onclick=hasFilters?function(){resetFilter();}:function(){openMapModal();};
+    }
+    grid.classList.remove('single-store');
+    grid.innerHTML='';grid.style.display='none';empty.style.display='block';return;
+  }
   empty.style.display='none';grid.style.display='grid';
   grid.innerHTML=list.map(function(s){
     var badge=s.dist!==undefined?distBadge(s.dist):'';var pc=s.productCount||0;
@@ -1794,7 +1823,7 @@ function renderNewProducts(){
     '</div>';
   }).join('');
 }
-function resetFilter(){_userLat=null;_userLng=null;_searchTerm='';document.getElementById('search-inp').value='';renderShops();}
+function resetFilter(){_searchTerm='';_activeCategory='';document.getElementById('search-inp').value='';document.querySelectorAll('.cat-card').forEach(function(el){el.classList.remove('active-cat');});renderShops();}
 
 // ====== SHOP MODAL ======
 var _currentShopId=null;
@@ -2104,6 +2133,7 @@ function detectMainLoc(silent){
       var a=data.address||{};var parts=[a.road||a.suburb,a.city||a.town||a.village,a.state].filter(Boolean);
       var dispAddr=parts.length?parts.join(', '):(lat.toFixed(4)+', '+lng.toFixed(4));
       sv('ls_det_city',a.city||a.town||a.village||'');sv('ls_det_pin',a.postcode||'');sv('ls_detected_full',dispAddr);
+      renderShops();
       document.getElementById('mm-addr-txt').textContent=dispAddr;document.getElementById('mm-addr').classList.add('show');
       document.getElementById('loc-btn-txt').textContent=a.city||a.town||a.village||t('location_set');
       document.getElementById('lp-addr').textContent=dispAddr;document.getElementById('lp-coords').textContent='Lat '+lat.toFixed(5)+'  ·  Lng '+lng.toFixed(5);
