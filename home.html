@@ -74,6 +74,13 @@ nav::before{content:'';position:absolute;left:18px;right:18px;top:0;height:1px;b
 .guest-auth-link:hover{background:rgba(255,255,255,.88);color:var(--navy);box-shadow:0 10px 22px rgba(16,24,40,.06),0 0 0 1px rgba(19,46,103,.05) inset}
 .guest-auth-primary{padding:10px 18px;background:linear-gradient(135deg,var(--orange),var(--orange-mid));color:#fff;box-shadow:0 12px 24px rgba(255,107,26,.18)}
 .guest-auth-primary:hover{background:linear-gradient(135deg,var(--orange-dark),var(--orange));color:#fff;transform:translateY(-1px);box-shadow:0 16px 30px rgba(255,107,26,.24)}
+.mobile-nav-shortcuts{display:none;pointer-events:auto;gap:8px;margin-top:8px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.mobile-nav-row{display:contents}
+.mobile-nav-shortcut{position:relative;min-width:0;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 10px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.86));border:1px solid rgba(255,255,255,.84);box-shadow:0 10px 22px rgba(16,24,40,.07);text-decoration:none;color:var(--navy);font-size:.74rem;font-weight:800;letter-spacing:.01em}
+.mobile-nav-shortcut svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.mobile-nav-shortcut-badge{position:absolute;top:7px;right:10px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--navy);color:#fff;font-size:.56rem;font-weight:900;display:none;align-items:center;justify-content:center;line-height:1;box-shadow:0 1px 6px rgba(11,45,107,.28)}
+.mobile-nav-shortcut-badge.show{display:flex}
+.mobile-nav-shortcut.settings-shortcut{max-width:none}
 body.guest-mode .nav-links,
 body.guest-mode .notif-wrap,
 body.guest-mode #nav-auth-divider,
@@ -188,6 +195,7 @@ body.guest-mode .guest-auth-actions{display:flex}
 .search-box:focus-within{border-color:rgba(255,107,26,.42);box-shadow:0 0 0 4px rgba(255,107,26,.08),var(--sh-sm);background:#fff}
 .search-box input{flex:1;padding:11px 16px;border:none;outline:none;font-size:.87rem;font-family:var(--fb);background:transparent;color:var(--black)}
 .search-box input::placeholder{color:var(--muted)}
+.af-trap{position:absolute;left:-9999px;top:auto;width:1px;height:1px;opacity:0;pointer-events:none}
 .search-box button{margin:3px;padding:8px 20px;border:none;background:linear-gradient(135deg,var(--orange),var(--orange-mid));color:#fff;font-size:.8rem;font-weight:700;font-family:var(--fb);border-radius:12px;cursor:pointer;transition:all .18s;letter-spacing:.01em;box-shadow:0 10px 20px rgba(255,107,26,.22)}
 .search-box button:hover{background:linear-gradient(135deg,var(--orange-dark),var(--orange));transform:translateY(-1px);box-shadow:0 14px 24px rgba(255,107,26,.28)}
 .search-dropdown{position:relative;top:auto;left:auto;right:auto;margin-top:8px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-xl);z-index:500;overflow:hidden;display:none;max-height:380px;overflow-y:auto}
@@ -583,7 +591,7 @@ radial-gradient(circle at top right,rgba(255,107,26,.10),transparent 28%)}
 .os-shop-row strong{color:var(--black)}
 .pay-section{margin-bottom:16px}
 .pay-section-lbl{font-family:var(--fb);font-size:.66rem;font-weight:700;color:#C96B33;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
-.pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.pay-methods{display:grid;grid-template-columns:1fr;gap:9px}
 .pay-opt{position:relative}
 .pay-opt input[type="radio"]{position:absolute;opacity:0;width:0;height:0}
 .pay-opt-label{display:flex;align-items:center;gap:10px;padding:12px 13px;border:1.5px solid var(--border-strong);border-radius:var(--r-lg);cursor:pointer;transition:all .2s;background:rgba(255,255,255,.86);user-select:none;box-shadow:var(--sh-xs)}
@@ -598,8 +606,6 @@ radial-gradient(circle at top right,rgba(255,107,26,.10),transparent 28%)}
 .pay-opt input:checked + .pay-opt-label .pay-opt-check::after{content:'\2713';font-size:.55rem;color:#fff;font-weight:900}
 .pay-cod-note{display:none;align-items:center;gap:7px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--r-sm);padding:9px 12px;font-size:.76rem;color:#92600A;margin-top:9px;line-height:1.4}
 .pay-cod-note.show{display:flex}
-.pay-online-note{display:none;align-items:center;gap:7px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:var(--r-sm);padding:9px 12px;font-size:.76rem;color:#1d4ed8;margin-top:9px;line-height:1.4}
-.pay-online-note.show{display:flex}
 
 /* ORDERS MODAL */
 #orders-modal .modal{max-width:920px;max-height:92vh;display:flex;flex-direction:column}
@@ -840,6 +846,7 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
   .nav-logo .l,.nav-logo .s{font-size:1.56rem}
   .nav-logo-mark{width:34px;height:34px;border-radius:12px}
   .nav-links li:nth-child(-n+2){display:none}
+  .mobile-nav-shortcuts{display:grid}
   .page{padding:16px 14px}
   .search-bar{padding:14px 14px 10px}
   .search-row{flex-direction:column;align-items:stretch}
@@ -870,7 +877,7 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
   .pay-methods{grid-template-columns:1fr}
   .dcm-actions{grid-template-columns:1fr}
   .notif-dropdown{width:310px;right:-60px}
-  body{padding-top:calc(60px + 18px)}
+  body{padding-top:calc(132px + 18px)}
   .bg-slide-content{padding:20px 24px}
   .bg-slide-content h2{font-size:1.3rem}
   .bg-slide-type-image .bg-slide-content,.bg-slide-type-video .bg-slide-content{left:14px;right:14px;bottom:14px;max-width:none;padding:14px 15px 16px;border-radius:18px}
@@ -908,6 +915,10 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
   .reset-btn{width:100%;justify-content:center}
   .bg-prev,.bg-next{width:34px;height:34px}
   .bg-dot.active{width:18px}
+  .mobile-nav-shortcuts{gap:7px;margin-top:7px}
+  .mobile-nav-shortcut{padding:8px 8px;font-size:.7rem;border-radius:13px;gap:5px}
+  .mobile-nav-shortcut svg{width:14px;height:14px}
+  .mobile-nav-shortcut-badge{top:5px;right:7px;min-width:14px;height:14px;font-size:.52rem}
   .cart-drawer-inner{padding:14px 14px 18px}
   .cart-item-row{grid-template-columns:auto 1fr;grid-template-areas:'thumb info''thumb qty''thumb subtotal';gap:8px}
   .cart-item-thumb{grid-area:thumb}
@@ -987,6 +998,35 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
       </div>
     </div>
   </nav>
+  <div class="mobile-nav-shortcuts">
+    <div class="mobile-nav-row">
+      <a class="mobile-nav-shortcut" href="#" onclick="openWishModal();return false;">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>Wishlist</span>
+        <span class="mobile-nav-shortcut-badge" id="wish-count-badge-mobile"></span>
+      </a>
+      <a class="mobile-nav-shortcut" href="#" onclick="openOrdersModal();return false;">
+        <svg viewBox="0 0 24 24"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        <span>My Orders</span>
+        <span class="mobile-nav-shortcut-badge" id="orders-count-badge-mobile"></span>
+      </a>
+    </div>
+    <div class="mobile-nav-row">
+      <a class="mobile-nav-shortcut" href="#" onclick="handleNavCartClick();return false;">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.6"></circle><circle cx="18" cy="20" r="1.6"></circle><path d="M3 4h2l2.2 10.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.78L20 7H6.2"></path></svg>
+        <span>Cart</span>
+        <span class="mobile-nav-shortcut-badge" id="nav-cart-count-mobile"></span>
+      </a>
+      <a class="mobile-nav-shortcut" href="#" onclick="handleProfileClick();return false;">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Account</span>
+      </a>
+      <a class="mobile-nav-shortcut settings-shortcut" href="#" onclick="toggleSettingsPanel();return false;">
+        <svg viewBox="0 0 24 24"><path d="M10.8 2.7h2.4l.5 2.1c.61.15 1.18.39 1.72.71l1.78-1.19 1.7 1.7-1.19 1.78c.32.54.56 1.11.71 1.72l2.09.48v2.4l-2.09.48c-.15.61-.39 1.18-.71 1.72l1.19 1.78-1.7 1.7-1.78-1.19c-.54.32-1.11.56-1.72.71l-.48 2.09h-2.4l-.48-2.09a7.32 7.32 0 0 1-1.72-.71L6.83 19.7l-1.7-1.7 1.19-1.78a7.32 7.32 0 0 1-.71-1.72l-2.09-.48v-2.4l2.09-.48c.15-.61.39-1.18.71-1.72L5.13 6.8l1.7-1.7 1.78 1.19c.54-.32 1.11-.56 1.72-.71z"></path><circle cx="12" cy="12" r="3.1"></circle></svg>
+        <span>More</span>
+      </a>
+    </div>
+  </div>
 </div>
 
 <!-- NOTIFICATION POPUP -->
@@ -1007,7 +1047,9 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
     <div class="search-row">
       <button class="loc-btn" id="loc-btn" onclick="openMapModal()"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span id="loc-btn-txt">Location</span></button>
       <div class="search-box-wrap">
-        <div class="search-box"><input type="text" id="search-inp" placeholder="Search products, shops…" oninput="onSearchInput(event)" onfocus="onSearchFocus()" autocomplete="off"><button id="search-btn-txt" onclick="filterShops()">Search</button></div>
+        <input class="af-trap" type="text" name="fake-username" autocomplete="username" tabindex="-1" aria-hidden="true">
+        <input class="af-trap" type="password" name="fake-password" autocomplete="current-password" tabindex="-1" aria-hidden="true">
+        <div class="search-box"><input type="search" id="search-inp" name="product-search" placeholder="Search products, shops…" oninput="onSearchInput(event)" onfocus="unlockSearchInput();onSearchFocus()" onclick="unlockSearchInput()" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="search" enterkeyhint="search" data-lpignore="true" data-1p-ignore="true" readonly><button id="search-btn-txt" onclick="filterShops()">Search</button></div>
         <div class="search-dropdown" id="search-dropdown"></div>
       </div>
     </div>
@@ -1170,7 +1212,7 @@ body.theme-dark .settings-choice.active{background:linear-gradient(135deg,var(--
   <div class="modal">
     <div class="modal-hdr" style="padding-bottom:16px;border-bottom:1px solid var(--border)"><div class="modal-title">Delivery Details</div><button class="modal-close" onclick="closeDeliveryModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="del-body"><div class="order-summary" id="del-summary"></div><button class="btn-locate" onclick="detectDeliveryLoc()"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>Auto-detect my location</button><div id="del-map" class="del-map"></div><div class="del-hint" id="del-map-hint">Click map to pin delivery location or auto-detect above</div><div class="form-g"><label class="form-l">Flat / Building / Street *</label><input class="form-i" id="del-addr1" placeholder="e.g. 12B, Rose Apartments, MG Road"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="form-g"><label class="form-l">City *</label><input class="form-i" id="del-city" placeholder="Bangalore"></div><div class="form-g"><label class="form-l">Pincode *</label><input class="form-i" id="del-pin" placeholder="560001" maxlength="6"></div></div><div class="form-g"><label class="form-l">Landmark (optional)</label><input class="form-i" id="del-landmark" placeholder="Near Bus Stand / School"></div><div class="form-g"><label class="form-l">Phone *</label><input class="form-i" id="del-phone" type="tel" placeholder="+91 98765 43210"></div>
-    <div class="pay-section"><div class="pay-section-lbl">Payment Method</div><div class="pay-methods"><div class="pay-opt"><input type="radio" name="pay-method" id="pay-cod" value="cod" checked onchange="onPayMethodChange()"><label class="pay-opt-label" for="pay-cod"><span class="pay-opt-icon">💵</span><div class="pay-opt-info"><div class="pay-opt-name">Cash on Delivery</div><div class="pay-opt-sub">Pay when delivered</div></div><div class="pay-opt-check"></div></label></div><div class="pay-opt"><input type="radio" name="pay-method" id="pay-online" value="online" onchange="onPayMethodChange()"><label class="pay-opt-label" for="pay-online"><span class="pay-opt-icon">💳</span><div class="pay-opt-info"><div class="pay-opt-name">Pay Online</div><div class="pay-opt-sub">UPI / Card / Net Banking</div></div><div class="pay-opt-check"></div></label></div></div><div class="pay-cod-note show" id="pay-cod-note">💵 Keep exact change ready.</div><div class="pay-online-note" id="pay-online-note">🔒 Secure payment link via SMS after confirmation.</div></div>
+    <div class="pay-section"><div class="pay-section-lbl">Payment Method</div><div class="pay-methods"><div class="pay-opt"><input type="radio" name="pay-method" id="pay-cod" value="cod" checked onchange="onPayMethodChange()"><label class="pay-opt-label" for="pay-cod"><span class="pay-opt-icon">💵</span><div class="pay-opt-info"><div class="pay-opt-name">Cash on Delivery</div><div class="pay-opt-sub">Pay when delivered</div></div><div class="pay-opt-check"></div></label></div></div><div class="pay-cod-note show" id="pay-cod-note">💵 Keep exact change ready.</div></div>
     <button class="btn-confirm" id="btn-confirm-order" onclick="confirmOrder()">✅ Confirm &amp; Place Order</button></div>
   </div>
 </div>
@@ -1406,7 +1448,7 @@ function setTheme(theme){_theme=theme==='dark'?'dark':'light';sv('ls_theme',_the
 function setLanguage(lang){if(!I18N[lang])lang='en';_lang=lang;sv('ls_lang',_lang);applyLanguage();toast(t('toast_language'),'info');}
 function toggleSettingsPanel(){var wrap=document.getElementById('settings-wrap');if(!wrap)return;wrap.classList.toggle('open');updateSettingsButtons();}
 function closeSettingsPanel(){var wrap=document.getElementById('settings-wrap');if(wrap)wrap.classList.remove('open');updateSettingsButtons();}
-function updateNavCartBtn(){var btn=document.getElementById('nav-cart-btn'),countEl=document.getElementById('nav-cart-count'),label=document.getElementById('nav-cart-lbl');if(!btn||!countEl||!label)return;var count=getCartItemCount();countEl.textContent=count;label.textContent='Cart';btn.classList.toggle('empty-cart',count<1);}
+function updateNavCartBtn(){var btn=document.getElementById('nav-cart-btn'),countEl=document.getElementById('nav-cart-count'),label=document.getElementById('nav-cart-lbl'),mobileCount=document.getElementById('nav-cart-count-mobile');if(!btn||!countEl||!label)return;var count=getCartItemCount();countEl.textContent=count;label.textContent='Cart';btn.classList.toggle('empty-cart',count<1);if(mobileCount){if(count){mobileCount.textContent=count;mobileCount.classList.add('show');}else mobileCount.classList.remove('show');}}
 function handleNavCartClick(){_cartRequested=true;updateCartUI();openCartModal();}
 
 // ====== AUTH ======
@@ -1736,7 +1778,7 @@ function onNotifClick(id,el){
 function markAllNotifRead(){_allNotifs.forEach(function(n){markRead(n.id);});updateNotifBadge();renderNotifList();toast('All notifications marked as read');}
 
 // ====== PAYMENT ======
-function onPayMethodChange(){var method=document.querySelector('input[name="pay-method"]:checked');method=method?method.value:'cod';document.getElementById('pay-cod-note').classList.toggle('show',method==='cod');document.getElementById('pay-online-note').classList.toggle('show',method==='online');}
+function onPayMethodChange(){document.getElementById('pay-cod-note').classList.add('show');}
 
 // ====== CART ======
 function getCartTotal(){return _cart.items.reduce(function(s,i){return s+i.price*i.qty;},0);}
@@ -1797,6 +1839,7 @@ function hideShopsStatus(){var el=document.getElementById('shops-status');if(el)
 // ====== SEARCH & SHOPS ======
 var _searchTerm='',_activeCategory='';
 function filterShops(){_searchTerm=document.getElementById('search-inp').value.trim().toLowerCase();renderShops();}
+function unlockSearchInput(){var inp=document.getElementById('search-inp');if(inp&&inp.hasAttribute('readonly'))inp.removeAttribute('readonly');}
 function goToShopPage(shopId){if(!shopId)return;window.location.href='shop.html?id='+encodeURIComponent(shopId);}
 function onSearchInput(e){_searchTerm=e.target.value.trim().toLowerCase();_activeCategory='';document.querySelectorAll('.cat-card').forEach(function(el){el.classList.remove('active-cat');});if(!_searchTerm){closeDropdown();renderShops();return;}renderDropdown(_searchTerm);renderShops();}
 function onSearchFocus(){var v=document.getElementById('search-inp').value.trim().toLowerCase();if(v)renderDropdown(v);}
@@ -1984,15 +2027,14 @@ function confirmOrder(){
   if(!addr1||!city||!pin||!phone){toast('Please fill all required fields','err');return;}
   var landmark=document.getElementById('del-landmark').value.trim();
   var fullAddr=addr1+(landmark?', Near '+landmark:'')+', '+city+' - '+pin;
-  var payEl=document.querySelector('input[name="pay-method"]:checked');
-  var paymentMethod=payEl?payEl.value:'cod';
+  var paymentMethod='cod';
   sv('ls_del_addr1',addr1);sv('ls_del_city',city);sv('ls_del_pin',pin);sv('ls_del_land',landmark);sv('ls_del_phone',phone);
   var order;
   var cart=_pendingOrder.cart;var shop=_pendingOrder.shop;
   var total=cart.items.reduce(function(s,i){return s+i.price*i.qty;},0);var itemCount=cart.items.reduce(function(s,i){return s+i.qty;},0);
-  order={deviceId:DEVICE_ID,type:'cart',shopId:cart.shopId,shopName:shop.name,shopAddress:shop.address||'',shopPhone:shop.phone||'',shopHours:shop.hours||'',shopLat:shop.lat||null,shopLng:shop.lng||null,items:cart.items.map(function(i){return{productId:i.productId,name:i.name,price:i.price,qty:i.qty,image:i.image||'',category:i.category};}),productName:cart.items.length===1?cart.items[0].name:cart.items.length+' items from '+shop.name,category:cart.items[0].category,image:cart.items[0].image||'',price:cart.items[0].price,qty:itemCount,total:total,deliveryAddress:fullAddr,deliveryLat:delLat,deliveryLng:delLng,phone:phone,paymentMethod:paymentMethod,paymentLabel:paymentMethod==='cod'?'Cash on Delivery':'Online Payment',status:'Confirmed',customerConfirmed:null,orderedAt:new Date().toISOString()};
+  order={deviceId:DEVICE_ID,type:'cart',shopId:cart.shopId,shopName:shop.name,shopAddress:shop.address||'',shopPhone:shop.phone||'',shopHours:shop.hours||'',shopLat:shop.lat||null,shopLng:shop.lng||null,items:cart.items.map(function(i){return{productId:i.productId,name:i.name,price:i.price,qty:i.qty,image:i.image||'',category:i.category};}),productName:cart.items.length===1?cart.items[0].name:cart.items.length+' items from '+shop.name,category:cart.items[0].category,image:cart.items[0].image||'',price:cart.items[0].price,qty:itemCount,total:total,deliveryAddress:fullAddr,deliveryLat:delLat,deliveryLng:delLng,phone:phone,paymentMethod:paymentMethod,paymentLabel:'Cash on Delivery',status:'Confirmed',customerConfirmed:null,orderedAt:new Date().toISOString()};
   _cart={shopId:null,shopName:'',items:[]};updateCartUI();
-  db.collection('orders').add(order).then(function(){closeDeliveryModal();updateNavBadges();toast(paymentMethod==='cod'?'Order placed! Pay ₹'+order.total+' cash on delivery':'Order placed! Payment link sent via SMS');_pendingOrder=null;}).catch(function(e){toast('Order failed: '+e.message,'err');});
+  db.collection('orders').add(order).then(function(){closeDeliveryModal();updateNavBadges();toast('Order placed! Pay ₹'+order.total+' cash on delivery');_pendingOrder=null;}).catch(function(e){toast('Order failed: '+e.message,'err');});
 }
 
 // ====== MY ORDERS ======
@@ -2100,9 +2142,25 @@ function renderOrdersModal(){
 }
 function cancelOrder(id){if(!confirm('Cancel this order?'))return;db.collection('orders').doc(id).update({status:'Cancelled'}).then(function(){toast('Order cancelled');openOrdersModal();}).catch(function(e){toast('Failed: '+e.message,'err');});}
 function updateNavBadges(){
-  var wish=ldJ('ls_wishlist');var wb=document.getElementById('wish-count-badge');
-  if(wish.length){wb.textContent=wish.length;wb.classList.add('show');}else wb.classList.remove('show');
-  db.collection('orders').where('deviceId','==',DEVICE_ID).get().then(function(snap){var ob=document.getElementById('orders-count-badge');var confirmed=snap.docs.filter(function(d){var s=d.data().status;return s!=='Cancelled'&&s!=='Delivered';}).length;if(confirmed){ob.textContent=confirmed;ob.classList.add('show');}else ob.classList.remove('show');}).catch(function(){});
+  var wish=ldJ('ls_wishlist');var wb=document.getElementById('wish-count-badge'),wbm=document.getElementById('wish-count-badge-mobile');
+  if(wish.length){
+    if(wb){wb.textContent=wish.length;wb.classList.add('show');}
+    if(wbm){wbm.textContent=wish.length;wbm.classList.add('show');}
+  }else{
+    if(wb)wb.classList.remove('show');
+    if(wbm)wbm.classList.remove('show');
+  }
+  db.collection('orders').where('deviceId','==',DEVICE_ID).get().then(function(snap){
+    var ob=document.getElementById('orders-count-badge'),obm=document.getElementById('orders-count-badge-mobile');
+    var confirmed=snap.docs.filter(function(d){var s=d.data().status;return s!=='Cancelled'&&s!=='Delivered';}).length;
+    if(confirmed){
+      if(ob){ob.textContent=confirmed;ob.classList.add('show');}
+      if(obm){obm.textContent=confirmed;obm.classList.add('show');}
+    }else{
+      if(ob)ob.classList.remove('show');
+      if(obm)obm.classList.remove('show');
+    }
+  }).catch(function(){});
 }
 
 // ====== DELIVERY CONFIRMATION ======

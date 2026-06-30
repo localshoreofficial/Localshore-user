@@ -400,7 +400,7 @@ textarea.form-i{min-height:90px;resize:vertical}
 .os-total{font-size:.95rem;color:var(--orange)}
 .pay-section{margin-bottom:16px}
 .pay-section-lbl{font-family:var(--fb);font-size:.66rem;font-weight:700;color:#C96B33;letter-spacing:.2em;text-transform:uppercase;margin-bottom:9px}
-.pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.pay-methods{display:grid;grid-template-columns:1fr;gap:9px}
 .pay-opt{position:relative}
 .pay-opt input[type="radio"]{position:absolute;opacity:0;width:0;height:0}
 .pay-opt-label{display:flex;align-items:center;gap:10px;padding:12px 13px;border:1.5px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:all .2s;background:var(--white)}
@@ -414,8 +414,6 @@ textarea.form-i{min-height:90px;resize:vertical}
 .pay-opt input:checked + .pay-opt-label .pay-opt-check::after{content:'✓';font-size:.55rem;color:#fff;font-weight:900}
 .pay-cod-note{display:none;align-items:center;gap:7px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:9px 12px;font-size:.76rem;color:#92600A;margin-top:9px}
 .pay-cod-note.show{display:flex}
-.pay-online-note{display:none;align-items:center;gap:7px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:var(--radius-sm);padding:9px 12px;font-size:.76rem;color:#1d4ed8;margin-top:9px}
-.pay-online-note.show{display:flex}
 .btn-confirm{width:100%;padding:13px;background:var(--orange);color:#fff;border:none;border-radius:var(--radius-md);font-family:var(--ff);font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s}
 .btn-confirm:hover{background:var(--orange-dark)}
 
@@ -818,10 +816,8 @@ textarea.form-i{min-height:90px;resize:vertical}
         <div class="pay-section-lbl">💳 Payment Method</div>
         <div class="pay-methods">
           <div class="pay-opt"><input type="radio" name="pay-method" id="pay-cod" value="cod" checked onchange="onPayMethodChange()"><label class="pay-opt-label" for="pay-cod"><span class="pay-opt-icon">💵</span><div><div class="pay-opt-name">Cash on Delivery</div><div class="pay-opt-sub">Pay when delivered</div></div><div class="pay-opt-check"></div></label></div>
-          <div class="pay-opt"><input type="radio" name="pay-method" id="pay-online" value="online" onchange="onPayMethodChange()"><label class="pay-opt-label" for="pay-online"><span class="pay-opt-icon">💳</span><div><div class="pay-opt-name">Pay Online</div><div class="pay-opt-sub">UPI / Card / Net Banking</div></div><div class="pay-opt-check"></div></label></div>
         </div>
         <div class="pay-cod-note show" id="pay-cod-note">💵 Keep exact change ready. Our delivery partner will collect at your door.</div>
-        <div class="pay-online-note" id="pay-online-note">🔐 You'll receive a secure payment link via SMS after confirmation.</div>
       </div>
       <button class="btn-confirm" onclick="confirmOrder()">✅ Confirm & Place Order</button>
     </div>
@@ -1147,9 +1143,7 @@ function doBuyNow(){
 function scrollToBuy(){document.getElementById('action-bar').scrollIntoView({behavior:'smooth',block:'center'});}
 function closeDeliveryModal(){document.getElementById('delivery-modal').classList.remove('open');document.body.style.overflow='';}
 function onPayMethodChange(){
-  var m=document.querySelector('input[name="pay-method"]:checked');m=m?m.value:'cod';
-  document.getElementById('pay-cod-note').classList.toggle('show',m==='cod');
-  document.getElementById('pay-online-note').classList.toggle('show',m==='online');
+  document.getElementById('pay-cod-note').classList.add('show');
 }
 function prefillDeliveryForm(){
   document.getElementById('del-addr1').value=ld('ls_del_addr1');
@@ -1166,10 +1160,10 @@ function confirmOrder(){
   if(!addr1||!city||!pin||!phone){toast('Please fill all required fields','err');return;}
   var landmark=document.getElementById('del-landmark').value.trim();
   var fullAddr=addr1+(landmark?', Near '+landmark:'')+', '+city+' - '+pin;
-  var payEl=document.querySelector('input[name="pay-method"]:checked');var payMethod=payEl?payEl.value:'cod';
+  var payMethod='cod';
   sv('ls_del_addr1',addr1);sv('ls_del_city',city);sv('ls_del_pin',pin);sv('ls_del_land',landmark);sv('ls_del_phone',phone);
   var p=_pendingOrder.product,s=_pendingOrder.shop,qty=_pendingOrder.qty;
-  var order={deviceId:DEVICE_ID,type:'single',productId:p.id,shopId:p.shopId,productName:p.name,category:p.category,image:p.image||'',price:p.price,qty:qty,total:p.price*qty,shopName:s.name,shopAddress:s.address||'',shopLat:s.lat||null,shopLng:s.lng||null,deliveryAddress:fullAddr,deliveryLat:parseFloat(ld('ls_lat'))||null,deliveryLng:parseFloat(ld('ls_lng'))||null,phone:phone,paymentMethod:payMethod,paymentLabel:payMethod==='cod'?'Cash on Delivery':'Online Payment',status:'Confirmed',customerConfirmed:null,orderedAt:new Date().toISOString()};
+  var order={deviceId:DEVICE_ID,type:'single',productId:p.id,shopId:p.shopId,productName:p.name,category:p.category,image:p.image||'',price:p.price,qty:qty,total:p.price*qty,shopName:s.name,shopAddress:s.address||'',shopLat:s.lat||null,shopLng:s.lng||null,deliveryAddress:fullAddr,deliveryLat:parseFloat(ld('ls_lat'))||null,deliveryLng:parseFloat(ld('ls_lng'))||null,phone:phone,paymentMethod:payMethod,paymentLabel:'Cash on Delivery',status:'Confirmed',customerConfirmed:null,orderedAt:new Date().toISOString()};
   db.collection('orders').add(order).then(function(){
     closeDeliveryModal();toast(payMethod==='cod'?'🎉 Order placed! Pay ₹'+order.total+' cash on delivery':'🎉 Order placed! Payment link sent via SMS');_pendingOrder=null;
   }).catch(function(e){toast('Order failed: '+e.message,'err');});
