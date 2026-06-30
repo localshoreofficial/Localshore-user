@@ -1311,7 +1311,7 @@ function ldJ(k,def){def=def===undefined?[]:def;try{var v=localStorage.getItem(k)
 function eh(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function toast(m,t){var e=document.getElementById('toast');e.textContent=m;e.className='toast-pop show'+(t?' '+t:'');clearTimeout(toast._t);toast._t=setTimeout(function(){e.className='toast-pop';},3200);}
 function haversine(la1,ln1,la2,ln2){var R=6371,dLat=(la2-la1)*Math.PI/180,dLng=(ln2-ln1)*Math.PI/180;var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
-function isLoggedIn(){return ld('ls_logged_in')==='true';}
+var _firebaseUser = null;  auth.onAuthStateChanged(function(user) {   _firebaseUser = user;   loadCurrentUser();   updateNavBadges();   updateCartUI(); });  function isLoggedIn(){   return !!_firebaseUser; }
 function getCurrentPathWithQuery(){return (window.location.pathname.split('/').pop()||'home.html')+window.location.search+window.location.hash;}
 function buildAuthUrl(tab){var current=getCurrentPathWithQuery();return 'home.html?auth='+(tab||'login')+'&return='+encodeURIComponent(current);}
 function syncAuthQuery(tab){try{var url=new URL(window.location.href);if(tab)url.searchParams.set('auth',tab);else url.searchParams.delete('auth');url.searchParams.delete('return');history.replaceState({},'',url.pathname+url.search+url.hash);}catch(e){}}
